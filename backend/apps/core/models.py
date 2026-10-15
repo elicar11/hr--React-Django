@@ -11,10 +11,23 @@ class AuditAction:
     PASSWORD_CHANGED = "auth.password_changed"
     PASSWORD_RESET_REQUESTED = "auth.password_reset_requested"
     PASSWORD_RESET_COMPLETED = "auth.password_reset_completed"
+
     USER_CREATED = "user.created"
     USER_UPDATED = "user.updated"
     USER_ACTIVATED = "user.activated"
     USER_DEACTIVATED = "user.deactivated"
+
+    DEPARTMENT_CREATED = "department.created"
+    DEPARTMENT_UPDATED = "department.updated"
+    DEPARTMENT_DELETED = "department.deleted"
+    DEPARTMENT_ACTIVATED = "department.activated"
+    DEPARTMENT_DEACTIVATED = "department.deactivated"
+
+    POSITION_CREATED = "position.created"
+    POSITION_UPDATED = "position.updated"
+    POSITION_DELETED = "position.deleted"
+    POSITION_ACTIVATED = "position.activated"
+    POSITION_DEACTIVATED = "position.deactivated"
 
 
 class AuditLog(models.Model):
