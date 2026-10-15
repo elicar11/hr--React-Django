@@ -20,6 +20,8 @@ ALLOWED_HOSTS = config("DJANGO_ALLOWED_HOSTS", default="", cast=Csv())
 # real client IP from X-Forwarded-For; keep 0 unless you really run behind proxies.
 TRUSTED_PROXY_COUNT = config("TRUSTED_PROXY_COUNT", default=0, cast=int)
 
+CONTRACT_ALERT_DAYS = config("CONTRACT_ALERT_DAYS", default=30, cast=int)
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -39,6 +41,7 @@ INSTALLED_APPS = [
     "apps.core",
     "apps.organization",
     "apps.employees",
+    "apps.contracts",
 ]
 
 MIDDLEWARE = [

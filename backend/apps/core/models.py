@@ -37,6 +37,20 @@ class AuditAction:
     EMPLOYEE_REACTIVATED = "employee.reactivated"
     EMPLOYEE_PHOTO_UPDATED = "employee.photo_updated"
     EMPLOYEE_PHOTO_REMOVED = "employee.photo_removed"
+    
+    CONTRACT_TYPE_CREATED = "contract_type.created"
+    CONTRACT_TYPE_UPDATED = "contract_type.updated"
+    CONTRACT_TYPE_DELETED = "contract_type.deleted"
+
+    CONTRACT_CREATED = "contract.created"
+    CONTRACT_UPDATED = "contract.updated"
+    CONTRACT_DELETED = "contract.deleted"
+    CONTRACT_ACTIVATED = "contract.activated"
+    CONTRACT_RENEWED = "contract.renewed"
+    CONTRACT_TERMINATED = "contract.terminated"
+    CONTRACT_ENDED = "contract.ended"
+    CONTRACT_DOCUMENT_ADDED = "contract.document_added"
+    CONTRACT_DOCUMENT_REMOVED = "contract.document_removed"
 
 
 class AuditLog(models.Model):

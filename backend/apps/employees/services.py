@@ -8,6 +8,9 @@ from apps.accounts import services as account_services
 from apps.core import audit
 from apps.core.models import AuditAction
 
+# Close the employee's running contracts (imported here to avoid a circular import).
+from apps.contracts import services as contract_services
+
 from .models import Employee, EmployeeAssignment, EmploymentStatus
 
 logger = logging.getLogger(__name__)
@@ -168,6 +171,9 @@ def terminate(*, employee, departure_date, actor, request=None):
     if latest and latest.end_date is None:
         latest.end_date = departure_date
         latest.save(update_fields=["end_date"])
+        contract_services.close_contracts_for_departure(
+        employee=employee, departure_date=departure_date, actor=actor, request=request
+    )
 
     # Revoke access with the employment relationship.
     if employee.user and employee.user.is_active:
