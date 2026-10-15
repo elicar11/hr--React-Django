@@ -1,4 +1,4 @@
-from django.db.models import Count
+from django.db.models import Count, Q
 from django_filters import rest_framework as filters
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
@@ -35,10 +35,14 @@ class DepartmentViewSet(AuditedModelMixin, viewsets.ModelViewSet):
     audit_updated = AuditAction.DEPARTMENT_UPDATED
     audit_deleted = AuditAction.DEPARTMENT_DELETED
 
+    # DepartmentViewSet
     def get_queryset(self):
         return Department.objects.select_related("parent").annotate(
             children_count=Count("children", distinct=True),
             positions_count=Count("positions", distinct=True),
+            employees_count=Count(
+                "employees", filter=~Q(employees__employment_status="TERMINATED"), distinct=True
+            ),
         )
 
     @extend_schema(
@@ -92,8 +96,13 @@ class PositionViewSet(AuditedModelMixin, viewsets.ModelViewSet):
     audit_updated = AuditAction.POSITION_UPDATED
     audit_deleted = AuditAction.POSITION_DELETED
 
+    # PositionViewSet
     def get_queryset(self):
-        return Position.objects.select_related("department")
+        return Position.objects.select_related("department").annotate(
+            employees_count=Count(
+                "employees", filter=~Q(employees__employment_status="TERMINATED"), distinct=True
+            ),
+        )
 
     @extend_schema(request=None, responses=PositionSerializer)
     @action(detail=True, methods=["post"])

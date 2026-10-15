@@ -28,6 +28,9 @@ def set_department_active(*, actor, department, is_active, request=None):
             raise ValidationError("Activez d'abord le département parent.")
     elif department.children.filter(is_active=True).exists():
         raise ValidationError("Désactivez d'abord les sous-départements actifs.")
+    # "TERMINATED" employees no longer count: they have left the company.
+    elif department.employees.exclude(employment_status="TERMINATED").exists():
+        raise ValidationError("Réaffectez d'abord les employés de ce département.")
 
     department.is_active = is_active
     department.save(update_fields=["is_active", "updated_at"])
@@ -44,8 +47,11 @@ def set_department_active(*, actor, department, is_active, request=None):
 
 @transaction.atomic
 def set_position_active(*, actor, position, is_active, request=None):
-    if is_active and position.department and not position.department.is_active:
-        raise ValidationError("Activez d'abord le département associé à ce poste.")
+    if is_active:
+        if position.department and not position.department.is_active:
+            raise ValidationError("Activez d'abord le département associé à ce poste.")
+    elif position.employees.exclude(employment_status="TERMINATED").exists():
+        raise ValidationError("Réaffectez d'abord les employés occupant ce poste.")
 
     position.is_active = is_active
     position.save(update_fields=["is_active", "updated_at"])
@@ -58,6 +64,7 @@ def set_position_active(*, actor, position, is_active, request=None):
     )
     logger.info("position_active_changed actor=%s target=%s is_active=%s", actor.pk, position.pk, is_active)
     return position
+
 
 
 def build_department_tree(*, include_inactive=False):

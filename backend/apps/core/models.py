@@ -28,6 +28,15 @@ class AuditAction:
     POSITION_DELETED = "position.deleted"
     POSITION_ACTIVATED = "position.activated"
     POSITION_DEACTIVATED = "position.deactivated"
+    
+    EMPLOYEE_CREATED = "employee.created"
+    EMPLOYEE_UPDATED = "employee.updated"
+    EMPLOYEE_ASSIGNED = "employee.assigned"
+    EMPLOYEE_SUSPENDED = "employee.suspended"
+    EMPLOYEE_TERMINATED = "employee.terminated"
+    EMPLOYEE_REACTIVATED = "employee.reactivated"
+    EMPLOYEE_PHOTO_UPDATED = "employee.photo_updated"
+    EMPLOYEE_PHOTO_REMOVED = "employee.photo_removed"
 
 
 class AuditLog(models.Model):
