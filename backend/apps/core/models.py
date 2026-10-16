@@ -89,6 +89,28 @@ class AuditAction:
     LEAVE_CANCELLED = "leave.cancelled"
     LEAVE_DOCUMENT_ADDED = "leave.document_added"
     LEAVE_DOCUMENT_REMOVED = "leave.document_removed"
+    
+    PAYROLL_SETTINGS_UPDATED = "payroll.settings_updated"
+    PAY_ITEM_TYPE_CREATED = "pay_item_type.created"
+    PAY_ITEM_TYPE_UPDATED = "pay_item_type.updated"
+    PAY_ITEM_TYPE_DELETED = "pay_item_type.deleted"
+    PAY_ELEMENT_CREATED = "pay_element.created"
+    PAY_ELEMENT_ENDED = "pay_element.ended"
+
+    PAYROLL_PERIOD_CREATED = "payroll_period.created"
+    PAYROLL_PERIOD_UPDATED = "payroll_period.updated"
+    PAYROLL_PERIOD_DELETED = "payroll_period.deleted"
+    PAYROLL_PERIOD_CLOSED = "payroll_period.closed"
+    PAYROLL_PERIOD_REOPENED = "payroll_period.reopened"
+    PAYROLL_PERIOD_EXPORTED = "payroll_period.exported"
+
+    PAYSLIPS_GENERATED = "payslip.generated"
+    PAYSLIP_CALCULATED = "payslip.calculated"
+    PAYSLIP_LINE_ADDED = "payslip.line_added"
+    PAYSLIP_LINE_REMOVED = "payslip.line_removed"
+    PAYSLIP_VALIDATED = "payslip.validated"
+    PAYSLIP_PAID = "payslip.paid"
+    PAYSLIP_CANCELLED = "payslip.cancelled"
 
 
 class AuditLog(models.Model):
