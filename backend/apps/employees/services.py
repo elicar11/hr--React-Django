@@ -13,6 +13,9 @@ from apps.contracts import services as contract_services
 
 from .models import Employee, EmployeeAssignment, EmploymentStatus
 
+# Cancel pending / future leave requests (imported here to avoid a circular import).
+from apps.leaves import services as leave_services
+
 logger = logging.getLogger(__name__)
 
 
@@ -172,6 +175,9 @@ def terminate(*, employee, departure_date, actor, request=None):
         latest.end_date = departure_date
         latest.save(update_fields=["end_date"])
         contract_services.close_contracts_for_departure(
+        employee=employee, departure_date=departure_date, actor=actor, request=request
+    )
+        leave_services.cancel_for_departure(
         employee=employee, departure_date=departure_date, actor=actor, request=request
     )
 

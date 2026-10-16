@@ -73,6 +73,22 @@ class AuditAction:
     ATTENDANCE_CORRECTION_APPROVED = "attendance.correction_approved"
     ATTENDANCE_CORRECTION_REJECTED = "attendance.correction_rejected"
     ATTENDANCE_CORRECTION_CANCELLED = "attendance.correction_cancelled"
+    
+    LEAVE_TYPE_CREATED = "leave_type.created"
+    LEAVE_TYPE_UPDATED = "leave_type.updated"
+    LEAVE_TYPE_DELETED = "leave_type.deleted"
+
+    LEAVE_BALANCE_CREATED = "leave_balance.created"
+    LEAVE_BALANCE_UPDATED = "leave_balance.updated"
+    LEAVE_BALANCES_INITIALIZED = "leave_balance.initialized"
+
+    LEAVE_REQUESTED = "leave.requested"
+    LEAVE_UPDATED = "leave.updated"
+    LEAVE_APPROVED = "leave.approved"
+    LEAVE_REJECTED = "leave.rejected"
+    LEAVE_CANCELLED = "leave.cancelled"
+    LEAVE_DOCUMENT_ADDED = "leave.document_added"
+    LEAVE_DOCUMENT_REMOVED = "leave.document_removed"
 
 
 class AuditLog(models.Model):

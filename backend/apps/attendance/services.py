@@ -7,6 +7,9 @@ from django.db.models import Q
 from django.utils import timezone
 from rest_framework.exceptions import NotFound, ValidationError
 
+# Imported here to avoid a circular import (leaves depends on attendance).
+from apps.leaves.models import LeaveRequest, LeaveStatus
+
 from apps.core import audit
 from apps.core.models import AuditAction
 from apps.employees.models import Employee, EmploymentStatus
@@ -166,6 +169,14 @@ def check_in(*, employee, actor, request=None):
             raise ValidationError(f"Entrée déjà enregistrée aujourd'hui à {at}.")
         raise ValidationError("Une absence est déjà enregistrée pour aujourd'hui : contactez les RH.")
 
+
+    if LeaveRequest.objects.filter(
+        employee=employee, status=LeaveStatus.APPROVED, start_date__lte=day, end_date__gte=day
+    ).exists():
+        raise ValidationError(
+            "Vous êtes en congé aujourd'hui : le pointage est impossible. "
+            "Contactez les RH si vous reprenez le travail."
+        )
     record = AttendanceRecord(employee=employee, date=day, source=AttendanceSource.CLOCK)
     _apply_presence(record, employee, day, now, None)
     record.save()
@@ -448,6 +459,46 @@ def assign_schedule(*, employee, schedule, start_date, actor, request=None):
 def mark_missing_absences(*, day):
     """Create an unjustified absence for working days without any record.
 
+    Runs for a finished day. Employees on approved leave are not absent: they are skipped.
+    """
+    # Imported here to avoid a circular import (leaves depends on attendance).
+    from apps.leaves.models import LeaveRequest, LeaveStatus
+
+    if day >= timezone.localdate():
+        raise ValidationError("Seules les journées terminées peuvent être traitées.")
+    created = 0
+    if not Holiday.objects.filter(date=day).exists():
+        on_leave = set(
+            LeaveRequest.objects.filter(
+                status=LeaveStatus.APPROVED, start_date__lte=day, end_date__gte=day
+            ).values_list("employee_id", flat=True)
+        )
+        employees = Employee.objects.filter(
+            employment_status=EmploymentStatus.ACTIVE, hire_date__lte=day
+        ).filter(Q(departure_date__isnull=True) | Q(departure_date__gte=day))
+        for employee in employees.iterator():
+            if employee.pk in on_leave:
+                continue
+            schedule = resolve_schedule(employee, day)
+            if schedule is None or day.weekday() not in schedule.working_days:
+                continue
+            _, was_created = AttendanceRecord.objects.get_or_create(
+                employee=employee,
+                date=day,
+                defaults={
+                    "status": AttendanceStatus.ABSENT_UNJUSTIFIED,
+                    "source": AttendanceSource.SYSTEM,
+                },
+            )
+            created += int(was_created)
+    audit.record(
+        action=AuditAction.ATTENDANCE_ABSENCES_MARKED,
+        metadata={"date": day.isoformat(), "count": created, "source": "system"},
+    )
+    logger.info("missing_absences_marked date=%s count=%s", day.isoformat(), created)
+    return created
+    """Create an unjustified absence for working days without any record.
+
     Runs for a finished day. (Approved leaves will be excluded once the leave module exists.)
     """
     if day >= timezone.localdate():
@@ -476,3 +527,35 @@ def mark_missing_absences(*, day):
     )
     logger.info("missing_absences_marked date=%s count=%s", day.isoformat(), created)
     return created
+
+def scheduled_working_days(employee, start, end):
+    """Working days of the employee between `start` and `end` (inclusive).
+
+    Follows the schedule(s) assigned to the employee over the period (default schedule
+    otherwise) and excludes holidays. Queries are done once for the whole period.
+    """
+    assignments = list(
+        ScheduleAssignment.objects.select_related("schedule")
+        .filter(employee=employee, start_date__lte=end)
+        .filter(Q(end_date__isnull=True) | Q(end_date__gte=start))
+    )
+    default = WorkSchedule.objects.filter(is_default=True).first()
+    holidays = set(Holiday.objects.filter(date__range=(start, end)).values_list("date", flat=True))
+
+    days = []
+    day = start
+    while day <= end:
+        schedule = next(
+            (
+                a.schedule
+                for a in assignments
+                if a.start_date <= day and (a.end_date is None or a.end_date >= day)
+            ),
+            default,
+        )
+        if schedule is None:
+            raise ValidationError(NO_SCHEDULE_MESSAGE)
+        if day.weekday() in schedule.working_days and day not in holidays:
+            days.append(day)
+        day += DAY
+    return days
