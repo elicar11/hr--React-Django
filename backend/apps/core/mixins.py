@@ -6,13 +6,17 @@ from . import audit
 class AuditedModelMixin:
     """Create / update / delete with an audit entry written in the same transaction.
 
-    Subclasses set `audit_created`, `audit_updated` and `audit_deleted`.
-    The audited model must expose a `code` attribute.
+    Subclasses set `audit_created`, `audit_updated` and `audit_deleted`, and
+    `audit_label_field` (the attribute identifying the object in the audit entry).
     """
 
     audit_created = None
     audit_updated = None
     audit_deleted = None
+    audit_label_field = "code"
+
+    def _audit_label(self, instance):
+        return {self.audit_label_field: str(getattr(instance, self.audit_label_field))}
 
     @transaction.atomic
     def perform_create(self, serializer):
@@ -21,7 +25,7 @@ class AuditedModelMixin:
             action=self.audit_created,
             request=self.request,
             target=instance,
-            metadata={"code": instance.code},
+            metadata=self._audit_label(instance),
         )
 
     @transaction.atomic
@@ -38,7 +42,7 @@ class AuditedModelMixin:
                 action=self.audit_updated,
                 request=self.request,
                 target=instance,
-                metadata={"code": instance.code, "fields": changed},
+                metadata={**self._audit_label(instance), "fields": changed},
             )
 
     @transaction.atomic
@@ -49,6 +53,6 @@ class AuditedModelMixin:
             action=self.audit_deleted,
             request=self.request,
             target=instance,
-            metadata={"code": instance.code},
+            metadata=self._audit_label(instance),
         )
         instance.delete()

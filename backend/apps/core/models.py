@@ -51,6 +51,28 @@ class AuditAction:
     CONTRACT_ENDED = "contract.ended"
     CONTRACT_DOCUMENT_ADDED = "contract.document_added"
     CONTRACT_DOCUMENT_REMOVED = "contract.document_removed"
+    
+    WORK_SCHEDULE_CREATED = "work_schedule.created"
+    WORK_SCHEDULE_UPDATED = "work_schedule.updated"
+    WORK_SCHEDULE_DELETED = "work_schedule.deleted"
+    WORK_SCHEDULE_DEFAULT_SET = "work_schedule.default_set"
+    SCHEDULE_ASSIGNED = "schedule.assigned"
+
+    HOLIDAY_CREATED = "holiday.created"
+    HOLIDAY_UPDATED = "holiday.updated"
+    HOLIDAY_DELETED = "holiday.deleted"
+
+    ATTENDANCE_CHECKED_IN = "attendance.checked_in"
+    ATTENDANCE_CHECKED_OUT = "attendance.checked_out"
+    ATTENDANCE_RECORD_CREATED = "attendance.record_created"
+    ATTENDANCE_RECORD_UPDATED = "attendance.record_updated"
+    ATTENDANCE_RECORD_DELETED = "attendance.record_deleted"
+    ATTENDANCE_ABSENCES_MARKED = "attendance.absences_marked"
+    ATTENDANCE_EXPORTED = "attendance.exported"
+    ATTENDANCE_CORRECTION_REQUESTED = "attendance.correction_requested"
+    ATTENDANCE_CORRECTION_APPROVED = "attendance.correction_approved"
+    ATTENDANCE_CORRECTION_REJECTED = "attendance.correction_rejected"
+    ATTENDANCE_CORRECTION_CANCELLED = "attendance.correction_cancelled"
 
 
 class AuditLog(models.Model):

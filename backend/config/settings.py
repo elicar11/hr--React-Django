@@ -21,6 +21,8 @@ ALLOWED_HOSTS = config("DJANGO_ALLOWED_HOSTS", default="", cast=Csv())
 TRUSTED_PROXY_COUNT = config("TRUSTED_PROXY_COUNT", default=0, cast=int)
 
 CONTRACT_ALERT_DAYS = config("CONTRACT_ALERT_DAYS", default=30, cast=int)
+# How far back (in days) an employee can request an attendance correction.
+ATTENDANCE_CORRECTION_WINDOW_DAYS = config("ATTENDANCE_CORRECTION_WINDOW_DAYS", default=30, cast=int)
 
 # Application definition
 
@@ -42,6 +44,7 @@ INSTALLED_APPS = [
     "apps.organization",
     "apps.employees",
     "apps.contracts",
+    "apps.attendance",
 ]
 
 MIDDLEWARE = [
