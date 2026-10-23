@@ -111,6 +111,9 @@ class AuditAction:
     PAYSLIP_VALIDATED = "payslip.validated"
     PAYSLIP_PAID = "payslip.paid"
     PAYSLIP_CANCELLED = "payslip.cancelled"
+    
+    EMPLOYEES_EXPORTED = "employee.exported"
+    EMPLOYEES_IMPORTED = "employee.imported"
 
 
 class AuditLog(models.Model):

@@ -1,0 +1,71 @@
+/* Self-hosted fonts (no CDN). Imports must come first. */
+@import "@fontsource-variable/space-grotesk";
+@import "@fontsource-variable/inter";
+@import "tailwindcss";
+
+@theme {
+  /* Typography */
+  --font-display: "Space Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+
+  /* Monochrome palette */
+  --color-ink: #000000;
+  --color-paper: #ffffff;
+  --color-gray-light: #f2f2f2;
+  --color-gray-mid: #d9d9d9;
+  --color-gray-dark: #333333;
+  /* The only functional color: errors. Always paired with an icon and a label, never alone. */
+  --color-danger: #b00020;
+
+  /* Hard offset shadows */
+  --shadow-hard-sm: 2px 2px 0 #000000;
+  --shadow-hard: 4px 4px 0 #000000;
+  --shadow-hard-lg: 6px 6px 0 #000000;
+}
+
+@layer base {
+  /* Tailwind v4 borders default to currentColor: black everywhere, as in the design system. */
+  *,
+  ::before,
+  ::after {
+    border-color: var(--color-ink);
+  }
+
+  html {
+    font-family: var(--font-sans);
+    background: var(--color-paper);
+    color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  /* Visible keyboard focus, high contrast. */
+  :focus-visible {
+    outline: 3px solid var(--color-ink);
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

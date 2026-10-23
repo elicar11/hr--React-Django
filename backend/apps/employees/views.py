@@ -1,5 +1,16 @@
 import mimetypes
 
+import csv
+
+from django.http import HttpResponse, StreamingHttpResponse
+from rest_framework.exceptions import ValidationError
+
+from apps.core import audit
+from apps.core.csv_utils import Echo, csv_safe
+from apps.core.models import AuditAction
+
+from . import importing
+
 from django.http import FileResponse
 from django_filters import rest_framework as filters
 from drf_spectacular.types import OpenApiTypes
@@ -21,6 +32,7 @@ from .serializers import (
     AssignSerializer,
     EmployeeCreateSerializer,
     EmployeeHistorySerializer,
+    EmployeeImportSerializer,
     EmployeeListSerializer,
     EmployeeSerializer,
     PhotoUploadSerializer,
@@ -65,7 +77,8 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         return self.serializer_classes.get(self.action, EmployeeSerializer)
 
     def get_permissions(self):
-        if self.action == "history":  # GET, but reserved to ADMIN / HR
+        # GET actions reserved to ADMIN / HR: personal data of several employees.
+        if self.action in ("history", "export", "import_template", "import_csv"):
             return [IsAdminOrHR()]
         return super().get_permissions()
 
@@ -195,3 +208,77 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         )
         page = self.paginate_queryset(entries)
         return self.get_paginated_response(EmployeeHistorySerializer(page, many=True).data)
+    
+    # --- Export / import (ADMIN / HR) ------------------------------------------------
+    @extend_schema(responses={200: OpenApiTypes.BINARY})
+    @action(detail=False, methods=["get"])
+    def export(self, request):
+        """CSV export of the employees matching the list filters and search (ADMIN / HR)."""
+        queryset = self.filter_queryset(self.get_queryset()).order_by("matricule")
+        audit.record(
+            action=AuditAction.EMPLOYEES_EXPORTED, request=request,
+            metadata={"query": request.query_params.urlencode()},
+        )
+        writer = csv.writer(Echo(), delimiter=";")  # ';' opens correctly in French spreadsheets
+
+        def rows():
+            yield "\ufeff"  # BOM so Excel reads UTF-8
+            yield writer.writerow(importing.EXPORT_COLUMNS)
+            for e in queryset.iterator(chunk_size=1000):
+                yield writer.writerow([
+                    csv_safe(e.matricule), csv_safe(e.last_name), csv_safe(e.first_name),
+                    e.date_of_birth.isoformat(), csv_safe(e.work_email), csv_safe(e.personal_email),
+                    csv_safe(e.work_phone), csv_safe(e.personal_phone), csv_safe(e.address_line),
+                    csv_safe(e.postal_code), csv_safe(e.city), e.hire_date.isoformat(),
+                    csv_safe(e.department.code), csv_safe(e.position.code), e.employment_status,
+                    e.departure_date.isoformat() if e.departure_date else "",
+                ])
+
+        response = StreamingHttpResponse(rows(), content_type="text/csv; charset=utf-8")
+        response["Content-Disposition"] = 'attachment; filename="employes.csv"'
+        return response
+
+    @extend_schema(responses={200: OpenApiTypes.BINARY})
+    @action(detail=False, methods=["get"], url_path="import-template")
+    def import_template(self, request):
+        """Header line of the import CSV (ADMIN / HR)."""
+        columns = importing.REQUIRED_COLUMNS + importing.OPTIONAL_COLUMNS
+        response = HttpResponse("\ufeff" + ";".join(columns) + "\r\n", content_type="text/csv; charset=utf-8")
+        response["Content-Disposition"] = 'attachment; filename="modele-import-employes.csv"'
+        return response
+
+    @extend_schema(
+        methods=["POST"],
+        request={"multipart/form-data": EmployeeImportSerializer},
+        responses=OpenApiTypes.OBJECT,
+    )
+    @action(detail=False, methods=["post"], url_path="import", parser_classes=[MultiPartParser])
+    def import_csv(self, request):
+        """Import employees from a CSV (ADMIN / HR). All-or-nothing; `dry_run=true` only validates."""
+        serializer = EmployeeImportSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        rows, ignored_columns = importing.read_rows(serializer.validated_data["file"])
+        result = importing.validate_rows(rows)
+
+        if serializer.validated_data["dry_run"]:
+            return Response(
+                {
+                    "dry_run": True,
+                    "rows": len(rows),
+                    "valid": result.error_count == 0,
+                    "invalid_rows": result.error_count,
+                    "errors": result.errors,
+                    "ignored_columns": ignored_columns,
+                }
+            )
+        if result.error_count:
+            raise ValidationError(
+                {
+                    "file": [f"{result.error_count} ligne(s) invalide(s) : rien n'a été importé."],
+                    "errors": result.errors,
+                }
+            )
+        created = importing.import_employees(rows=result.rows, actor=request.user, request=request)
+        return Response(
+            {"created": created, "ignored_columns": ignored_columns}, status=status.HTTP_201_CREATED
+        )

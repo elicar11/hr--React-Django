@@ -6,3 +6,6 @@ media/
 staticfiles/
 node_modules/
 logs/
+dist
+.env.local
+.env.*.local

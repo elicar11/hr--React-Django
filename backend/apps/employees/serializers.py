@@ -164,3 +164,9 @@ class EmployeeHistorySerializer(serializers.ModelSerializer):
         model = AuditLog
         fields = ["id", "created_at", "actor_email", "action", "metadata"]
         read_only_fields = fields
+        
+class EmployeeImportSerializer(serializers.Serializer):
+    file = serializers.FileField()
+    dry_run = serializers.BooleanField(
+        required=False, default=False, help_text="true : valide le fichier sans rien enregistrer."
+    )
