@@ -9,3 +9,4 @@ logs/
 dist
 .env.local
 .env.*.local
+.vscode/
