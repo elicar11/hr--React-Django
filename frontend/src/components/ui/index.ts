@@ -16,6 +16,7 @@ export { Menu, type MenuItem } from "./Menu";
 export { Modal } from "./Modal";
 export { PageHeader, type Breadcrumb } from "./PageHeader";
 export { Pagination } from "./Pagination";
+export { PasswordField, type PasswordFieldProps } from "./PasswordField";
 export { Popover } from "./Popover";
 export { RowActions } from "./RowActions";
 export { SearchInput } from "./SearchInput";

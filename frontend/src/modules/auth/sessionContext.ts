@@ -1,16 +1,9 @@
-import { createContext, useContext } from "react";
-import type { Role, User } from "./types";
+import { useAuth } from "../auth/authContext";
+import type { User } from "./types";
 
-export interface Session {
-    user: User;
-    /** TEMPORARY (F2): previews each role. Removed in F3 when real authentication arrives. */
-    setDemoRole?: (role: Role) => void;
-}
-
-export const SessionContext = createContext<Session | null>(null);
-
-export function useSession(): Session {
-    const session = useContext(SessionContext);
-    if (!session) throw new Error("useSession must be used inside a session provider");
-    return session;
+/** For components rendered inside the authenticated area: the user is always defined. */
+export function useSession(): { user: User } {
+    const { user } = useAuth();
+    if (!user) throw new Error("useSession must be used inside the authenticated area");
+    return { user };
 }

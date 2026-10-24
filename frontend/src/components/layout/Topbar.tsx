@@ -3,14 +3,16 @@ import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router";
 import { Menu, type MenuItem } from "@/components/ui/Menu";
 import { SearchInput } from "@/components/ui/SearchInput";
-import { notify } from "@/lib/notify";
+import { useAuth } from "@/modules/auth/authContext";
 import { useSession } from "@/modules/auth/sessionContext";
-import { ROLE_LABELS, type Role } from "@/modules/auth/types";
+import { ROLE_LABELS } from "@/modules/auth/types";
 import { AlertsMenu } from "./AlertsMenu";
 import { useAlerts } from "./useAlerts";
 
 function ProfileMenu() {
-    const { user, setDemoRole } = useSession();
+    const { user } = useSession();
+    const { logout } = useAuth();
+    const navigate = useNavigate();
     const initials = `${user.first_name[0] ?? ""}${user.last_name[0] ?? ""}`.toUpperCase();
 
     const items: MenuItem[] = [
@@ -18,21 +20,12 @@ function ProfileMenu() {
         {
             label: "Se déconnecter",
             icon: LogOut,
-            // TEMPORARY (F2): real logout arrives in F3.
-            onSelect: () => notify.info("Déconnexion", "Disponible à l'étape F3 (authentification)."),
+            separatorBefore: true,
+            onSelect: () => {
+                void logout().then(() => navigate("/login", { replace: true }));
+            },
         },
     ];
-    // TEMPORARY (F2): lets you preview the navigation of each role. Removed in F3.
-    if (import.meta.env.DEV && setDemoRole) {
-        (Object.keys(ROLE_LABELS) as Role[]).forEach((role, index) => {
-            items.push({
-                label: `Démo : ${ROLE_LABELS[role]}`,
-                onSelect: () => setDemoRole(role),
-                separatorBefore: index === 0,
-                disabled: role === user.role,
-            });
-        });
-    }
 
     return (
         <Menu
