@@ -1,12 +1,33 @@
 import { Route, Routes } from "react-router";
+import { AppLayout } from "@/components/layout/AppLayout";
+import { ComingSoonPage } from "@/modules/core/pages/ComingSoonPage";
 import { NotFoundPage } from "@/modules/core/pages/NotFoundPage";
-import { SetupCheckPage } from "@/modules/core/pages/SetupCheckPage";
+import { UiKitPage } from "@/modules/core/pages/UiKitPage";
+
+/** Sections not built yet show an explicit state; each one is replaced by its real page. */
+const soon = (title: string, step: string) => <ComingSoonPage title={title} step={step} />;
 
 export function App() {
     return (
         <Routes>
-            <Route path="/" element={<SetupCheckPage />} />
-            <Route path="*" element={<NotFoundPage />} />
+            <Route element={<AppLayout />}>
+                <Route index element={soon("Tableau de bord", "F4")} />
+                <Route path="departments/*" element={soon("Départements", "F5")} />
+                <Route path="positions/*" element={soon("Postes", "F5")} />
+                <Route path="employees/*" element={soon("Employés", "F6")} />
+                <Route path="contracts/*" element={soon("Contrats", "F7")} />
+                <Route path="attendance/*" element={soon("Présences", "F8")} />
+                <Route path="leaves/*" element={soon("Congés", "F9")} />
+                <Route path="calendar" element={soon("Calendrier RH", "F9")} />
+                <Route path="payroll/*" element={soon("Paie", "F10")} />
+                <Route path="users/*" element={soon("Utilisateurs et rôles", "F11")} />
+                <Route path="audit" element={soon("Journal d'audit", "F11")} />
+                <Route path="settings/*" element={soon("Paramètres", "F11")} />
+                <Route path="profile" element={soon("Mon profil", "F3")} />
+                <Route path="my/*" element={soon("Mon espace", "F12")} />
+                {import.meta.env.DEV && <Route path="ui-kit" element={<UiKitPage />} />}
+                <Route path="*" element={<NotFoundPage />} />
+            </Route>
         </Routes>
     );
 }
