@@ -9,6 +9,7 @@ import type { Role } from "@/modules/auth/types";
 import { ComingSoonPage } from "@/modules/core/pages/ComingSoonPage";
 import { NotFoundPage } from "@/modules/core/pages/NotFoundPage";
 import { UiKitPage } from "@/modules/core/pages/UiKitPage";
+import { DashboardPage } from "@/modules/dashboard/pages/DashboardPage";
 
 const STAFF: readonly Role[] = ["ADMIN", "HR"];
 const ADMIN_ONLY: readonly Role[] = ["ADMIN"];
@@ -29,7 +30,7 @@ export function App() {
             {/* Authenticated area */}
             <Route element={<RequireAuth />}>
                 <Route element={<AppLayout />}>
-                    <Route index element={soon("Tableau de bord", "F4")} />
+                    <Route index element={<DashboardPage />} />
                     <Route path="profile" element={<ProfilePage />} />
                     <Route path="my/*" element={soon("Mon espace", "F12")} />
 
