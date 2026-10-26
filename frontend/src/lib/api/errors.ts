@@ -54,7 +54,10 @@ export function toApiError(error: unknown): ApiError {
     const body = error.response?.data as Partial<ApiErrorBody> | undefined;
     if (error.response && body?.error) {
       const { code, message, status, details } = body.error;
-      return new ApiError(message, status ?? error.response.status, code, details, error.config);
+      // Validation error without field (a plain sentence from the API): show that sentence.
+      const text =
+        code === "validation_error" && Array.isArray(details) ? messages(details).join(" ") || message : message;
+      return new ApiError(text, status ?? error.response.status, code, details, error.config);
     }
     if (error.response) {
       return new ApiError("Une erreur est survenue.", error.response.status, "http_error", undefined, error.config);

@@ -27,3 +27,4 @@ export { StatCard } from "./StatCard";
 export { ActiveBadge, StatusBadge, type StatusDomain } from "./StatusBadge";
 export { TabPanel, Tabs, type TabItem } from "./Tabs";
 export { Textarea } from "./Textarea";
+export { ModalForm } from "./ModalForm";

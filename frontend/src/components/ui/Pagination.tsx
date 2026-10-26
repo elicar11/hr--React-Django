@@ -1,6 +1,6 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "./Button";
-import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
+import { DEFAULT_PAGE_SIZE } from "@/lib/api/pagination";
 import { cx } from "@/lib/cx";
 
 /** [1, "gap", 4, 5, 6, "gap", 20]: first, last and the neighbours of the current page. */

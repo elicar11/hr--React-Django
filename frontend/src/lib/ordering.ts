@@ -13,3 +13,9 @@ export function sortingToOrdering(
     const field = fields[first.id] ?? first.id;
     return first.desc ? `-${field}` : field;
 }
+
+/** Inverse: "-name" -> [{ id: "name", desc: true }]. Column ids must match the API field names. */
+export function orderingToSorting(ordering: string): SortingState {
+    if (!ordering) return [];
+    return ordering.startsWith("-") ? [{ id: ordering.slice(1), desc: true }] : [{ id: ordering, desc: false }];
+}

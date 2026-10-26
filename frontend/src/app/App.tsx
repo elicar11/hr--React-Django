@@ -10,6 +10,11 @@ import { ComingSoonPage } from "@/modules/core/pages/ComingSoonPage";
 import { NotFoundPage } from "@/modules/core/pages/NotFoundPage";
 import { UiKitPage } from "@/modules/core/pages/UiKitPage";
 import { DashboardPage } from "@/modules/dashboard/pages/DashboardPage";
+import { EmployeeDetailPage } from "@/modules/employees/pages/EmployeeDetailPage";
+import { EmployeeFormPage } from "@/modules/employees/pages/EmployeeFormPage";
+import { EmployeesPage } from "@/modules/employees/pages/EmployeesPage";
+import { DepartmentsPage } from "@/modules/organization/pages/DepartmentsPage";
+import { PositionsPage } from "@/modules/organization/pages/PositionsPage";
 
 const STAFF: readonly Role[] = ["ADMIN", "HR"];
 const ADMIN_ONLY: readonly Role[] = ["ADMIN"];
@@ -35,9 +40,12 @@ export function App() {
                     <Route path="my/*" element={soon("Mon espace", "F12")} />
 
                     <Route element={<RequireRole roles={STAFF} />}>
-                        <Route path="departments/*" element={soon("Départements", "F5")} />
-                        <Route path="positions/*" element={soon("Postes", "F5")} />
-                        <Route path="employees/*" element={soon("Employés", "F6")} />
+                        <Route path="departments" element={<DepartmentsPage />} />
+                        <Route path="positions" element={<PositionsPage />} />
+                        <Route path="employees" element={<EmployeesPage />} />
+                        <Route path="employees/new" element={<EmployeeFormPage />} />
+                        <Route path="employees/:id" element={<EmployeeDetailPage />} />
+                        <Route path="employees/:id/edit" element={<EmployeeFormPage />} />
                         <Route path="contracts/*" element={soon("Contrats", "F7")} />
                         <Route path="attendance/*" element={soon("Présences", "F8")} />
                         <Route path="leaves/*" element={soon("Congés", "F9")} />

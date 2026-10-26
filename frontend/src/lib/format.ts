@@ -48,3 +48,11 @@ export function formatMoney(amount: string, currency: string): string {
         return `${amount} ${currency}`; // unknown currency code
     }
 }
+
+/** Today as "YYYY-MM-DD" in the browser's time zone (default value of date fields). */
+export function todayISO(): string {
+    const now = new Date();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    return `${now.getFullYear()}-${month}-${day}`;
+}
