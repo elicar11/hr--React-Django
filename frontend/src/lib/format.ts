@@ -56,3 +56,20 @@ export function todayISO(): string {
     const day = String(now.getDate()).padStart(2, "0");
     return `${now.getFullYear()}-${month}-${day}`;
 }
+
+/** "2026-03-14" + 1 -> "2026-03-15" (local calendar days). */
+export function addDaysISO(value: string, days: number): string {
+  const date = new Date(`${value}T00:00:00`);
+  date.setDate(date.getDate() + days);
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${date.getFullYear()}-${month}-${day}`;
+}
+
+/** 1536 -> "1,5 ko" */
+export function formatFileSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes} o`;
+  const kilobytes = bytes / 1024;
+  if (kilobytes < 1024) return `${kilobytes.toLocaleString("fr-FR", { maximumFractionDigits: 1 })} ko`;
+  return `${(kilobytes / 1024).toLocaleString("fr-FR", { maximumFractionDigits: 1 })} Mo`;
+}

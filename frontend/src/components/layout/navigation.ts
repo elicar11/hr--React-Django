@@ -13,6 +13,7 @@ import {
     UserCircle,
     Users,
     UsersRound,
+    Tags,
     type LucideIcon,
 } from "lucide-react";
 import type { Role } from "@/modules/auth/types";
@@ -45,6 +46,7 @@ const GROUPS: NavGroup[] = [
             { label: "Départements", to: "/departments", icon: Building2, roles: STAFF },
             { label: "Postes", to: "/positions", icon: Briefcase, roles: STAFF },
             { label: "Contrats", to: "/contracts", icon: FileText, roles: STAFF },
+            { label: "Types de contrat", to: "/contract-types", icon: Tags, roles: STAFF },
         ],
     },
     {

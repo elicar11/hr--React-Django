@@ -15,6 +15,10 @@ import { EmployeeFormPage } from "@/modules/employees/pages/EmployeeFormPage";
 import { EmployeesPage } from "@/modules/employees/pages/EmployeesPage";
 import { DepartmentsPage } from "@/modules/organization/pages/DepartmentsPage";
 import { PositionsPage } from "@/modules/organization/pages/PositionsPage";
+import { ContractDetailPage } from "@/modules/contracts/pages/ContractDetailPage";
+import { ContractFormPage } from "@/modules/contracts/pages/ContractFormPage";
+import { ContractsPage } from "@/modules/contracts/pages/ContractsPage";
+import { ContractTypesPage } from "@/modules/contracts/pages/ContractTypesPage";
 
 const STAFF: readonly Role[] = ["ADMIN", "HR"];
 const ADMIN_ONLY: readonly Role[] = ["ADMIN"];
@@ -46,7 +50,11 @@ export function App() {
                         <Route path="employees/new" element={<EmployeeFormPage />} />
                         <Route path="employees/:id" element={<EmployeeDetailPage />} />
                         <Route path="employees/:id/edit" element={<EmployeeFormPage />} />
-                        <Route path="contracts/*" element={soon("Contrats", "F7")} />
+                        <Route path="contracts" element={<ContractsPage />} />
+                        <Route path="contracts/new" element={<ContractFormPage />} />
+                        <Route path="contracts/:id" element={<ContractDetailPage />} />
+                        <Route path="contracts/:id/edit" element={<ContractFormPage />} />
+                        <Route path="contract-types" element={<ContractTypesPage />} />
                         <Route path="attendance/*" element={soon("Présences", "F8")} />
                         <Route path="leaves/*" element={soon("Congés", "F9")} />
                         <Route path="calendar" element={soon("Calendrier RH", "F9")} />
