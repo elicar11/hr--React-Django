@@ -94,3 +94,13 @@ export function isoToLocalInput(value: string | null): string {
     const pad = (number: number) => String(number).padStart(2, "0");
     return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
+
+/** "2026-10-28" -> ISO date-time of the start of that day in the browser's time zone. */
+export function startOfDayISO(value: string): string {
+    return new Date(`${value}T00:00:00`).toISOString();
+}
+
+/** "2026-10-28" -> ISO date-time of the last millisecond of that day. */
+export function endOfDayISO(value: string): string {
+    return new Date(`${value}T23:59:59.999`).toISOString();
+}

@@ -36,6 +36,9 @@ import { PayrollPage } from "@/modules/payroll/pages/PayrollPage";
 import { PayrollSettingsPage } from "@/modules/payroll/pages/PayrollSettingsPage";
 import { PayslipDetailPage } from "@/modules/payroll/pages/PayslipDetailPage";
 import { PeriodDetailPage } from "@/modules/payroll/pages/PeriodDetailPage";
+import { AuditPage } from "@/modules/audit/pages/AuditPage";
+import { SettingsPage } from "@/modules/settings/pages/SettingsPage";
+import { UsersPage } from "@/modules/users/pages/UsersPage";
 
 const STAFF: readonly Role[] = ["ADMIN", "HR"];
 const ADMIN_ONLY: readonly Role[] = ["ADMIN"];
@@ -90,12 +93,12 @@ export function App() {
                         <Route path="payroll/item-types" element={<PayItemTypesPage />} />
                         <Route path="payroll/elements" element={<PayElementsPage />} />
                         <Route path="payroll/settings" element={<PayrollSettingsPage />} />
-                        <Route path="settings/*" element={soon("Paramètres", "F11")} />
+                        <Route path="settings" element={<SettingsPage />} />
                     </Route>
 
                     <Route element={<RequireRole roles={ADMIN_ONLY} />}>
-                        <Route path="users/*" element={soon("Utilisateurs et rôles", "F11")} />
-                        <Route path="audit" element={soon("Journal d'audit", "F11")} />
+                        <Route path="users" element={<UsersPage />} />
+                        <Route path="audit" element={<AuditPage />} />
                     </Route>
 
                     {import.meta.env.DEV && <Route path="ui-kit" element={<UiKitPage />} />}

@@ -98,3 +98,26 @@ const LABELS: Record<string, string> = {
 export function auditActionLabel(action: string): string {
     return LABELS[action] ?? action.replace(".", " · ").replaceAll("_", " ");
 }
+
+/** Audit domains: the API filters actions by prefix ("auth." = every authentication event). */
+export const AUDIT_GROUPS: { prefix: string; label: string }[] = [
+    { prefix: "auth.", label: "Authentification" },
+    { prefix: "user.", label: "Comptes utilisateurs" },
+    { prefix: "department.", label: "Départements" },
+    { prefix: "position.", label: "Postes" },
+    { prefix: "employee.", label: "Employés" },
+    { prefix: "contract_type.", label: "Types de contrat" },
+    { prefix: "contract.", label: "Contrats" },
+    { prefix: "work_schedule.", label: "Horaires de travail" },
+    { prefix: "schedule.", label: "Affectations d'horaires" },
+    { prefix: "holiday.", label: "Jours fériés" },
+    { prefix: "attendance.", label: "Présences" },
+    { prefix: "leave_type.", label: "Types de congé" },
+    { prefix: "leave_balance.", label: "Soldes de congé" },
+    { prefix: "leave.", label: "Congés" },
+    { prefix: "payroll.", label: "Paramètres de paie" },
+    { prefix: "pay_item_type.", label: "Types d'éléments de paie" },
+    { prefix: "pay_element.", label: "Éléments de rémunération" },
+    { prefix: "payroll_period.", label: "Périodes de paie" },
+    { prefix: "payslip.", label: "Bulletins de paie" },
+];
