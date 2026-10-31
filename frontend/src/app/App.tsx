@@ -29,6 +29,13 @@ import { LeaveDetailPage } from "@/modules/leaves/pages/LeaveDetailPage";
 import { LeavesPage } from "@/modules/leaves/pages/LeavesPage";
 import { LeaveTypesPage } from "@/modules/leaves/pages/LeaveTypesPage";
 import { MyLeavesPage } from "@/modules/leaves/pages/MyLeavesPage";
+import { MyPayslipsPage } from "@/modules/payroll/pages/MyPayslipsPage";
+import { PayElementsPage } from "@/modules/payroll/pages/PayElementsPage";
+import { PayItemTypesPage } from "@/modules/payroll/pages/PayItemTypesPage";
+import { PayrollPage } from "@/modules/payroll/pages/PayrollPage";
+import { PayrollSettingsPage } from "@/modules/payroll/pages/PayrollSettingsPage";
+import { PayslipDetailPage } from "@/modules/payroll/pages/PayslipDetailPage";
+import { PeriodDetailPage } from "@/modules/payroll/pages/PeriodDetailPage";
 
 const STAFF: readonly Role[] = ["ADMIN", "HR"];
 const ADMIN_ONLY: readonly Role[] = ["ADMIN"];
@@ -54,6 +61,8 @@ export function App() {
                     <Route path="my/attendance" element={<MyAttendancePage />} />
                     <Route path="leaves/:id" element={<LeaveDetailPage />} />
                     <Route path="my/leaves" element={<MyLeavesPage />} />
+                    <Route path="my/payslips" element={<MyPayslipsPage />} />
+                    <Route path="my/payslips/:id" element={<PayslipDetailPage />} />
                     <Route path="my/*" element={soon("Mon espace", "F12")} />
 
                     <Route element={<RequireRole roles={STAFF} />}>
@@ -75,7 +84,12 @@ export function App() {
                         <Route path="calendar" element={<LeaveCalendarPage />} />
                         <Route path="leave-balances" element={<LeaveBalancesPage />} />
                         <Route path="leave-types" element={<LeaveTypesPage />} />
-                        <Route path="payroll/*" element={soon("Paie", "F10")} />
+                        <Route path="payroll" element={<PayrollPage />} />
+                        <Route path="payroll/periods/:id" element={<PeriodDetailPage />} />
+                        <Route path="payroll/payslips/:id" element={<PayslipDetailPage />} />
+                        <Route path="payroll/item-types" element={<PayItemTypesPage />} />
+                        <Route path="payroll/elements" element={<PayElementsPage />} />
+                        <Route path="payroll/settings" element={<PayrollSettingsPage />} />
                         <Route path="settings/*" element={soon("Paramètres", "F11")} />
                     </Route>
 

@@ -42,6 +42,7 @@ export function formatDecimal(value: string, maximumFractionDigits = 2): string 
 
 /** Display only. Amounts are never computed on the client. */
 export function formatMoney(amount: string, currency: string): string {
+    if (!currency) return formatDecimal(amount); // no currency yet (draft payslip, unconfigured payroll)
     try {
         return new Intl.NumberFormat("fr-FR", { style: "currency", currency }).format(Number(amount));
     } catch {

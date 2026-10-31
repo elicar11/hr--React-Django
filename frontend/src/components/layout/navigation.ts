@@ -18,6 +18,9 @@ import {
     Timer,
     ListChecks,
     Scale,
+    Layers, 
+    ListPlus, 
+    SlidersHorizontal,
     type LucideIcon,
 } from "lucide-react";
 import type { Role } from "@/modules/auth/types";
@@ -65,7 +68,15 @@ const GROUPS: NavGroup[] = [
             { label: "Types de congé", to: "/leave-types", icon: ListChecks, roles: STAFF },
         ],
     },
-    { label: "Rémunération", items: [{ label: "Paie", to: "/payroll", icon: Banknote, roles: STAFF }] },
+    {
+        label: "Rémunération",
+        items: [
+            { label: "Paie", to: "/payroll", icon: Banknote, roles: STAFF, end: true },
+            { label: "Types d'éléments", to: "/payroll/item-types", icon: Layers, roles: STAFF },
+            { label: "Éléments par employé", to: "/payroll/elements", icon: ListPlus, roles: STAFF },
+            { label: "Paramètres de paie", to: "/payroll/settings", icon: SlidersHorizontal, roles: STAFF },
+        ],
+    },
     {
         label: "Administration",
         items: [
