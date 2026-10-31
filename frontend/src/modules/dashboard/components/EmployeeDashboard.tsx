@@ -1,5 +1,4 @@
-import { Banknote, CalendarDays, Clock, FileText, LogIn, LogOut, TriangleAlert, UserX } from "lucide-react";
-import { useState } from "react";
+import { Banknote, CalendarDays, FileText, TriangleAlert, UserX } from "lucide-react";
 import { Link } from "react-router";
 import {
     Alert,
@@ -12,106 +11,108 @@ import {
     StatusBadge,
     buttonStyles,
 } from "@/components/ui";
-import { formatDate, formatDecimal, formatLongDate, formatMinutes, formatMoney, formatTime } from "@/lib/format";
+import { formatDate, formatDecimal, formatMoney } from "@/lib/format";
 import { useApiQuery } from "@/lib/hooks/useApiQuery";
-import { notify } from "@/lib/notify";
-import { checkIn, checkOut } from "@/modules/attendance/services/attendanceService";
-import type { LeaveBalance } from "@/modules/leaves/types";
+// import { notify } from "@/lib/notify";
+// import { checkIn, checkOut } from "@/modules/attendance/services/attendanceService";
+// import type { LeaveBalance } from "@/modules/leaves/types";
 import { getEmployeeDashboard } from "../services/dashboardService";
-import type { EmployeeDashboard as EmployeeDashboardData } from "../types";
+// import type { EmployeeDashboard as EmployeeDashboardData } from "../types";
+import { ClockPanel } from "@/modules/attendance/components/ClockPanel";
+import { BalanceMeter } from "@/modules/leaves/components/BalanceMeter";
 
-function Meter({ balance }: { balance: LeaveBalance }) {
-    // Display only: the figures themselves are computed and validated by the API.
-    const allocated = Number(balance.allocated);
-    const percent = allocated > 0 ? Math.min(100, (Number(balance.used) / allocated) * 100) : 0;
-    return (
-        <div
-            role="progressbar"
-            aria-label={`${balance.leave_type_name} : ${formatDecimal(balance.used)} jours utilisés sur ${formatDecimal(balance.allocated)}`}
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={Math.round(percent)}
-            className="h-3 border-2 border-ink bg-paper"
-        >
-            <div className="h-full bg-ink" style={{ width: `${percent}%` }} />
-        </div>
-    );
-}
+// function Meter({ balance }: { balance: LeaveBalance }) {
+//     // Display only: the figures themselves are computed and validated by the API.
+//     const allocated = Number(balance.allocated);
+//     const percent = allocated > 0 ? Math.min(100, (Number(balance.used) / allocated) * 100) : 0;
+//     return (
+//         <div
+//             role="progressbar"
+//             aria-label={`${balance.leave_type_name} : ${formatDecimal(balance.used)} jours utilisés sur ${formatDecimal(balance.allocated)}`}
+//             aria-valuemin={0}
+//             aria-valuemax={100}
+//             aria-valuenow={Math.round(percent)}
+//             className="h-3 border-2 border-ink bg-paper"
+//         >
+//             <div className="h-full bg-ink" style={{ width: `${percent}%` }} />
+//         </div>
+//     );
+// }
 
-function TodayCard({ today, onChanged }: { today: EmployeeDashboardData["today"]; onChanged: () => void }) {
-    const [busy, setBusy] = useState(false);
-    const { record, schedule } = today;
-    const awaitingCheckOut = record?.status === "PRESENT" && record.check_in && !record.check_out;
+// function TodayCard({ today, onChanged }: { today: EmployeeDashboardData["today"]; onChanged: () => void }) {
+//     const [busy, setBusy] = useState(false);
+//     const { record, schedule } = today;
+//     const awaitingCheckOut = record?.status === "PRESENT" && record.check_in && !record.check_out;
 
-    async function clock(kind: "in" | "out") {
-        setBusy(true);
-        try {
-            const result = kind === "in" ? await checkIn() : await checkOut();
-            const time = formatTime(kind === "in" ? result.check_in : result.check_out);
-            notify.success(kind === "in" ? "Entrée enregistrée" : "Sortie enregistrée", `À ${time}`);
-            onChanged();
-        } catch (error) {
-            notify.error(error);
-        } finally {
-            setBusy(false);
-        }
-    }
+//     async function clock(kind: "in" | "out") {
+//         setBusy(true);
+//         try {
+//             const result = kind === "in" ? await checkIn() : await checkOut();
+//             const time = formatTime(kind === "in" ? result.check_in : result.check_out);
+//             notify.success(kind === "in" ? "Entrée enregistrée" : "Sortie enregistrée", `À ${time}`);
+//             onChanged();
+//         } catch (error) {
+//             notify.error(error);
+//         } finally {
+//             setBusy(false);
+//         }
+//     }
 
-    return (
-        <Card title="Aujourd'hui" description={formatLongDate(today.date)}>
-            <div className="space-y-4">
-                <p className="text-sm text-gray-dark">
-                    {today.is_working_day && schedule
-                        ? `Horaire : ${schedule.start_time.slice(0, 5)} – ${schedule.end_time.slice(0, 5)}`
-                        : "Jour non travaillé"}
-                </p>
+//     return (
+//         <Card title="Aujourd'hui" description={formatLongDate(today.date)}>
+//             <div className="space-y-4">
+//                 <p className="text-sm text-gray-dark">
+//                     {today.is_working_day && schedule
+//                         ? `Horaire : ${schedule.start_time.slice(0, 5)} – ${schedule.end_time.slice(0, 5)}`
+//                         : "Jour non travaillé"}
+//                 </p>
 
-                {!record && (
-                    <>
-                        <p className="font-bold">Vous n'avez pas encore pointé.</p>
-                        <Button loading={busy} onClick={() => void clock("in")} leftIcon={<LogIn className="size-4" aria-hidden="true" />}>
-                            Pointer mon entrée
-                        </Button>
-                    </>
-                )}
+//                 {!record && (
+//                     <>
+//                         <p className="font-bold">Vous n'avez pas encore pointé.</p>
+//                         <Button loading={busy} onClick={() => void clock("in")} leftIcon={<LogIn className="size-4" aria-hidden="true" />}>
+//                             Pointer mon entrée
+//                         </Button>
+//                     </>
+//                 )}
 
-                {record && record.status !== "PRESENT" && (
-                    <div className="space-y-2">
-                        <StatusBadge domain="attendance" status={record.status} />
-                        {record.absence_reason && <p className="text-sm">{record.absence_reason}</p>}
-                    </div>
-                )}
+//                 {record && record.status !== "PRESENT" && (
+//                     <div className="space-y-2">
+//                         <StatusBadge domain="attendance" status={record.status} />
+//                         {record.absence_reason && <p className="text-sm">{record.absence_reason}</p>}
+//                     </div>
+//                 )}
 
-                {record?.status === "PRESENT" && (
-                    <div className="space-y-3">
-                        <p>
-                            Entrée à <strong>{formatTime(record.check_in)}</strong>
-                            {record.check_out && (
-                                <>
-                                    , sortie à <strong>{formatTime(record.check_out)}</strong>
-                                </>
-                            )}
-                        </p>
-                        <div className="flex flex-wrap gap-2">
-                            {record.late_minutes > 0 && (
-                                <Badge tone="alert" icon={TriangleAlert}>
-                                    Retard : {formatMinutes(record.late_minutes)}
-                                </Badge>
-                            )}
-                            {record.check_out && <Badge tone="outline" icon={Clock}>Travaillé : {formatMinutes(record.worked_minutes)}</Badge>}
-                            {record.overtime_minutes > 0 && <Badge tone="solid">Heures sup : {formatMinutes(record.overtime_minutes)}</Badge>}
-                        </div>
-                        {awaitingCheckOut && (
-                            <Button loading={busy} onClick={() => void clock("out")} leftIcon={<LogOut className="size-4" aria-hidden="true" />}>
-                                Pointer ma sortie
-                            </Button>
-                        )}
-                    </div>
-                )}
-            </div>
-        </Card>
-    );
-}
+//                 {record?.status === "PRESENT" && (
+//                     <div className="space-y-3">
+//                         <p>
+//                             Entrée à <strong>{formatTime(record.check_in)}</strong>
+//                             {record.check_out && (
+//                                 <>
+//                                     , sortie à <strong>{formatTime(record.check_out)}</strong>
+//                                 </>
+//                             )}
+//                         </p>
+//                         <div className="flex flex-wrap gap-2">
+//                             {record.late_minutes > 0 && (
+//                                 <Badge tone="alert" icon={TriangleAlert}>
+//                                     Retard : {formatMinutes(record.late_minutes)}
+//                                 </Badge>
+//                             )}
+//                             {record.check_out && <Badge tone="outline" icon={Clock}>Travaillé : {formatMinutes(record.worked_minutes)}</Badge>}
+//                             {record.overtime_minutes > 0 && <Badge tone="solid">Heures sup : {formatMinutes(record.overtime_minutes)}</Badge>}
+//                         </div>
+//                         {awaitingCheckOut && (
+//                             <Button loading={busy} onClick={() => void clock("out")} leftIcon={<LogOut className="size-4" aria-hidden="true" />}>
+//                                 Pointer ma sortie
+//                             </Button>
+//                         )}
+//                     </div>
+//                 )}
+//             </div>
+//         </Card>
+//     );
+// }
 
 export function EmployeeDashboard() {
     const query = useApiQuery(["employee-dashboard"], (signal) => getEmployeeDashboard(signal));
@@ -159,7 +160,7 @@ export function EmployeeDashboard() {
 
             {data && (
                 <div className="grid gap-6 lg:grid-cols-2">
-                    <TodayCard today={data.today} onChanged={query.reload} />
+                    <ClockPanel today={data.today} onChanged={query.reload} />
 
                     <Card
                         title="Mes soldes de congés"
@@ -182,7 +183,7 @@ export function EmployeeDashboard() {
                                                 <strong className="font-display text-2xl">{formatDecimal(balance.remaining)}</strong> / {formatDecimal(balance.allocated)} j restants
                                             </span>
                                         </div>
-                                        <Meter balance={balance} />
+                                        <BalanceMeter balance={balance} />
                                     </li>
                                 ))}
                             </ul>

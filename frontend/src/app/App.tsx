@@ -6,9 +6,9 @@ import { ProfilePage } from "@/modules/auth/pages/ProfilePage";
 import { ResetPasswordPage } from "@/modules/auth/pages/ResetPasswordPage";
 import { GuestOnly, RequireAuth, RequireRole } from "@/modules/auth/RouteGuards";
 import type { Role } from "@/modules/auth/types";
-import { ComingSoonPage } from "@/modules/core/pages/ComingSoonPage";
+// import { ComingSoonPage } from "@/modules/core/pages/ComingSoonPage";
 import { NotFoundPage } from "@/modules/core/pages/NotFoundPage";
-import { UiKitPage } from "@/modules/core/pages/UiKitPage";
+// import { UiKitPage } from "@/modules/core/pages/UiKitPage";
 import { DashboardPage } from "@/modules/dashboard/pages/DashboardPage";
 import { EmployeeDetailPage } from "@/modules/employees/pages/EmployeeDetailPage";
 import { EmployeeFormPage } from "@/modules/employees/pages/EmployeeFormPage";
@@ -39,12 +39,22 @@ import { PeriodDetailPage } from "@/modules/payroll/pages/PeriodDetailPage";
 import { AuditPage } from "@/modules/audit/pages/AuditPage";
 import { SettingsPage } from "@/modules/settings/pages/SettingsPage";
 import { UsersPage } from "@/modules/users/pages/UsersPage";
+import { lazy, Suspense } from "react";
+import { MyContractDetailPage } from "@/modules/contracts/pages/MyContractDetailPage";
+import { MyContractsPage } from "@/modules/contracts/pages/MyContractsPage";
+import { MyProfilePage } from "@/modules/employees/pages/MyProfilePage";
 
 const STAFF: readonly Role[] = ["ADMIN", "HR"];
 const ADMIN_ONLY: readonly Role[] = ["ADMIN"];
+const EMPLOYEE_ONLY: readonly Role[] = ["EMPLOYEE"];
+
+// Development only: the demo page never reaches the production bundle.
+const UiKitPage = import.meta.env.DEV
+    ? lazy(() => import("@/modules/core/pages/UiKitPage").then((module) => ({ default: module.UiKitPage })))
+    : null;
 
 /** Sections not built yet show an explicit state; each one is replaced by its real page. */
-const soon = (title: string, step: string) => <ComingSoonPage title={title} step={step} />;
+// const soon = (title: string, step: string) => <ComingSoonPage title={title} step={step} />;
 
 export function App() {
     return (
@@ -66,7 +76,12 @@ export function App() {
                     <Route path="my/leaves" element={<MyLeavesPage />} />
                     <Route path="my/payslips" element={<MyPayslipsPage />} />
                     <Route path="my/payslips/:id" element={<PayslipDetailPage />} />
-                    <Route path="my/*" element={soon("Mon espace", "F12")} />
+
+                    <Route element={<RequireRole roles={EMPLOYEE_ONLY} />}>
+                        <Route path="my/profile" element={<MyProfilePage />} />
+                        <Route path="my/contracts" element={<MyContractsPage />} />
+                        <Route path="my/contracts/:id" element={<MyContractDetailPage />} />
+                    </Route>
 
                     <Route element={<RequireRole roles={STAFF} />}>
                         <Route path="departments" element={<DepartmentsPage />} />
@@ -101,7 +116,17 @@ export function App() {
                         <Route path="audit" element={<AuditPage />} />
                     </Route>
 
-                    {import.meta.env.DEV && <Route path="ui-kit" element={<UiKitPage />} />}
+                    {/* {import.meta.env.DEV && <Route path="ui-kit" element={<UiKitPage />} />} */}
+                    {UiKitPage && (
+                        <Route
+                            path="ui-kit"
+                            element={
+                                <Suspense fallback={null}>
+                                    <UiKitPage />
+                                </Suspense>
+                            }
+                        />
+                    )}
                     <Route path="*" element={<NotFoundPage />} />
                 </Route>
             </Route>
