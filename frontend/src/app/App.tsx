@@ -23,6 +23,12 @@ import { AttendancePage } from "@/modules/attendance/pages/AttendancePage";
 import { HolidaysPage } from "@/modules/attendance/pages/HolidaysPage";
 import { MyAttendancePage } from "@/modules/attendance/pages/MyAttendancePage";
 import { WorkSchedulesPage } from "@/modules/attendance/pages/WorkSchedulesPage";
+import { LeaveBalancesPage } from "@/modules/leaves/pages/LeaveBalancesPage";
+import { LeaveCalendarPage } from "@/modules/leaves/pages/LeaveCalendarPage";
+import { LeaveDetailPage } from "@/modules/leaves/pages/LeaveDetailPage";
+import { LeavesPage } from "@/modules/leaves/pages/LeavesPage";
+import { LeaveTypesPage } from "@/modules/leaves/pages/LeaveTypesPage";
+import { MyLeavesPage } from "@/modules/leaves/pages/MyLeavesPage";
 
 const STAFF: readonly Role[] = ["ADMIN", "HR"];
 const ADMIN_ONLY: readonly Role[] = ["ADMIN"];
@@ -46,6 +52,8 @@ export function App() {
                     <Route index element={<DashboardPage />} />
                     <Route path="profile" element={<ProfilePage />} />
                     <Route path="my/attendance" element={<MyAttendancePage />} />
+                    <Route path="leaves/:id" element={<LeaveDetailPage />} />
+                    <Route path="my/leaves" element={<MyLeavesPage />} />
                     <Route path="my/*" element={soon("Mon espace", "F12")} />
 
                     <Route element={<RequireRole roles={STAFF} />}>
@@ -63,8 +71,10 @@ export function App() {
                         <Route path="attendance" element={<AttendancePage />} />
                         <Route path="work-schedules" element={<WorkSchedulesPage />} />
                         <Route path="holidays" element={<HolidaysPage />} />
-                        <Route path="leaves/*" element={soon("Congés", "F9")} />
-                        <Route path="calendar" element={soon("Calendrier RH", "F9")} />
+                        <Route path="leaves" element={<LeavesPage />} />
+                        <Route path="calendar" element={<LeaveCalendarPage />} />
+                        <Route path="leave-balances" element={<LeaveBalancesPage />} />
+                        <Route path="leave-types" element={<LeaveTypesPage />} />
                         <Route path="payroll/*" element={soon("Paie", "F10")} />
                         <Route path="settings/*" element={soon("Paramètres", "F11")} />
                     </Route>
