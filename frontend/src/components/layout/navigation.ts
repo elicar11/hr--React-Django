@@ -14,6 +14,8 @@ import {
     Users,
     UsersRound,
     Tags,
+    Flag,
+    Timer,
     type LucideIcon,
 } from "lucide-react";
 import type { Role } from "@/modules/auth/types";
@@ -55,6 +57,8 @@ const GROUPS: NavGroup[] = [
             { label: "Présences", to: "/attendance", icon: Clock, roles: STAFF },
             { label: "Congés", to: "/leaves", icon: CalendarDays, roles: STAFF },
             { label: "Calendrier RH", to: "/calendar", icon: CalendarRange, roles: STAFF },
+            { label: "Horaires de travail", to: "/work-schedules", icon: Timer, roles: STAFF },
+            { label: "Jours fériés", to: "/holidays", icon: Flag, roles: STAFF },
         ],
     },
     { label: "Rémunération", items: [{ label: "Paie", to: "/payroll", icon: Banknote, roles: STAFF }] },

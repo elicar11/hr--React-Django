@@ -59,17 +59,37 @@ export function todayISO(): string {
 
 /** "2026-03-14" + 1 -> "2026-03-15" (local calendar days). */
 export function addDaysISO(value: string, days: number): string {
-  const date = new Date(`${value}T00:00:00`);
-  date.setDate(date.getDate() + days);
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${date.getFullYear()}-${month}-${day}`;
+    const date = new Date(`${value}T00:00:00`);
+    date.setDate(date.getDate() + days);
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${date.getFullYear()}-${month}-${day}`;
 }
 
 /** 1536 -> "1,5 ko" */
 export function formatFileSize(bytes: number): string {
-  if (bytes < 1024) return `${bytes} o`;
-  const kilobytes = bytes / 1024;
-  if (kilobytes < 1024) return `${kilobytes.toLocaleString("fr-FR", { maximumFractionDigits: 1 })} ko`;
-  return `${(kilobytes / 1024).toLocaleString("fr-FR", { maximumFractionDigits: 1 })} Mo`;
+    if (bytes < 1024) return `${bytes} o`;
+    const kilobytes = bytes / 1024;
+    if (kilobytes < 1024) return `${kilobytes.toLocaleString("fr-FR", { maximumFractionDigits: 1 })} ko`;
+    return `${(kilobytes / 1024).toLocaleString("fr-FR", { maximumFractionDigits: 1 })} Mo`;
+}
+
+/** First day of the current month as "YYYY-MM-DD". */
+export function firstOfMonthISO(): string {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-01`;
+}
+
+/** Value of an <input type="datetime-local"> ("2026-10-26T08:05") to an ISO date-time with time zone. */
+export function localDateTimeToISO(value: string): string {
+    return new Date(value).toISOString();
+}
+
+/** ISO date-time from the API to the value expected by <input type="datetime-local">. */
+export function isoToLocalInput(value: string | null): string {
+    if (!value) return "";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "";
+    const pad = (number: number) => String(number).padStart(2, "0");
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }

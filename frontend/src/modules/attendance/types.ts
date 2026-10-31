@@ -1,5 +1,6 @@
 export type AttendanceStatus = "PRESENT" | "ABSENT_JUSTIFIED" | "ABSENT_UNJUSTIFIED";
 export type CorrectionStatus = "PENDING" | "APPROVED" | "REJECTED" | "CANCELLED";
+export type AttendanceSource = "CLOCK" | "MANUAL" | "SYSTEM";
 
 export interface WorkSchedule {
     id: number;
@@ -53,4 +54,72 @@ export interface AttendanceCorrection {
     decided_at: string | null;
     decision_comment: string;
     created_at: string;
+}
+
+export interface TodayOverview {
+    date: string;
+    is_working_day: boolean;
+    schedule: WorkSchedule | null;
+    record: AttendanceRecord | null;
+}
+
+/** One row of GET /attendance/summary/. */
+export interface AttendanceSummaryRow {
+    employee_id: number;
+    matricule: string;
+    last_name: string;
+    first_name: string;
+    days_present: number;
+    days_absent_justified: number;
+    days_absent_unjustified: number;
+    late_count: number;
+    total_late_minutes: number;
+    total_worked_minutes: number;
+    total_overtime_minutes: number;
+}
+
+export interface AttendanceWriteInput {
+    employee: number;
+    date: string;
+    status: AttendanceStatus;
+    check_in: string | null;
+    check_out: string | null;
+    absence_reason: string;
+}
+
+export type AttendanceUpdateInput = Partial<Omit<AttendanceWriteInput, "employee" | "date">>;
+
+export interface CorrectionRequestInput {
+    date: string;
+    check_in: string;
+    check_out: string | null;
+    reason: string;
+}
+
+export interface WorkScheduleInput {
+    code: string;
+    name: string;
+    start_time: string;
+    end_time: string;
+    break_start: string | null;
+    break_end: string | null;
+    working_days: number[];
+    late_grace_minutes: number;
+    overtime_threshold_minutes: number;
+}
+
+export interface ScheduleAssignment {
+    id: number;
+    employee: number;
+    employee_matricule: string;
+    schedule: number;
+    schedule_code: string;
+    start_date: string;
+    end_date: string | null;
+}
+
+export interface Holiday {
+    id: number;
+    date: string;
+    name: string;
 }

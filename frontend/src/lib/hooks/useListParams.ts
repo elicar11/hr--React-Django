@@ -77,6 +77,8 @@ export function useListParams(filterKeys: readonly string[], searchDelay = 300) 
         setPage: (value: number) => update({ page: value }, false),
         getParam: (name: string) => searchParams.get(name) ?? "",
         setParam: (name: string, value: string) => update({ [name]: value }, false),
+        /** Several URL parameters at once (a single navigation). Page is kept unless `resetPage`. */
+        setParams: (changes: Changes, resetPage = false) => update(changes, resetPage),
         reset,
     };
 }

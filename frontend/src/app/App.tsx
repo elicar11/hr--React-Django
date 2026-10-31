@@ -19,6 +19,10 @@ import { ContractDetailPage } from "@/modules/contracts/pages/ContractDetailPage
 import { ContractFormPage } from "@/modules/contracts/pages/ContractFormPage";
 import { ContractsPage } from "@/modules/contracts/pages/ContractsPage";
 import { ContractTypesPage } from "@/modules/contracts/pages/ContractTypesPage";
+import { AttendancePage } from "@/modules/attendance/pages/AttendancePage";
+import { HolidaysPage } from "@/modules/attendance/pages/HolidaysPage";
+import { MyAttendancePage } from "@/modules/attendance/pages/MyAttendancePage";
+import { WorkSchedulesPage } from "@/modules/attendance/pages/WorkSchedulesPage";
 
 const STAFF: readonly Role[] = ["ADMIN", "HR"];
 const ADMIN_ONLY: readonly Role[] = ["ADMIN"];
@@ -41,6 +45,7 @@ export function App() {
                 <Route element={<AppLayout />}>
                     <Route index element={<DashboardPage />} />
                     <Route path="profile" element={<ProfilePage />} />
+                    <Route path="my/attendance" element={<MyAttendancePage />} />
                     <Route path="my/*" element={soon("Mon espace", "F12")} />
 
                     <Route element={<RequireRole roles={STAFF} />}>
@@ -55,7 +60,9 @@ export function App() {
                         <Route path="contracts/:id" element={<ContractDetailPage />} />
                         <Route path="contracts/:id/edit" element={<ContractFormPage />} />
                         <Route path="contract-types" element={<ContractTypesPage />} />
-                        <Route path="attendance/*" element={soon("Présences", "F8")} />
+                        <Route path="attendance" element={<AttendancePage />} />
+                        <Route path="work-schedules" element={<WorkSchedulesPage />} />
+                        <Route path="holidays" element={<HolidaysPage />} />
                         <Route path="leaves/*" element={soon("Congés", "F9")} />
                         <Route path="calendar" element={soon("Calendrier RH", "F9")} />
                         <Route path="payroll/*" element={soon("Paie", "F10")} />
