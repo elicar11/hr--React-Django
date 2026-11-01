@@ -4,7 +4,7 @@ import { ForgotPasswordPage } from "@/modules/auth/pages/ForgotPasswordPage";
 import { LoginPage } from "@/modules/auth/pages/LoginPage";
 import { ProfilePage } from "@/modules/auth/pages/ProfilePage";
 import { ResetPasswordPage } from "@/modules/auth/pages/ResetPasswordPage";
-import { GuestOnly, RequireAuth, RequireRole } from "@/modules/auth/RouteGuards";
+// import { GuestOnly, RequireAuth, RequireRole } from "@/modules/auth/RouteGuards";
 import type { Role } from "@/modules/auth/types";
 // import { ComingSoonPage } from "@/modules/core/pages/ComingSoonPage";
 import { NotFoundPage } from "@/modules/core/pages/NotFoundPage";
@@ -43,6 +43,8 @@ import { lazy, Suspense } from "react";
 import { MyContractDetailPage } from "@/modules/contracts/pages/MyContractDetailPage";
 import { MyContractsPage } from "@/modules/contracts/pages/MyContractsPage";
 import { MyProfilePage } from "@/modules/employees/pages/MyProfilePage";
+import { LandingGate } from "@/modules/landing/LandingGate";
+import { GuestOnly, RequireRole } from "@/modules/auth/RouteGuards";
 
 const STAFF: readonly Role[] = ["ADMIN", "HR"];
 const ADMIN_ONLY: readonly Role[] = ["ADMIN"];
@@ -67,7 +69,8 @@ export function App() {
             <Route path="reset-password" element={<ResetPasswordPage />} />
 
             {/* Authenticated area */}
-            <Route element={<RequireAuth />}>
+            {/* Authenticated area (the landing page is shown instead on "/" to anonymous visitors) */}
+            <Route element={<LandingGate />}>
                 <Route element={<AppLayout />}>
                     <Route index element={<DashboardPage />} />
                     <Route path="profile" element={<ProfilePage />} />
