@@ -1,5 +1,5 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import { Banknote, Eye, Pencil, Plus, Settings2, Trash2 } from "lucide-react";
+import { Banknote, Eye, Layers, ListPlus, Pencil, Plus, Settings2, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import {
@@ -213,8 +213,14 @@ export function PayrollPage() {
                 description="Périodes de paie et bulletins."
                 actions={
                     <>
-                        <Link to="/payroll/item-types" className={buttonStyles({ variant: "secondary" })}>Types d'éléments</Link>
-                        <Link to="/payroll/elements" className={buttonStyles({ variant: "secondary" })}>Éléments par employé</Link>
+                        <Link to="/payroll/item-types" className={buttonStyles({ variant: "secondary" })}>
+                            <Layers className="size-4" aria-hidden="true" />
+                            Types d'éléments
+                        </Link>
+                        <Link to="/payroll/elements" className={buttonStyles({ variant: "secondary" })}>
+                            <ListPlus className="size-4" aria-hidden="true" />
+                            Éléments par employé
+                        </Link>
                         <Link to="/payroll/settings" className={buttonStyles({ variant: "secondary" })}>
                             <Settings2 className="size-4" aria-hidden="true" />
                             Paramètres

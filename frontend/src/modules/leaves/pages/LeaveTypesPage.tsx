@@ -113,6 +113,7 @@ export function LeaveTypesPage() {
             <PageHeader
                 title="Types de congé"
                 description="Congés annuels, maladie, exceptionnels, sans solde… Chaque type fixe son mode de décompte et ses règles."
+                breadcrumb={[{ label: "Congés", to: "/leaves" }, { label: "Types de congé" }]}
                 actions={
                     <Button onClick={() => setEditing("new")} leftIcon={<Plus className="size-4" aria-hidden="true" />}>
                         Nouveau type

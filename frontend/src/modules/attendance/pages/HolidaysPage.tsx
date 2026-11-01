@@ -70,6 +70,7 @@ export function HolidaysPage() {
             <PageHeader
                 title="Jours fériés"
                 description="Un jour férié est traité comme un jour non travaillé (retards, heures supplémentaires, congés). Aucun n'est préchargé : saisissez ceux de votre pays."
+                breadcrumb={[{ label: "Présences", to: "/attendance" }, { label: "Jours fériés" }]}
                 actions={
                     <Button onClick={() => setEditing("new")} leftIcon={<Plus className="size-4" aria-hidden="true" />}>
                         Nouveau jour férié

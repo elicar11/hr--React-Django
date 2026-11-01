@@ -1,5 +1,5 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import { CalendarCheck, Download, Plus } from "lucide-react";
+import { CalendarCheck, Download, Flag, Plus, Timer } from "lucide-react";
 import { useState } from "react";
 import {
     Alert,
@@ -15,6 +15,7 @@ import {
     Select,
     TabPanel,
     Tabs,
+    buttonStyles,
 } from "@/components/ui";
 import { saveFile } from "@/lib/download";
 import { firstOfMonthISO, formatMinutes, todayISO } from "@/lib/format";
@@ -33,6 +34,7 @@ import {
     listAttendance,
 } from "../services/attendanceService";
 import type { AttendanceRecord, AttendanceSummaryRow } from "../types";
+import { Link } from "react-router";
 
 type ListParams = ReturnType<typeof useListParams>;
 
@@ -285,6 +287,17 @@ export function AttendancePage() {
                 description="Relevés, synthèse par employé et corrections de pointage."
                 actions={
                     <>
+                        <Link to="/work-schedules" className={buttonStyles({ variant: "secondary" })}>
+                            <Timer className="size-4" aria-hidden="true" />
+                            Horaires de travail
+                        </Link>
+                        <Link to="/holidays" className={buttonStyles({ variant: "secondary" })}>
+                            <Flag className="size-4" aria-hidden="true" />
+                            Jours fériés
+                        </Link>            <Link to="/work-schedules" className={buttonStyles({ variant: "secondary" })}>
+                            <Timer className="size-4" aria-hidden="true" />
+                            Horaires de travail
+                        </Link>
                         <Button variant="secondary" onClick={() => void handleExport()} loading={exporting} leftIcon={<Download className="size-4" aria-hidden="true" />}>
                             Exporter
                         </Button>

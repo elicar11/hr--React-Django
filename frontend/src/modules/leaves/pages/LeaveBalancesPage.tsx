@@ -88,6 +88,7 @@ export function LeaveBalancesPage() {
             <PageHeader
                 title="Soldes de congé"
                 description="Jours alloués, utilisés et restants, par employé, type et année civile."
+                breadcrumb={[{ label: "Congés", to: "/leaves" }, { label: "Soldes de congé" }]}
                 actions={
                     <>
                         <Button variant="secondary" onClick={() => setInitializing(true)} leftIcon={<Wand2 className="size-4" aria-hidden="true" />}>

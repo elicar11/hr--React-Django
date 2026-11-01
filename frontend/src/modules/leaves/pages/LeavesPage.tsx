@@ -1,6 +1,6 @@
-import { CalendarDays, Check, Eye, Plus, X, Ban } from "lucide-react";
+import { Ban, CalendarDays, Check, Eye, ListChecks, Plus, Scale, X } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import {
     Alert,
     Button,
@@ -11,6 +11,7 @@ import {
     Pagination,
     SearchInput,
     Select,
+    buttonStyles,
     type MenuItem,
 } from "@/components/ui";
 import { useApiQuery } from "@/lib/hooks/useApiQuery";
@@ -68,9 +69,19 @@ export function LeavesPage() {
                 title="Congés"
                 description="Demandes de congé : validation, refus et suivi."
                 actions={
-                    <Button onClick={() => setCreating(true)} leftIcon={<Plus className="size-4" aria-hidden="true" />}>
-                        Nouvelle demande
-                    </Button>
+                    <>
+                        <Link to="/leave-types" className={buttonStyles({ variant: "secondary" })}>
+                            <ListChecks className="size-4" aria-hidden="true" />
+                            Types de congé
+                        </Link>
+                        <Link to="/leave-balances" className={buttonStyles({ variant: "secondary" })}>
+                            <Scale className="size-4" aria-hidden="true" />
+                            Soldes de congé
+                        </Link>
+                        <Button onClick={() => setCreating(true)} leftIcon={<Plus className="size-4" aria-hidden="true" />}>
+                            Nouvelle demande
+                        </Button>
+                    </>
                 }
             />
 

@@ -229,6 +229,7 @@ export function WorkSchedulesPage() {
             <PageHeader
                 title="Horaires de travail"
                 description="Horaires, tolérances et affectations aux employés."
+                breadcrumb={[{ label: "Présences", to: "/attendance" }, { label: "Horaires de travail" }]}
                 actions={
                     view === "schedules" ? (
                         <Button onClick={() => setEditing("new")} leftIcon={<Plus className="size-4" aria-hidden="true" />}>
