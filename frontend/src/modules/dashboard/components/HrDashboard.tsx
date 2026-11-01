@@ -100,7 +100,7 @@ export function HrDashboard() {
                 </Alert>
             )}
 
-            <section aria-label="Indicateurs" className="mb-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <section aria-label="Indicateurs" className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
                 <StatCard
                     label="Employés en poste"
                     value={kpis?.active_employees}

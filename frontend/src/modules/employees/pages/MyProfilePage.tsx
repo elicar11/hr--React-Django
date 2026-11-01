@@ -9,7 +9,7 @@ import {
     PageHeader,
     Skeleton,
     StatusBadge,
-    buttonStyles,
+    // buttonStyles,
 } from "@/components/ui";
 import { formatDate } from "@/lib/format";
 import { useApiQuery } from "@/lib/hooks/useApiQuery";
@@ -17,12 +17,12 @@ import { EmployeePhoto } from "../components/EmployeePhoto";
 import { useMyEmployee } from "../hooks";
 import { getAssignments } from "../services/employeeService";
 
-const SHORTCUTS = [
-    { to: "/my/contracts", label: "Mes contrats" },
-    { to: "/my/leaves", label: "Mes congés" },
-    { to: "/my/attendance", label: "Mes présences" },
-    { to: "/my/payslips", label: "Mes bulletins" },
-];
+// const SHORTCUTS = [
+//     { to: "/my/contracts", label: "Mes contrats" },
+//     { to: "/my/leaves", label: "Mes congés" },
+//     { to: "/my/attendance", label: "Mes présences" },
+//     { to: "/my/payslips", label: "Mes bulletins" },
+// ];
 
 function Assignments({ employeeId }: { employeeId: number }) {
     const query = useApiQuery(["my-assignments", employeeId], (signal) => getAssignments(employeeId, signal));
@@ -127,13 +127,13 @@ export function MyProfilePage() {
                 </Card>
             </div>
 
-            <nav aria-label="Raccourcis de mon espace" className="mt-6 flex flex-wrap gap-3">
+            {/* <nav aria-label="Raccourcis de mon espace" className="mt-6 flex flex-wrap gap-3">
                 {SHORTCUTS.map((shortcut) => (
                     <Link key={shortcut.to} to={shortcut.to} className={buttonStyles({ variant: "secondary" })}>
                         {shortcut.label}
                     </Link>
                 ))}
-            </nav>
+            </nav> */}
         </>
     );
 }

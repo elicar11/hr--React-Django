@@ -89,3 +89,13 @@
 main h1[tabindex="-1"]:focus {
   outline: none;
 }
+
+/* A grid child may shrink below its content (charts, tables, long words): no page-wide horizontal scroll. */
+main :where(.grid) > * {
+  min-width: 0;
+}
+
+/* Safety net: anything that still overflows is clipped inside the page area instead of widening the whole page. */
+main {
+  overflow-x: clip;
+}
