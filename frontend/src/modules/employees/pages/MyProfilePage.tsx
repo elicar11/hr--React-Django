@@ -16,6 +16,7 @@ import { useApiQuery } from "@/lib/hooks/useApiQuery";
 import { EmployeePhoto } from "../components/EmployeePhoto";
 import { useMyEmployee } from "../hooks";
 import { getAssignments } from "../services/employeeService";
+import { GENDER_LABELS, formatCin } from "../labels";
 
 // const SHORTCUTS = [
 //     { to: "/my/contracts", label: "Mes contrats" },
@@ -113,11 +114,13 @@ export function MyProfilePage() {
                 <Card title="Informations personnelles">
                     <DefinitionList
                         items={[
+                            { label: "Sexe", value: employee.gender ? GENDER_LABELS[employee.gender] : "" },
                             { label: "Date de naissance", value: formatDate(employee.date_of_birth) },
-                            { label: "E-mail professionnel", value: employee.work_email },
                             { label: "E-mail personnel", value: employee.personal_email },
-                            { label: "Téléphone professionnel", value: employee.work_phone },
                             { label: "Téléphone personnel", value: employee.personal_phone },
+                            { label: "Numéro CIN", value: formatCin(employee.cin_number) },
+                            { label: "CIN délivré le", value: formatDate(employee.cin_issue_date) },
+                            { label: "Lieu de délivrance", value: employee.cin_issue_place },
                             { label: "Adresse", value: address },
                         ]}
                     />

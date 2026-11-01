@@ -44,6 +44,7 @@ import {
 import { TerminateModal } from "../components/TerminateModal";
 import { getEmployee, reactivateEmployee, suspendEmployee } from "../services/employeeService";
 import type { Employee } from "../types";
+import { GENDER_LABELS, formatCin } from "../labels";
 
 const TABS = [
     { id: "general", label: "Général", icon: User },
@@ -66,12 +67,14 @@ function GeneralTab({ employee }: { employee: Employee }) {
                 items={[
                     { label: "Matricule", value: employee.matricule },
                     { label: "Nom", value: `${employee.last_name} ${employee.first_name}` },
+                    { label: "Sexe", value: employee.gender ? GENDER_LABELS[employee.gender] : "" },
                     { label: "Date de naissance", value: formatDate(employee.date_of_birth) },
                     { label: "Date d'embauche", value: formatDate(employee.hire_date) },
-                    { label: "E-mail professionnel", value: employee.work_email },
                     { label: "E-mail personnel", value: employee.personal_email },
-                    { label: "Téléphone professionnel", value: employee.work_phone },
                     { label: "Téléphone personnel", value: employee.personal_phone },
+                    { label: "Numéro CIN", value: formatCin(employee.cin_number) },
+                    { label: "CIN délivré le", value: formatDate(employee.cin_issue_date) },
+                    { label: "Lieu de délivrance", value: employee.cin_issue_place },
                     { label: "Adresse", value: address },
                     { label: "Compte de connexion", value: employee.user ? "Compte lié" : "Aucun compte lié" },
                     ...(employee.departure_date ? [{ label: "Date de départ", value: formatDate(employee.departure_date) }] : []),

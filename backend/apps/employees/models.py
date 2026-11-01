@@ -7,6 +7,8 @@ from django.db import models
 from apps.core.validators import code_validator, phone_validator
 from apps.organization.models import Department, Position
 
+from .validators import validate_cin_number
+
 
 class EmploymentStatus(models.TextChoices):
     ACTIVE = "ACTIVE", "En poste"
@@ -19,6 +21,10 @@ def employee_photo_path(instance, filename):
     extension = os.path.splitext(filename)[1].lower()
     return f"employees/photos/{uuid.uuid4().hex}{extension}"
 
+class Gender(models.TextChoices):
+    MALE = "M", "Homme"
+    FEMALE = "F", "Femme"
+
 
 class Employee(models.Model):
     """Employee record. Never hard-deleted: departures are recorded with a status."""
@@ -27,11 +33,19 @@ class Employee(models.Model):
     last_name = models.CharField("nom", max_length=150)
     first_name = models.CharField("prénom", max_length=150)
     date_of_birth = models.DateField("date de naissance")
+    # Blank only for records created before this field existed; the API requires it for new employees.
+    gender = models.CharField("sexe", max_length=1, choices=Gender.choices, blank=True, default="")
 
-    work_email = models.EmailField("e-mail professionnel", unique=True, null=True, blank=True)
     personal_email = models.EmailField("e-mail personnel", blank=True)
-    work_phone = models.CharField("téléphone professionnel", max_length=30, blank=True, validators=[phone_validator])
     personal_phone = models.CharField("téléphone personnel", max_length=30, blank=True, validators=[phone_validator])
+
+    # National identity card: 12 digits (3 geographic + 3 sex marker + 6 register number).
+    cin_number = models.CharField(
+        "numéro CIN", max_length=12, unique=True, null=True, blank=True, validators=[validate_cin_number]
+    )
+    cin_issue_date = models.DateField("date de délivrance du CIN", null=True, blank=True)
+    cin_issue_place = models.CharField("lieu de délivrance du CIN", max_length=100, blank=True)
+
     address_line = models.CharField("adresse", max_length=255, blank=True)
     postal_code = models.CharField("code postal", max_length=20, blank=True)
     city = models.CharField("ville", max_length=100, blank=True)
@@ -92,6 +106,14 @@ class Employee(models.Model):
                 ),
                 name="employee_departure_matches_status",
             ),
+            models.CheckConstraint(
+                condition=models.Q(cin_number__isnull=True) | models.Q(cin_number__regex=r"^[0-9]{12}$"),
+                name="employee_cin_format",
+            ),
+            models.CheckConstraint(
+                condition=models.Q(cin_number__isnull=True) | models.Q(cin_issue_date__isnull=False),
+                name="employee_cin_has_issue_date",
+            ),
         ]
 
     def __str__(self):
@@ -99,8 +121,6 @@ class Employee(models.Model):
 
     def save(self, *args, **kwargs):
         self.matricule = self.matricule.upper()
-        if self.work_email:
-            self.work_email = self.work_email.lower()
         super().save(*args, **kwargs)
 
 

@@ -1,4 +1,5 @@
 export type EmploymentStatus = "ACTIVE" | "SUSPENDED" | "TERMINATED";
+export type Gender = "M" | "F";
 
 /** EmployeeListSerializer: the light representation used in lists. */
 export interface EmployeeListItem {
@@ -6,7 +7,6 @@ export interface EmployeeListItem {
     matricule: string;
     first_name: string;
     last_name: string;
-    work_email: string | null;
     department: number;
     department_name: string;
     position: number;
@@ -23,8 +23,11 @@ export interface Employee {
     last_name: string;
     first_name: string;
     date_of_birth: string;
-    work_email: string | null;
+    gender: Gender | "";
     personal_email: string;
+    cin_number: string | null;
+    cin_issue_date: string | null;
+    cin_issue_place: string;
     work_phone: string;
     personal_phone: string;
     address_line: string;
@@ -49,10 +52,12 @@ export interface EmployeeInput {
     last_name: string;
     first_name: string;
     date_of_birth: string;
-    work_email: string | null;
+    gender: Gender;
     personal_email: string;
-    work_phone: string;
     personal_phone: string;
+    cin_number: string | null;
+    cin_issue_date: string | null;
+    cin_issue_place: string;
     address_line: string;
     postal_code: string;
     city: string;

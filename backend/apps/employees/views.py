@@ -59,7 +59,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 
     permission_classes = [IsAdminOrHROrReadOnly]
     filterset_class = EmployeeFilter
-    search_fields = ["matricule", "first_name", "last_name", "work_email"]
+    search_fields = ["matricule", "first_name", "last_name"]
     ordering_fields = ["matricule", "last_name", "first_name", "hire_date", "created_at"]
     http_method_names = ["get", "post", "patch", "head", "options"]
 
@@ -225,10 +225,13 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             yield "\ufeff"  # BOM so Excel reads UTF-8
             yield writer.writerow(importing.EXPORT_COLUMNS)
             for e in queryset.iterator(chunk_size=1000):
-                yield writer.writerow([
+                    yield writer.writerow([
                     csv_safe(e.matricule), csv_safe(e.last_name), csv_safe(e.first_name),
-                    e.date_of_birth.isoformat(), csv_safe(e.work_email), csv_safe(e.personal_email),
-                    csv_safe(e.work_phone), csv_safe(e.personal_phone), csv_safe(e.address_line),
+                    e.gender, e.date_of_birth.isoformat(),
+                    e.cin_number or "",
+                    e.cin_issue_date.isoformat() if e.cin_issue_date else "",
+                    csv_safe(e.cin_issue_place),
+                    csv_safe(e.personal_email), csv_safe(e.personal_phone), csv_safe(e.address_line),
                     csv_safe(e.postal_code), csv_safe(e.city), e.hire_date.isoformat(),
                     csv_safe(e.department.code), csv_safe(e.position.code), e.employment_status,
                     e.departure_date.isoformat() if e.departure_date else "",

@@ -12,25 +12,37 @@ from apps.organization.models import Department, Position
 from . import services
 from .serializers import EmployeeCreateSerializer
 
+from .validators import normalize_cin
+
 MAX_FILE_SIZE = 1024 * 1024  # 1 MB
 MAX_ROWS = 1000
 MAX_REPORTED_ERRORS = 100
 
 REQUIRED_COLUMNS = (
-    "matricule", "last_name", "first_name", "date_of_birth", "hire_date", "department_code", "position_code",
+    "matricule", "last_name", "first_name", "gender", "date_of_birth", "hire_date",
+    "department_code", "position_code",
 )
 OPTIONAL_COLUMNS = (
-    "work_email", "personal_email", "work_phone", "personal_phone", "address_line", "postal_code", "city",
+    "cin_number", "cin_issue_date", "cin_issue_place",
+    "personal_email", "personal_phone", "address_line", "postal_code", "city",
 )
 ALLOWED_COLUMNS = REQUIRED_COLUMNS + OPTIONAL_COLUMNS
-# Present in exports, read-only: accepted in an import file but ignored (so an export can be re-imported).
-IGNORED_COLUMNS = ("employment_status", "departure_date")
+# Read-only columns present in exports, plus the removed professional contacts:
+# accepted in an import file but ignored (so an older export can still be re-imported).
+IGNORED_COLUMNS = ("employment_status", "departure_date", "work_email", "work_phone")
 # Column order of the export and of the template.
 EXPORT_COLUMNS = (
-    "matricule", "last_name", "first_name", "date_of_birth", "work_email", "personal_email",
-    "work_phone", "personal_phone", "address_line", "postal_code", "city",
+    "matricule", "last_name", "first_name", "gender", "date_of_birth",
+    "cin_number", "cin_issue_date", "cin_issue_place",
+    "personal_email", "personal_phone", "address_line", "postal_code", "city",
     "hire_date", "department_code", "position_code", "employment_status", "departure_date",
 )
+COLUMN_OF_FIELD = {"department": "department_code", "position": "position_code"}
+# Accepted spellings of the gender column.
+GENDER_ALIASES = {
+    "m": "M", "h": "M", "homme": "M", "masculin": "M",
+    "f": "F", "femme": "F", "feminin": "F", "féminin": "F",
+}
 COLUMN_OF_FIELD = {"department": "department_code", "position": "position_code"}
 
 
@@ -113,7 +125,7 @@ def validate_rows(rows):
     """Validate every row with the same rules as a manual creation. Nothing is written."""
     departments = {d.code: d for d in Department.objects.all()}
     positions = {p.code: p for p in Position.objects.all()}
-    seen_matricules, seen_emails = {}, {}
+    seen_matricules, seen_cins = {}, {}
     result = ImportResult()
 
     for line, row in rows:
@@ -134,6 +146,8 @@ def validate_rows(rows):
             payload["department"] = department.pk
         if position:
             payload["position"] = position.pk
+        if payload.get("gender"):
+            payload["gender"] = GENDER_ALIASES.get(payload["gender"].strip().lower(), payload["gender"])
 
         serializer = EmployeeCreateSerializer(data=payload)
         if not serializer.is_valid():
@@ -152,14 +166,14 @@ def validate_rows(rows):
                 )
             else:
                 seen_matricules[matricule] = line
-        email = row.get("work_email", "").lower()
-        if email:
-            if email in seen_emails:
-                errors.setdefault("work_email", []).append(
-                    f"Doublon dans le fichier (déjà présent ligne {seen_emails[email]})."
+                cin = normalize_cin(row.get("cin_number", ""))
+        if cin:
+            if cin in seen_cins:
+                errors.setdefault("cin_number", []).append(
+                    f"Doublon dans le fichier (déjà présent ligne {seen_cins[cin]})."
                 )
             else:
-                seen_emails[email] = line
+                seen_cins[cin] = line
 
         if not errors:
             try:
