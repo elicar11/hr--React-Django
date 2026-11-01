@@ -1,8 +1,10 @@
 import { LogOut, Menu as MenuIcon, UserCircle } from "lucide-react";
 import { useState, type FormEvent } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import { Menu, type MenuItem } from "@/components/ui/Menu";
 import { SearchInput } from "@/components/ui/SearchInput";
+import { LanguageSwitcher } from "@/i18n/LanguageSwitcher";
 import { useAuth } from "@/modules/auth/authContext";
 import { useSession } from "@/modules/auth/sessionContext";
 import { ROLE_LABELS } from "@/modules/auth/types";
@@ -10,15 +12,16 @@ import { AlertsMenu } from "./AlertsMenu";
 import { useAlerts } from "./useAlerts";
 
 function ProfileMenu() {
+    const { t } = useTranslation();
     const { user } = useSession();
     const { logout } = useAuth();
     const navigate = useNavigate();
     const initials = `${user.first_name[0] ?? ""}${user.last_name[0] ?? ""}`.toUpperCase();
 
     const items: MenuItem[] = [
-        { label: "Mon profil", icon: UserCircle, to: "/profile" },
+        { label: t("Mon compte"), icon: UserCircle, to: "/profile" },
         {
-            label: "Se déconnecter",
+            label: t("Se déconnecter"),
             icon: LogOut,
             separatorBefore: true,
             onSelect: () => {
@@ -29,7 +32,7 @@ function ProfileMenu() {
 
     return (
         <Menu
-            label="Menu du profil"
+            label={t("Menu du profil")}
             align="end"
             items={items}
             triggerClassName="flex items-center gap-3 border-2 border-ink bg-paper py-1 pl-1 pr-3 hover:bg-gray-light"
@@ -42,7 +45,7 @@ function ProfileMenu() {
                         <span className="block text-sm font-bold">
                             {user.first_name} {user.last_name}
                         </span>
-                        <span className="block text-xs text-gray-dark">{ROLE_LABELS[user.role]}</span>
+                        <span className="block text-xs text-gray-dark">{t(ROLE_LABELS[user.role])}</span>
                     </span>
                 </>
             }
@@ -51,6 +54,7 @@ function ProfileMenu() {
 }
 
 export function Topbar({ onOpenMenu }: { onOpenMenu: () => void }) {
+    const { t } = useTranslation();
     const { user } = useSession();
     const navigate = useNavigate();
     const { alerts, loading } = useAlerts();
@@ -68,7 +72,7 @@ export function Topbar({ onOpenMenu }: { onOpenMenu: () => void }) {
             <button
                 type="button"
                 onClick={onOpenMenu}
-                aria-label="Ouvrir le menu"
+                aria-label={t("Ouvrir le menu")}
                 className="border-2 border-ink p-2 hover:bg-ink hover:text-paper lg:hidden"
             >
                 <MenuIcon className="size-5" aria-hidden="true" />
@@ -79,13 +83,14 @@ export function Topbar({ onOpenMenu }: { onOpenMenu: () => void }) {
                     <SearchInput
                         value={query}
                         onChange={setQuery}
-                        label="Rechercher un employé"
-                        placeholder="Rechercher un employé…"
+                        label={t("Rechercher un employé")}
+                        placeholder={t("Rechercher un employé…")}
                     />
                 </form>
             )}
 
             <div className="ml-auto flex items-center gap-3">
+                <LanguageSwitcher />
                 <AlertsMenu alerts={alerts} loading={loading} />
                 <ProfileMenu />
             </div>

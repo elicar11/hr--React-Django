@@ -1,5 +1,6 @@
 import { ChevronDown, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { Fragment, useId, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router";
 import { cx } from "@/lib/cx";
 import { useSession } from "@/modules/auth/sessionContext";
@@ -16,13 +17,14 @@ function ItemLink({
     collapsed: boolean;
     onNavigate?: () => void;
 }) {
+    const { t } = useTranslation();
     const Icon = item.icon;
     return (
         <Link
             to={item.to}
             onClick={onNavigate}
             aria-current={active ? "page" : undefined}
-            title={collapsed ? item.label : undefined}
+            title={collapsed ? t(item.label) : undefined}
             className={cx(
                 "flex items-center gap-3 border-2 px-3 py-2 font-bold focus-visible:outline-paper",
                 collapsed && "justify-center",
@@ -30,7 +32,7 @@ function ItemLink({
             )}
         >
             <Icon className="size-5 shrink-0" aria-hidden="true" />
-            <span className={collapsed ? "sr-only" : undefined}>{item.label}</span>
+            <span className={collapsed ? "sr-only" : undefined}>{t(item.label)}</span>
         </Link>
     );
 }
@@ -48,6 +50,7 @@ function Section({
     pathname: string;
     onNavigate?: () => void;
 }) {
+    const { t } = useTranslation();
     const panelId = useId();
     const Icon = section.icon;
     const containsActive = section.items.some((item) => isItemActive(item, pathname));
@@ -64,7 +67,7 @@ function Section({
                 )}
             >
                 <Icon className="size-5 shrink-0" aria-hidden="true" />
-                <span className="flex-1">{section.label}</span>
+                <span className="flex-1">{t(section.label)}</span>
                 <ChevronDown className={cx("size-4 shrink-0 transition-transform", open && "rotate-180")} aria-hidden="true" />
             </button>
             <ul id={panelId} hidden={!open} className="ml-5 mt-1 space-y-1 border-l-2 border-gray-dark pl-2">
@@ -89,6 +92,7 @@ export function Sidebar({
     /** Closes the mobile drawer after a navigation. */
     onNavigate?: () => void;
 }) {
+    const { t } = useTranslation();
     const { user } = useSession();
     const { pathname } = useLocation();
     const entries = useMemo(() => navigationFor(user.role), [user.role]);
@@ -110,19 +114,19 @@ export function Sidebar({
                 <Link
                     to="/"
                     onClick={onNavigate}
-                    aria-label="HR, retour au tableau de bord"
+                    aria-label={t("HR, retour au tableau de bord")}
                     className="flex items-center gap-3 focus-visible:outline-paper"
                 >
                     <span className="flex size-10 shrink-0 items-center justify-center border-2 border-paper bg-paper font-display text-xl font-bold text-ink">
                         HR
                     </span>
-                    {!collapsed && <span className="font-display text-lg font-bold leading-tight">Ressources humaines</span>}
+                    {!collapsed && <span className="font-display text-lg font-bold leading-tight">{t("Ressources humaines")}</span>}
                 </Link>
             </div>
 
             {/* Scrolling is only a safety net for very short screens: its bar stays hidden. */}
             <nav
-                aria-label="Navigation principale"
+                aria-label={t("Navigation principale")}
                 className="min-h-0 flex-1 overflow-y-auto px-2 py-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             >
                 <ul className="space-y-1">
@@ -169,7 +173,7 @@ export function Sidebar({
                         type="button"
                         onClick={onToggleCollapse}
                         aria-expanded={!collapsed}
-                        aria-label={collapsed ? "Déployer le menu" : "Réduire le menu"}
+                        aria-label={collapsed ? t("Déployer le menu") : t("Réduire le menu")}
                         className={cx(
                             "flex w-full items-center gap-3 border-2 border-transparent px-3 py-2 font-bold hover:border-paper focus-visible:outline-paper",
                             collapsed && "justify-center",
@@ -180,7 +184,7 @@ export function Sidebar({
                         ) : (
                             <PanelLeftClose className="size-5" aria-hidden="true" />
                         )}
-                        {!collapsed && <span>Réduire</span>}
+                        {!collapsed && <span>{t("Réduire")}</span>}
                     </button>
                 </div>
             )}

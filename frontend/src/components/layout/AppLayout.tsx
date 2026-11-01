@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Outlet, useLocation } from "react-router";
 import { cx } from "@/lib/cx";
 import { useLocalStorageState } from "@/lib/hooks/useLocalStorageState";
@@ -8,6 +9,7 @@ import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
 
 export function AppLayout() {
+    const { t } = useTranslation();
     const [collapsed, setCollapsed] = useLocalStorageState("hr.sidebar.collapsed", false);
     const [drawerOpen, setDrawerOpen] = useState(false);
     const location = useLocation();
@@ -35,7 +37,7 @@ export function AppLayout() {
                 href="#main"
                 className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:border-2 focus:border-ink focus:bg-paper focus:px-4 focus:py-2 focus:font-bold"
             >
-                Aller au contenu
+                {t("Aller au contenu")}
             </a>
 
             <aside
@@ -47,7 +49,7 @@ export function AppLayout() {
                 <Sidebar collapsed={collapsed} onToggleCollapse={() => setCollapsed(!collapsed)} />
             </aside>
 
-            <Drawer open={drawerOpen} onClose={() => setDrawerOpen(false)} label="Menu de navigation">
+            <Drawer open={drawerOpen} onClose={() => setDrawerOpen(false)} label={t("Menu de navigation")}>
                 <Sidebar onNavigate={() => setDrawerOpen(false)} />
             </Drawer>
 
