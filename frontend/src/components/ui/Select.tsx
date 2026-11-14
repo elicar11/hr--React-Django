@@ -1,8 +1,19 @@
 import { ChevronDown } from "lucide-react";
-import { useId, type ComponentProps } from "react";
 import { cx } from "@/lib/cx";
 import { FieldShell } from "./FieldShell";
 import { controlClass, describedBy } from "./fieldStyles";
+import { Children, cloneElement, isValidElement, useId, type ComponentProps, type ReactNode } from "react";
+import { tr } from "@/i18n/translate";
+
+/** `<option>Texte</option>` with a plain string is translated; options built from data are left alone. */
+function translateOptions(children: ReactNode): ReactNode {
+    return Children.map(children, (child) => {
+        if (isValidElement<{ children?: ReactNode }>(child) && child.type === "option" && typeof child.props.children === "string") {
+            return cloneElement(child, undefined, tr(child.props.children));
+        }
+        return child;
+    });
+} 
 
 export interface SelectProps extends Omit<ComponentProps<"select">, "id"> {
     id?: string;

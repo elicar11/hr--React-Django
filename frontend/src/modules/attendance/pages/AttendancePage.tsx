@@ -294,9 +294,6 @@ export function AttendancePage() {
                         <Link to="/holidays" className={buttonStyles({ variant: "secondary" })}>
                             <Flag className="size-4" aria-hidden="true" />
                             Jours fériés
-                        </Link>            <Link to="/work-schedules" className={buttonStyles({ variant: "secondary" })}>
-                            <Timer className="size-4" aria-hidden="true" />
-                            Horaires de travail
                         </Link>
                         <Button variant="secondary" onClick={() => void handleExport()} loading={exporting} leftIcon={<Download className="size-4" aria-hidden="true" />}>
                             Exporter

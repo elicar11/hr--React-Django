@@ -2,6 +2,7 @@ import { Check, CircleAlert } from "lucide-react";
 import { useId, type ComponentProps } from "react";
 import { cx } from "@/lib/cx";
 import { describedBy } from "./fieldStyles";
+import { tr } from "@/i18n/translate";
 
 export interface CheckboxProps extends Omit<ComponentProps<"input">, "id" | "type"> {
     id?: string;
@@ -40,13 +41,13 @@ export function Checkbox({ id, label, hint, error, className, ...props }: Checkb
             </label>
             {hint && !error && (
                 <p id={`${fieldId}-hint`} className="pl-8 text-sm text-gray-dark">
-                    {hint}
+                    {tr(hint)}
                 </p>
             )}
             {error && (
                 <p id={`${fieldId}-error`} role="alert" className="flex items-start gap-1.5 pl-8 text-sm font-bold text-danger">
                     <CircleAlert className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-                    {error}
+                    {tr(error)}
                 </p>
             )}
         </div>

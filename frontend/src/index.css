@@ -91,11 +91,26 @@ main h1[tabindex="-1"]:focus {
 }
 
 /* A grid child may shrink below its content (charts, tables, long words): no page-wide horizontal scroll. */
-main :where(.grid) > * {
+main :where(.grid)>* {
   min-width: 0;
 }
 
 /* Safety net: anything that still overflows is clipped inside the page area instead of widening the whole page. */
 main {
+  overflow-x: clip;
+}
+
+/* A grid child may shrink below its content (charts, tables, long words). */
+main :where(.grid)>* {
+  min-width: 0;
+}
+
+/* Whatever overflows the page area is clipped inside it instead of widening the page. */
+main {
+  overflow-x: clip;
+}
+
+/* Last safety net: the page itself never scrolls sideways. `clip` (not `hidden`) keeps the sticky header working. */
+body {
   overflow-x: clip;
 }
