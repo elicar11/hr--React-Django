@@ -1,3 +1,5 @@
+import { tr } from "@/i18n/translate";
+
 /** French labels of the backend audit actions (also reused by the audit page in F11). */
 const LABELS: Record<string, string> = {
     "auth.login": "Connexion",
@@ -96,7 +98,7 @@ const LABELS: Record<string, string> = {
 };
 
 export function auditActionLabel(action: string): string {
-    return LABELS[action] ?? action.replace(".", " · ").replaceAll("_", " ");
+    return LABELS[action] ? tr(LABELS[action]) : action.replace(".", " · ").replaceAll("_", " ");
 }
 
 /** Audit domains: the API filters actions by prefix ("auth." = every authentication event). */

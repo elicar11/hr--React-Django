@@ -2,6 +2,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Eye, FileText, Pencil, Trash2, Users } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import i18n from "@/i18n";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import {
@@ -77,13 +79,13 @@ const columns: ColumnDef<DemoEmployee>[] = [
     },
     {
         id: "actions",
-        header: () => <span className="sr-only">Actions</span>,
+        header: "Actions",
         enableSorting: false,
         cell: ({ row }) => (
             <RowActions
-                label={`Actions pour ${row.original.name}`}
+                label={i18n.t("Actions pour {{name}}", { name: row.original.name })}
                 items={[
-                    { label: "Voir la fiche", icon: Eye, onSelect: () => notify.info(`Fiche de ${row.original.name}`) },
+                    { label: "Voir la fiche", icon: Eye, onSelect: () => notify.info(i18n.t("Fiche de {{name}}", { name: row.original.name })) },
                     { label: "Modifier", icon: Pencil, onSelect: () => notify.info("Modifier") },
                     { label: "Sortir de l'effectif", icon: Trash2, tone: "danger", separatorBefore: true, onSelect: () => notify.info("Sortie") },
                 ]}
@@ -111,6 +113,7 @@ const TABS = [
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export function UiKitPage() {
+    const { t } = useTranslation();
     const [modalOpen, setModalOpen] = useState(false);
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [reasonOpen, setReasonOpen] = useState(false);
@@ -187,7 +190,7 @@ export function UiKitPage() {
                             </div>
                         ))}
                         <div className="flex items-center gap-2">
-                            <span className="w-28 text-xs font-bold uppercase tracking-widest">actif</span>
+                            <span className="w-28 text-xs font-bold uppercase tracking-widest">{t("actif")}</span>
                             <ActiveBadge active /> <ActiveBadge active={false} />
                         </div>
                     </div>
@@ -232,7 +235,7 @@ export function UiKitPage() {
                     />
                     <Pagination page={page} count={135} onPageChange={setPage} />
                     <div className="mt-6 space-y-3">
-                        <p className="text-sm font-bold uppercase tracking-wide">États : chargement et vide</p>
+                        <p className="text-sm font-bold uppercase tracking-wide">{t("États : chargement et vide")}</p>
                         <DataTable caption="Chargement" columns={columns} data={[]} loading />
                         <DataTable
                             caption="Vide"
@@ -264,10 +267,10 @@ export function UiKitPage() {
                             />
                         </TabPanel>
                         <TabPanel idPrefix="demo" id="contracts" active={tab === "contracts"}>
-                            <p>Contenu de l'onglet « Contrats ».</p>
+                            <p>{t("Contenu de l'onglet « Contrats ».")}</p>
                         </TabPanel>
                         <TabPanel idPrefix="demo" id="history" active={tab === "history"}>
-                            <p>Contenu de l'onglet « Historique ».</p>
+                            <p>{t("Contenu de l'onglet « Historique ».")}</p>
                         </TabPanel>
 
                         <div className="flex flex-wrap gap-3">
@@ -286,7 +289,7 @@ export function UiKitPage() {
                                 triggerClassName="border-2 border-ink bg-paper px-4 py-2 text-sm font-bold uppercase hover:bg-ink hover:text-paper"
                                 panelClassName="w-72 p-4"
                             >
-                                <p className="text-sm">Contenu libre : filtres, aide, détails…</p>
+                                <p className="text-sm">{t("Contenu libre : filtres, aide, détails…")}</p>
                             </Popover>
                             <Button variant="danger" onClick={() => setConfirmOpen(true)}>Confirmation simple</Button>
                             <Button variant="secondary" onClick={() => setReasonOpen(true)}>Confirmation avec motif</Button>

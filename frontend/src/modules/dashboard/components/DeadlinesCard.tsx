@@ -2,11 +2,13 @@ import { CalendarClock, Hourglass } from "lucide-react";
 import { Link } from "react-router";
 import { Badge, Card, EmptyState } from "@/components/ui";
 import { formatDate } from "@/lib/format";
+import { useTranslation } from "react-i18next";
 import type { Deadline } from "../types";
 
 export function DeadlinesCard({ deadlines, days }: { deadlines: Deadline[]; days: number }) {
+    const { t } = useTranslation();
     return (
-        <Card title="Échéances RH" description={`Dans les ${days} prochains jours`}>
+        <Card title="Échéances RH" description={t("Dans les {{days}} prochains jours", { days })}>
             {deadlines.length === 0 ? (
                 <EmptyState icon={CalendarClock} title="Aucune échéance" description="Rien à anticiper pour le moment." />
             ) : (
@@ -24,17 +26,17 @@ export function DeadlinesCard({ deadlines, days }: { deadlines: Deadline[]; days
                                     {deadline.employee_name}
                                 </Link>
                                 <p className="text-sm text-gray-dark">
-                                    {deadline.matricule} · contrat {deadline.reference}
+                                    {t("{{matricule}} · contrat {{reference}}", { matricule: deadline.matricule, reference: deadline.reference })}
                                 </p>
                             </div>
                             <div className="flex items-center gap-3">
                                 {deadline.type === "CONTRACT_END" ? (
                                     <Badge tone="outline" icon={CalendarClock}>
-                                        Fin de contrat
+                                        {t("Fin de contrat")}
                                     </Badge>
                                 ) : (
                                     <Badge tone="dashed" icon={Hourglass}>
-                                        Fin d'essai
+                                        {t("Fin d'essai")}
                                     </Badge>
                                 )}
                                 <time dateTime={deadline.date} className="font-bold">

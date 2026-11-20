@@ -1,4 +1,5 @@
 import { Bar, BarChart, LabelList, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { tr } from "@/i18n/translate";
 import { AXIS_LINE, AXIS_TICK, FONT_FAMILY, GRAY_LIGHT, INK, TOOLTIP_STYLE, truncate } from "./chartTheme";
 
 export interface BarDatum {
@@ -23,7 +24,7 @@ export function HorizontalBarChart({ data, valueLabel = "Employés" }: { data: B
                         tickLine={false}
                         tickFormatter={(value: string) => truncate(value)}
                     />
-                    <Tooltip cursor={{ fill: GRAY_LIGHT }} contentStyle={TOOLTIP_STYLE} formatter={(value) => [value, valueLabel]} />
+                    <Tooltip cursor={{ fill: GRAY_LIGHT }} contentStyle={TOOLTIP_STYLE} formatter={(value) => [value, tr(valueLabel)]} />
                     <Bar dataKey="value" fill={INK} stroke={INK} strokeWidth={2} isAnimationActive={false}>
                         <LabelList
                             dataKey="value"

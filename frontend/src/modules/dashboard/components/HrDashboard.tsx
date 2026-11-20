@@ -10,6 +10,7 @@ import {
     UserX,
 } from "lucide-react";
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router";
 import { ChartCard } from "@/components/charts/ChartCard";
 import { HorizontalBarChart } from "@/components/charts/HorizontalBarChart";
@@ -26,6 +27,7 @@ import { DeadlinesCard } from "./DeadlinesCard";
 const FILTER_KEYS = ["date_from", "date_to", "department", "status"] as const;
 
 export function HrDashboard() {
+    const { t } = useTranslation();
     const [searchParams, setSearchParams] = useSearchParams();
     const filters: DashboardFilters = {
         date_from: searchParams.get("date_from") ?? undefined,
@@ -61,7 +63,7 @@ export function HrDashboard() {
                 description="Vue d'ensemble des ressources humaines."
                 actions={
                     <>
-                        {data && <p className="self-center text-sm text-gray-dark">Mis à jour : {formatDateTime(data.generated_at)}</p>}
+                        {data && <p className="self-center text-sm text-gray-dark">{t("Mis à jour : {{date}}", { date: formatDateTime(data.generated_at) })}</p>}
                         <Button
                             variant="secondary"
                             onClick={query.reload}
@@ -104,7 +106,7 @@ export function HrDashboard() {
                 <StatCard
                     label="Employés en poste"
                     value={kpis?.active_employees}
-                    hint={kpis ? `${kpis.suspended_employees} suspendu(s)` : undefined}
+                    hint={kpis ? t("{{count}} suspendu", { count: kpis.suspended_employees }) : undefined}
                     icon={UserCheck}
                     to="/employees?employment_status=ACTIVE"
                     loading={firstLoad}
@@ -136,7 +138,7 @@ export function HrDashboard() {
                 <StatCard
                     label="Absents aujourd'hui"
                     value={kpis?.absent_today}
-                    hint={kpis ? `dont ${kpis.on_leave_today} en congé` : undefined}
+                    hint={kpis ? t("dont {{count}} en congé", { count: kpis.on_leave_today }) : undefined}
                     icon={UserX}
                     to="/attendance"
                     loading={firstLoad}
@@ -152,7 +154,7 @@ export function HrDashboard() {
                 <StatCard
                     label="Contrats à échéance"
                     value={kpis?.contracts_expiring_soon}
-                    hint={kpis ? `Sous ${kpis.contract_alert_days} jours` : undefined}
+                    hint={kpis ? t("Sous {{days}} jours", { count: kpis.contract_alert_days, days: kpis.contract_alert_days }) : undefined}
                     icon={CalendarClock}
                     to="/contracts?view=expiring"
                     loading={firstLoad}

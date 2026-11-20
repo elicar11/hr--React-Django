@@ -1,6 +1,7 @@
 import { useId } from "react";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { formatMonth } from "@/lib/format";
+import { tr } from "@/i18n/translate";
 import type { MonthlyMovement } from "@/modules/dashboard/types";
 import { AXIS_LINE, AXIS_TICK, GRAY_LIGHT, GRAY_MID, INK, PAPER, TOOLTIP_STYLE } from "./chartTheme";
 
@@ -38,10 +39,10 @@ export function MonthlyMovementsChart({ data }: { data: MonthlyMovement[] }) {
         <div>
             <div className="mb-3 flex flex-wrap gap-5 text-sm font-bold" aria-hidden="true">
                 <span className="flex items-center gap-2">
-                    <Swatch hatched={false} /> Recrutements
+                    <Swatch hatched={false} /> {tr("Recrutements")}
                 </span>
                 <span className="flex items-center gap-2">
-                    <Swatch hatched /> Départs
+                    <Swatch hatched /> {tr("Départs")}
                 </span>
             </div>
             <div className="h-72" aria-hidden="true">
@@ -54,10 +55,10 @@ export function MonthlyMovementsChart({ data }: { data: MonthlyMovement[] }) {
                         <XAxis dataKey="month" tick={AXIS_TICK} axisLine={AXIS_LINE} tickLine={false} />
                         <YAxis allowDecimals={false} width={32} tick={AXIS_TICK} axisLine={AXIS_LINE} tickLine={false} />
                         <Tooltip cursor={{ fill: GRAY_LIGHT }} contentStyle={TOOLTIP_STYLE} />
-                        <Bar dataKey="hires" name="Recrutements" fill={INK} stroke={INK} strokeWidth={2} isAnimationActive={false} />
+                        <Bar dataKey="hires" name={tr("Recrutements")} fill={INK} stroke={INK} strokeWidth={2} isAnimationActive={false} />
                         <Bar
                             dataKey="departures"
-                            name="Départs"
+                            name={tr("Départs")}
                             fill={`url(#${patternId})`}
                             stroke={INK}
                             strokeWidth={2}

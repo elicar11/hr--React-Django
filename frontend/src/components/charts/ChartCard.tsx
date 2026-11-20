@@ -1,6 +1,8 @@
 import { useId, useState, type ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import { Button, Card, EmptyState } from "@/components/ui";
 import { cx } from "@/lib/cx";
+import { tr } from "@/i18n/translate";
 
 function DataRows({ columns, rows, hidden }: { columns: string[]; rows: ReactNode[][]; hidden: boolean }) {
     return (
@@ -9,7 +11,7 @@ function DataRows({ columns, rows, hidden }: { columns: string[]; rows: ReactNod
                 <tr className="bg-ink text-paper">
                     {columns.map((column) => (
                         <th key={column} scope="col" className="px-3 py-2 font-bold uppercase tracking-wide">
-                            {column}
+                            {tr(column)}
                         </th>
                     ))}
                 </tr>
@@ -49,6 +51,7 @@ export function ChartCard({
     children: ReactNode;
 }) {
     const panelId = useId();
+    const { t } = useTranslation();
     const [showTable, setShowTable] = useState(false);
 
     return (
@@ -65,7 +68,7 @@ export function ChartCard({
                         aria-controls={panelId}
                         onClick={() => setShowTable((current) => !current)}
                     >
-                        {showTable ? "Voir le graphique" : "Voir le tableau"}
+                        {t(showTable ? "Voir le graphique" : "Voir le tableau")}
                     </Button>
                 ) : undefined
             }

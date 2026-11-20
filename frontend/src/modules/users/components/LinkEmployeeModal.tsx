@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Trans } from "react-i18next";
 import { Alert, Button, Modal } from "@/components/ui";
 import { toApiError } from "@/lib/api";
 import { notify } from "@/lib/notify";
@@ -36,8 +37,7 @@ function LinkBody({ user, onClose, onSaved }: BodyProps) {
         <>
             <div className="space-y-4 p-5">
                 <p>
-                    Lier le compte <strong>{user.email}</strong> à un dossier employé : l'utilisateur pourra alors consulter son propre dossier, ses
-                    pointages, ses congés et ses bulletins.
+                    <Trans i18nKey="Lier le compte <strong>{{email}}</strong> à un dossier employé : l'utilisateur pourra alors consulter son propre dossier, ses pointages, ses congés et ses bulletins." values={{ email: user.email }} components={{ strong: <strong /> }} />
                 </p>
                 <Alert tone="info">
                     Si l'employé était déjà lié à un autre compte, ce lien sera remplacé. Pour savoir si un employé a un compte, ouvrez sa fiche

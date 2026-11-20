@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { Alert, Button, DateField, Input, Modal, ModalForm, Select, Textarea } from "@/components/ui";
@@ -27,6 +28,7 @@ interface BodyProps {
 }
 
 function RecordFormBody({ record, onClose, onSaved }: BodyProps) {
+    const { t } = useTranslation();
     const creating = record === null;
     const [employee, setEmployee] = useState<PickedEmployee | null>(null);
     const [employeeError, setEmployeeError] = useState<string>();
@@ -143,7 +145,7 @@ function RecordFormBody({ record, onClose, onSaved }: BodyProps) {
                 />
             )}
             <p className="text-sm text-gray-dark">
-                Retards, heures travaillées et heures supplémentaires sont calculés par le serveur selon l'horaire de l'employé.
+                {t("Retards, heures travaillées et heures supplémentaires sont calculés par le serveur selon l'horaire de l'employé.")}
             </p>
         </ModalForm>
     );

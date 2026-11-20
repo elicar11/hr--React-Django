@@ -1,9 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Alert, Button, Input, Modal, ModalForm, PasswordField, Select } from "@/components/ui";
 import { applyApiErrors } from "@/lib/forms";
+import { tr } from "@/i18n/translate";
 import { notify } from "@/lib/notify";
 import { generatePassword } from "@/lib/password";
 import { ROLE_LABELS, type Role, type User } from "@/modules/auth/types";
@@ -35,6 +37,7 @@ interface BodyProps {
 }
 
 function UserFormBody({ user, currentUserId, onClose, onSaved }: BodyProps) {
+    const { t } = useTranslation();
     const creating = user === null;
     const isSelf = user?.id === currentUserId;
     const [employee, setEmployee] = useState<PickedEmployee | null>(null);
@@ -98,7 +101,7 @@ function UserFormBody({ user, currentUserId, onClose, onSaved }: BodyProps) {
                         return;
                     }
                 }
-                notify.success("Compte créé", employee ? `Lié à ${employee.last_name} ${employee.first_name}.` : undefined);
+                notify.success("Compte créé", employee ? t("Lié à {{name}}.", { name: `${employee.last_name} ${employee.first_name}` }) : undefined);
             } else {
                 await updateUser(user.id, {
                     email,
@@ -143,7 +146,7 @@ function UserFormBody({ user, currentUserId, onClose, onSaved }: BodyProps) {
             <Input label="Adresse e-mail" type="email" required hint="Sert d'identifiant de connexion." error={errors.email?.message} {...register("email")} />
 
             {isSelf ? (
-                <Input label="Rôle" value={ROLE_LABELS[user.role]} hint="Vous ne pouvez pas modifier votre propre rôle." disabled readOnly />
+                <Input label="Rôle" value={tr(ROLE_LABELS[user.role])} hint="Vous ne pouvez pas modifier votre propre rôle." disabled readOnly />
             ) : (
                 <Select label="Rôle" required hint={ROLE_HINTS[role]} error={errors.role?.message} {...register("role")}>
                     {(Object.keys(ROLE_LABELS) as Role[]).map((value) => (
@@ -180,7 +183,7 @@ function UserFormBody({ user, currentUserId, onClose, onSaved }: BodyProps) {
                         </div>
                         {generated && (
                             <p className="text-sm text-gray-dark">
-                                Transmettez-le par un canal sûr. Il ne sera plus affiché après la création du compte.
+                                {t("Transmettez-le par un canal sûr. Il ne sera plus affiché après la création du compte.")}
                             </p>
                         )}
                     </div>

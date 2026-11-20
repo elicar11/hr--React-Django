@@ -5,6 +5,7 @@ import { Alert, Button, FileUpload, Modal } from "@/components/ui";
 import { saveFile } from "@/lib/download";
 import { notify } from "@/lib/notify";
 import { toApiError } from "@/lib/api";
+import { translateApiMessage } from "@/i18n/translate";
 import { downloadImportTemplate, importEmployees } from "../services/employeeService";
 import type { ImportPreview, ImportRowError } from "../types";
 
@@ -28,7 +29,7 @@ function RowErrors({ errors }: { errors: ImportRowError[] }) {
                                 <ul className="space-y-0.5">
                                     {Object.entries(row.errors).map(([column, messages]) => (
                                         <li key={column}>
-                                            <strong>{column}</strong> : {messages.join(" ")}
+                                            <strong>{translateApiMessage(column)}</strong> : {messages.map(translateApiMessage).join(" ")}
                                         </li>
                                     ))}
                                 </ul>

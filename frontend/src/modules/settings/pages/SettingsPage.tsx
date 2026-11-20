@@ -17,6 +17,7 @@ import {
     type LucideIcon,
 } from "lucide-react";
 import type { ReactNode } from "react";
+import { tr } from "@/i18n/translate";
 import { Link } from "react-router";
 import { Badge, PageHeader } from "@/components/ui";
 import { useSession } from "@/modules/auth/sessionContext";
@@ -44,16 +45,16 @@ function Tile({
                 <Icon className="size-7 shrink-0" aria-hidden="true" />
                 {badge}
             </div>
-            <h3 className="text-xl">{title}</h3>
-            <p className="text-sm text-gray-dark">{description}</p>
+            <h3 className="text-xl">{tr(title)}</h3>
+            <p className="text-sm text-gray-dark">{tr(description)}</p>
         </Link>
     );
 }
 
 function Group({ title, children }: { title: string; children: ReactNode }) {
     return (
-        <section aria-label={title} className="space-y-3">
-            <h2 className="text-2xl">{title}</h2>
+        <section aria-label={tr(title)} className="space-y-3">
+            <h2 className="text-2xl">{tr(title)}</h2>
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{children}</div>
         </section>
     );
@@ -68,11 +69,11 @@ export function SettingsPage() {
     const payroll = usePayrollSettings();
     const payrollBadge = payroll.data ? (
         !payroll.data.currency ? (
-            <Badge tone="alert">Non configurée</Badge>
+            <Badge tone="alert">{tr("Non configurée")}</Badge>
         ) : payroll.data.is_demo ? (
-            <Badge tone="alert">Démo</Badge>
+            <Badge tone="alert">{tr("Démo")}</Badge>
         ) : (
-            <Badge tone="solid">Réelle</Badge>
+            <Badge tone="solid">{tr("Réelle")}</Badge>
         )
     ) : undefined;
 

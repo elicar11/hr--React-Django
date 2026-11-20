@@ -1,5 +1,6 @@
 import { Banknote, CalendarDays, FileText, TriangleAlert, UserX } from "lucide-react";
 import { Link } from "react-router";
+import { Trans, useTranslation } from "react-i18next";
 import {
     Alert,
     Badge,
@@ -115,6 +116,7 @@ import { BalanceMeter } from "@/modules/leaves/components/BalanceMeter";
 // }
 
 export function EmployeeDashboard() {
+    const { t } = useTranslation();
     const query = useApiQuery(["employee-dashboard"], (signal) => getEmployeeDashboard(signal));
     const data = query.data;
 
@@ -164,10 +166,10 @@ export function EmployeeDashboard() {
 
                     <Card
                         title="Mes soldes de congés"
-                        description={`Année ${new Date().getFullYear()}`}
+                        description={t("Année {{year}}", { year: new Date().getFullYear() })}
                         actions={
                             <Link to="/my/leaves" className={buttonStyles({ variant: "secondary", size: "sm" })}>
-                                Mes congés
+                                {t("Mes congés")}
                             </Link>
                         }
                     >
@@ -180,7 +182,7 @@ export function EmployeeDashboard() {
                                         <div className="flex items-baseline justify-between gap-3">
                                             <span className="font-bold">{balance.leave_type_name}</span>
                                             <span className="text-sm">
-                                                <strong className="font-display text-2xl">{formatDecimal(balance.remaining)}</strong> / {formatDecimal(balance.allocated)} j restants
+                                                <Trans i18nKey="<strong>{{remaining}}</strong> / {{allocated}} j restants" values={{ remaining: formatDecimal(balance.remaining), allocated: formatDecimal(balance.allocated) }} components={{ strong: <strong className="font-display text-2xl" /> }} />
                                             </span>
                                         </div>
                                         <BalanceMeter balance={balance} />
@@ -190,10 +192,10 @@ export function EmployeeDashboard() {
                         )}
                     </Card>
 
-                    <Card title="Mes demandes de congé" description={`${data.pending_leave_requests} en attente`}>
+                    <Card title="Mes demandes de congé" description={t("{{count}} en attente", { count: data.pending_leave_requests })}>
                         {data.next_leave && (
                             <div className="mb-4 border-2 border-ink bg-gray-light p-3">
-                                <p className="text-xs font-bold uppercase tracking-widest">Prochain congé</p>
+                                <p className="text-xs font-bold uppercase tracking-widest">{t("Prochain congé")}</p>
                                 <p className="font-bold">
                                     {formatDate(data.next_leave.start_date)} → {formatDate(data.next_leave.end_date)} · {formatDecimal(data.next_leave.days)} j
                                 </p>
@@ -223,22 +225,22 @@ export function EmployeeDashboard() {
                         title="Mon dernier bulletin"
                         actions={
                             <Link to="/my/payslips" className={buttonStyles({ variant: "secondary", size: "sm" })}>
-                                Mes bulletins
+                                {t("Mes bulletins")}
                             </Link>
                         }
                     >
                         {data.latest_payslip ? (
                             <div className="space-y-3">
                                 <div className="flex flex-wrap items-center gap-2">
-                                    <span className="font-bold">Période {data.latest_payslip.period_code}</span>
+                                    <span className="font-bold">{t("Période {{code}}", { code: data.latest_payslip.period_code })}</span>
                                     <StatusBadge domain="payslip" status={data.latest_payslip.status} />
                                     {data.latest_payslip.is_demo && (
                                         <Badge tone="alert" icon={TriangleAlert}>
-                                            Démo
+                                            {t("Démo")}
                                         </Badge>
                                     )}
                                 </div>
-                                <p className="text-xs font-bold uppercase tracking-widest text-gray-dark">Net à payer</p>
+                                <p className="text-xs font-bold uppercase tracking-widest text-gray-dark">{t("Net à payer")}</p>
                                 <p className="font-display text-4xl font-bold">
                                     {formatMoney(data.latest_payslip.net_pay, data.latest_payslip.currency)}
                                 </p>

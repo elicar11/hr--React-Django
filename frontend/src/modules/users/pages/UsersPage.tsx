@@ -1,6 +1,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { Link2, Pencil, Plus, Power, PowerOff, UsersRound } from "lucide-react";
 import { useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import {
     ActiveBadge,
     Alert,
@@ -18,6 +19,7 @@ import {
     type BadgeTone,
 } from "@/components/ui";
 import { formatDate, formatDateTime } from "@/lib/format";
+import { tr } from "@/i18n/translate";
 import { useApiQuery } from "@/lib/hooks/useApiQuery";
 import { useListParams } from "@/lib/hooks/useListParams";
 import { notify } from "@/lib/notify";
@@ -30,6 +32,7 @@ import { listUsers, setUserActive } from "../services/userService";
 const ROLE_TONES: Record<Role, BadgeTone> = { ADMIN: "solid", HR: "outline", EMPLOYEE: "muted" };
 
 export function UsersPage() {
+    const { t } = useTranslation();
     const { user: currentUser } = useSession();
     const list = useListParams(["role", "is_active"]);
     const [version, setVersion] = useState(0);
@@ -61,7 +64,7 @@ export function UsersPage() {
         const isSelf = target.id === currentUser.id;
         return (
             <RowActions
-                label={`Actions pour ${target.email}`}
+                label={t("Actions pour {{name}}", { name: target.email })}
                 items={[
                     { label: "Modifier", icon: Pencil, onSelect: () => setEditing(target) },
                     { label: "Lier à un employé", icon: Link2, onSelect: () => setLinking(target) },
@@ -82,7 +85,7 @@ export function UsersPage() {
                     <strong>
                         {row.original.last_name} {row.original.first_name}
                     </strong>
-                    {row.original.id === currentUser.id && <Badge tone="dashed">Vous</Badge>}
+                    {row.original.id === currentUser.id && <Badge tone="dashed">{t("Vous")}</Badge>}
                 </span>
             ),
         },
@@ -91,19 +94,19 @@ export function UsersPage() {
             id: "role",
             header: "Rôle",
             enableSorting: false,
-            cell: ({ row }) => <Badge tone={ROLE_TONES[row.original.role]}>{ROLE_LABELS[row.original.role]}</Badge>,
+            cell: ({ row }) => <Badge tone={ROLE_TONES[row.original.role]}>{tr(ROLE_LABELS[row.original.role])}</Badge>,
         },
         { id: "is_active", header: "Statut", enableSorting: false, cell: ({ row }) => <ActiveBadge active={row.original.is_active} /> },
         {
             id: "last_login",
             header: "Dernière connexion",
             enableSorting: false,
-            cell: ({ row }) => formatDateTime(row.original.last_login) || "Jamais",
+            cell: ({ row }) => formatDateTime(row.original.last_login) || t("Jamais"),
         },
         { accessorKey: "date_joined", header: "Créé le", cell: ({ row }) => formatDate(row.original.date_joined) },
         {
             id: "actions",
-            header: () => <span className="sr-only">Actions</span>,
+            header: () => <span className="sr-only">{t("Actions")}</span>,
             enableSorting: false,
             cell: ({ row }) => <UserActions target={row.original} />,
         },
@@ -174,10 +177,10 @@ export function UsersPage() {
                                 <UserActions target={row} />
                             </div>
                             <div className="flex flex-wrap items-center gap-2">
-                                <Badge tone={ROLE_TONES[row.role]}>{ROLE_LABELS[row.role]}</Badge>
+                                <Badge tone={ROLE_TONES[row.role]}>{tr(ROLE_LABELS[row.role])}</Badge>
                                 <ActiveBadge active={row.is_active} />
                             </div>
-                            <p className="text-sm text-gray-dark">Dernière connexion : {formatDateTime(row.last_login) || "jamais"}</p>
+                            <p className="text-sm text-gray-dark">{t("Dernière connexion : {{date}}", { date: formatDateTime(row.last_login) || t("Jamais") })}</p>
                         </div>
                     )}
                 />
@@ -200,10 +203,9 @@ export function UsersPage() {
                 message={
                     <>
                         <p>
-                            <strong>{deactivating?.email}</strong> ne pourra plus se connecter, et toutes ses sessions en cours sont révoquées
-                            immédiatement.
+                            <Trans i18nKey="<strong>{{email}}</strong> ne pourra plus se connecter, et toutes ses sessions en cours sont révoquées immédiatement." values={{ email: deactivating?.email ?? "" }} components={{ strong: <strong /> }} />
                         </p>
-                        <p className="mt-2 text-sm text-gray-dark">Le compte n'est pas supprimé : vous pourrez le réactiver.</p>
+                        <p className="mt-2 text-sm text-gray-dark">{t("Le compte n'est pas supprimé : vous pourrez le réactiver.")}</p>
                     </>
                 }
                 confirmLabel="Désactiver"

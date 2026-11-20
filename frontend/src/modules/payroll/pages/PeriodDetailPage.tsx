@@ -1,6 +1,6 @@
 import { Banknote, Calculator, CircleCheck, Download, FileX, Lock, LockOpen, Pencil, Trash2, UserPlus } from "lucide-react";
 import { useState } from "react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { Link, useNavigate, useParams } from "react-router";
 import {
     Alert,
@@ -210,7 +210,7 @@ export function PeriodDetailPage() {
             )}
 
             <section className="space-y-3">
-                <h2 className="text-2xl">Bulletins de la période</h2>
+                <h2 className="text-2xl">{t("Bulletins de la période")}</h2>
                 <FilterBar canReset={status !== ""} onReset={() => { setStatus(""); setPage(1); }}>
                     <Select label="Statut" className="min-w-44" value={status} placeholder="Tous" onChange={(e) => { setStatus(e.target.value); setPage(1); }}>
                         <option value="DRAFT">Brouillon</option>
@@ -249,8 +249,8 @@ export function PeriodDetailPage() {
                 title="Valider les bulletins calculés ?"
                 message={
                     <>
-                        <p>Tous les bulletins <strong>calculés</strong> de la période seront validés, puis figés. Les bulletins en erreur sont listés après l'opération.</p>
-                        <p className="mt-2 text-sm text-gray-dark">Vous ne pouvez pas valider votre propre bulletin.</p>
+                        <p><Trans i18nKey="Tous les bulletins <strong>calculés</strong> de la période seront validés, puis figés. Les bulletins en erreur sont listés après l'opération." components={{ strong: <strong /> }} /></p>
+                        <p className="mt-2 text-sm text-gray-dark">{t("Vous ne pouvez pas valider votre propre bulletin.")}</p>
                     </>
                 }
                 reason={{ label: "Commentaire (facultatif)", maxLength: 500 }}

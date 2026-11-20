@@ -1,3 +1,6 @@
+
+import { tr } from "@/i18n/translate";
+
 const TARGET_LABELS: Record<string, string> = {
     "accounts.user": "Utilisateur",
     "organization.department": "Département",
@@ -30,7 +33,7 @@ const TARGET_ROUTES: Record<string, (id: string) => string> = {
 };
 
 export function targetLabel(type: string): string {
-    return TARGET_LABELS[type] ?? type;
+    return TARGET_LABELS[type] ? tr(TARGET_LABELS[type]) : type;
 }
 
 export function targetLink(type: string, id: string): string | null {

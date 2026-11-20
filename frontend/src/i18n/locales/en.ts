@@ -6,37 +6,22 @@ import { enContracts } from "./en.contracts";
 import { enAttendance } from "./en.attendance";
 import { enLeaves } from "./en.leaves";
 import { enPayroll } from "./en.payroll";
+import { enAdmin } from "./en.admin";
+import { enAudit } from "./en.audit";
+import { enApi } from "./en.api";
 
 export const en: Record<string, string> = {
     // --- Navigation ---------------------------------------------------------------------------------------
-    "Tableau de bord": "Dashboard",
     "Personnel": "People",
-    "Employés": "Employees",
-    "Contrats": "Contracts",
-    "Départements": "Departments",
-    "Postes": "Positions",
     "Temps de travail": "Working time",
-    "Présences": "Attendance",
-    "Congés": "Leave",
-    "Calendrier RH": "HR calendar",
-    "Paie": "Payroll",
-    "Administration": "Administration",
-    "Utilisateurs et rôles": "Users and roles",
     "Journal d'audit": "Audit log",
-    "Paramètres": "Settings",
-    "Mon dossier": "My record",
     "Mes présences": "My attendance",
-    "Mes congés": "My leave",
-    "Mes contrats": "My contracts",
-    "Mes bulletins": "My payslips",
     "Navigation principale": "Main navigation",
     "Menu de navigation": "Navigation menu",
-    "Ressources humaines": "Human resources",
     "HR, retour au tableau de bord": "HR, back to the dashboard",
     "Réduire": "Collapse",
     "Réduire le menu": "Collapse menu",
     "Déployer le menu": "Expand menu",
-    "Aller au contenu": "Skip to content",
 
     // --- Top bar ---------------------------------------------------------------------------------------------
     "Ouvrir le menu": "Open menu",
@@ -49,9 +34,6 @@ export const en: Record<string, string> = {
     "Langue": "Language",
 
     // --- Roles -----------------------------------------------------------------------------------------------
-    "Administrateur": "Administrator",
-    "Responsable RH": "HR manager",
-    "Employé": "Employee",
 
     // --- Error screen -------------------------------------------------------------------------------------------
     "Une erreur est survenue": "Something went wrong",
@@ -61,16 +43,6 @@ export const en: Record<string, string> = {
     "Retour à l'accueil": "Back to home",
 
 
-    // Errors without the usual API body
-    "Détail technique": "Technical detail",
-    "Authentification requise (401).": "Authentication required (401).",
-    "Accès refusé (403).": "Access denied (403).",
-    "Adresse introuvable (404).": "Address not found (404).",
-    "Requête trop volumineuse (413).": "Request too large (413).",
-    "Trop de requêtes (429) : réessayez dans quelques instants.": "Too many requests (429): try again in a few moments.",
-    "Le serveur ne répond pas ({{status}}) : vérifiez qu'il est démarré.": "The server is not responding ({{status}}): check that it is running.",
-    "Erreur interne du serveur ({{status}}).": "Internal server error ({{status}}).",
-    "Requête refusée par le serveur ({{status}}).": "Request refused by the server ({{status}}).",
     ...enI2,
     ...enEmployees,
     ...enOrganization,
@@ -78,4 +50,7 @@ export const en: Record<string, string> = {
     ...enAttendance,
     ...enLeaves,
     ...enPayroll,
+    ...enAdmin,
+    ...enAudit,
+    ...enApi,
 };

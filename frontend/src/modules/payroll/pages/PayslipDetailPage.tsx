@@ -258,7 +258,7 @@ export function PayslipDetailPage() {
                                     ]}
                                 />
                             ) : (
-                                <p className="text-gray-dark">Ce bulletin n'a pas encore été calculé.</p>
+                                <p className="text-gray-dark">{t("Ce bulletin n'a pas encore été calculé.")}</p>
                             )}
                         </Card>
                     </TabPanel>

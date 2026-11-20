@@ -1,5 +1,6 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { ScrollText, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import {
     Alert,
@@ -16,6 +17,7 @@ import {
 } from "@/components/ui";
 import { AUDIT_GROUPS, auditActionLabel } from "@/lib/auditLabels";
 import { endOfDayISO, formatDateTime, startOfDayISO } from "@/lib/format";
+import { tr } from "@/i18n/translate";
 import { useApiQuery } from "@/lib/hooks/useApiQuery";
 import { useListParams } from "@/lib/hooks/useListParams";
 import { summarizeMetadata, targetLabel, targetLink } from "../auditTargets";
@@ -23,9 +25,10 @@ import { listAuditLogs } from "../services/auditService";
 import type { AuditEntry } from "../types";
 
 function Target({ entry }: { entry: AuditEntry }) {
+    const { t } = useTranslation();
     if (!entry.target_type) return <span className="text-gray-dark">—</span>;
     const link = targetLink(entry.target_type, entry.target_id);
-    const label = `${targetLabel(entry.target_type)} n° ${entry.target_id}`;
+    const label = t("{{label}} n° {{id}}", { label: targetLabel(entry.target_type), id: entry.target_id });
     return link ? (
         <Link to={link} className="underline underline-offset-4 hover:bg-ink hover:text-paper">
             {label}
@@ -47,10 +50,11 @@ function Details({ entry }: { entry: AuditEntry }) {
 }
 
 function Chip({ label, onClear }: { label: string; onClear: () => void }) {
+    const { t } = useTranslation();
     return (
         <div className="flex items-center gap-2 border-2 border-ink bg-paper px-3 py-1.5 text-sm">
             <span>{label}</span>
-            <button type="button" onClick={onClear} aria-label={`Retirer le filtre : ${label}`} className="p-0.5 hover:bg-ink hover:text-paper">
+            <button type="button" onClick={onClear} aria-label={t("Retirer le filtre : {{label}}", { label })} className="p-0.5 hover:bg-ink hover:text-paper">
                 <X className="size-4" aria-hidden="true" />
             </button>
         </div>
@@ -85,6 +89,7 @@ const columns: ColumnDef<AuditEntry>[] = [
 ];
 
 export function AuditPage() {
+    const { t } = useTranslation();
     const list = useListParams(["action", "created_from", "created_to", "target_type", "target_id", "actor"]);
     const { filters } = list;
 
@@ -113,7 +118,7 @@ export function AuditPage() {
                 <Select label="Domaine" className="min-w-56" value={filters.action} placeholder="Tous" onChange={(e) => list.setFilter("action", e.target.value)}>
                     {AUDIT_GROUPS.map((group) => (
                         <option key={group.prefix} value={group.prefix}>
-                            {group.label}
+                            {tr(group.label)}
                         </option>
                     ))}
                 </Select>
@@ -121,11 +126,11 @@ export function AuditPage() {
                 <DateField label="Au" value={filters.created_to} min={filters.created_from || undefined} onChange={(e) => list.setFilter("created_to", e.target.value)} />
                 {filters.target_type && (
                     <Chip
-                        label={`Cible : ${targetLabel(filters.target_type)}${filters.target_id ? ` n° ${filters.target_id}` : ""}`}
+                        label={filters.target_id ? t("Cible : {{target}} n° {{id}}", { target: targetLabel(filters.target_type), id: filters.target_id }) : t("Cible : {{target}}", { target: targetLabel(filters.target_type) })}
                         onClear={() => list.setParams({ target_type: undefined, target_id: undefined, page: undefined })}
                     />
                 )}
-                {filters.actor && <Chip label={`Acteur n° ${filters.actor}`} onClear={() => list.setFilter("actor", "")} />}
+                {filters.actor && <Chip label={t("Acteur n° {{id}}", { id: filters.actor })} onClear={() => list.setFilter("actor", "")} />}
             </FilterBar>
 
             {query.error && (
@@ -158,10 +163,10 @@ export function AuditPage() {
                         <div className="space-y-1">
                             <p className="font-bold">{auditActionLabel(row.action)}</p>
                             <p className="text-sm text-gray-dark">
-                                {row.actor_email || "Système / anonyme"} · <time dateTime={row.created_at}>{formatDateTime(row.created_at)}</time>
+                                {row.actor_email || tr("Système / anonyme")} · <time dateTime={row.created_at}>{formatDateTime(row.created_at)}</time>
                             </p>
                             <p className="text-sm">
-                                Cible : <Target entry={row} />
+                                {t("Cible :")} <Target entry={row} />
                             </p>
                             {row.ip_address && <p className="text-xs text-gray-dark">IP {row.ip_address}</p>}
                             <Details entry={row} />
