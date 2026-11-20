@@ -2,6 +2,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { Briefcase, Pencil, Plus, Power, PowerOff, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
+import { Trans, useTranslation } from "react-i18next";
 import {
     ActiveBadge,
     Alert,
@@ -31,6 +32,7 @@ import {
 import type { Position } from "../types";
 
 export function PositionsPage() {
+    const { t } = useTranslation();
     const list = useListParams(["is_active", "department", "level"]);
 
     const [version, setVersion] = useState(0);
@@ -70,7 +72,7 @@ export function PositionsPage() {
     function PositionActions({ position }: { position: Position }) {
         return (
             <RowActions
-                label={`Actions pour ${position.title}`}
+                label={t("Actions pour {{name}}", { name: position.title })}
                 items={[
                     { label: "Modifier", icon: Pencil, onSelect: () => setEditing(position) },
                     position.is_active
@@ -103,7 +105,7 @@ export function PositionsPage() {
         { id: "is_active", header: "Statut", enableSorting: false, cell: ({ row }) => <ActiveBadge active={row.original.is_active} /> },
         {
             id: "actions",
-            header: () => <span className="sr-only">Actions</span>,
+            header: () => <span className="sr-only">{t("Actions")}</span>,
             enableSorting: false,
             cell: ({ row }) => <PositionActions position={row.original} />,
         },
@@ -186,14 +188,14 @@ export function PositionsPage() {
                             <div className="flex items-start justify-between gap-3">
                                 <div>
                                     <p className="font-bold">{row.code} · {row.title}</p>
-                                    <p className="text-sm text-gray-dark">{row.department_name ?? "Poste transversal"}</p>
+                                    <p className="text-sm text-gray-dark">{row.department_name ? t("Rattaché à {{name}}", { name: row.department_name }) : t("Poste transversal")}</p>
                                 </div>
                                 <PositionActions position={row} />
                             </div>
                             <div className="flex flex-wrap items-center gap-3 text-sm">
                                 <ActiveBadge active={row.is_active} />
-                                <Badge tone="outline">Niveau {row.level}</Badge>
-                                <span>{row.employees_count} employé(s)</span>
+                                <Badge tone="outline">{t("Niveau {{level}}", { level: row.level })}</Badge>
+                                <span>{t("{{count}} employé", { count: row.employees_count })}</span>
                             </div>
                         </div>
                     )}
@@ -215,7 +217,8 @@ export function PositionsPage() {
                 title="Désactiver ce poste ?"
                 message={
                     <>
-                        Le poste <strong>{toggling?.title}</strong> ne pourra plus être attribué. Il reste consultable et peut être réactivé.
+                        <Trans i18nKey="Le poste <strong>{{name}}</strong> ne pourra plus être attribué." values={{ name: toggling?.title ?? "" }} components={{ strong: <strong /> }} />{" "}
+                        {t("Il reste consultable et peut être réactivé.")}
                     </>
                 }
                 confirmLabel="Désactiver"
@@ -235,10 +238,10 @@ export function PositionsPage() {
                 message={
                     <>
                         <p>
-                            Supprimer le poste <strong>{deleting?.title}</strong> est irréversible.
+                            <Trans i18nKey="Supprimer le poste <strong>{{name}}</strong> est irréversible." values={{ name: deleting?.title ?? "" }} components={{ strong: <strong /> }} />
                         </p>
                         <p className="mt-2 text-sm text-gray-dark">
-                            Si des employés ou des contrats y sont rattachés, la suppression sera refusée : désactivez-le plutôt.
+                            {t("Si des employés ou des contrats y sont rattachés, la suppression sera refusée : désactivez-le plutôt.")}
                         </p>
                     </>
                 }

@@ -1,5 +1,6 @@
 import { Download, FileText, FileX } from "lucide-react";
 import { Link, useParams } from "react-router";
+import { useTranslation } from "react-i18next";
 import {
     Alert,
     Button,
@@ -20,6 +21,7 @@ import type { ContractDocument } from "../types";
 
 /** Read-only detail of one of the user's own contracts. */
 export function MyContractDetailPage() {
+    const { t } = useTranslation();
     const { id } = useParams();
     const contractId = Number(id);
     const query = useApiQuery(["my-contract", contractId], (signal) => getContract(contractId, signal));
@@ -42,7 +44,7 @@ export function MyContractDetailPage() {
                     icon={FileX}
                     title={query.error.status === 404 ? "Contrat introuvable" : "Chargement impossible"}
                     description={query.error.message}
-                    action={<Link to="/my/contracts" className={buttonStyles()}>Retour à mes contrats</Link>}
+                    action={<Link to="/my/contracts" className={buttonStyles()}>{t("Retour à mes contrats")}</Link>}
                 />
             </>
         );
@@ -54,14 +56,13 @@ export function MyContractDetailPage() {
     return (
         <>
             <PageHeader
-                title={`Contrat ${contract.reference}`}
+                title={t("Contrat {{reference}}", { reference: contract.reference })}
                 breadcrumb={[{ label: "Mes contrats", to: "/my/contracts" }, { label: contract.reference }]}
             />
 
             {endingSoon && (
                 <Alert tone="warning" title="Échéance proche" className="mb-4">
-                    Ce contrat se termine dans {contract.days_remaining} jour{contract.days_remaining === 1 ? "" : "s"}. Contactez les ressources
-                    humaines pour connaître la suite.
+                    {t("Ce contrat se termine dans {{count}} jour. Contactez les ressources humaines pour connaître la suite.", { count: contract.days_remaining })}
                 </Alert>
             )}
 
@@ -71,9 +72,9 @@ export function MyContractDetailPage() {
                         { label: "Type de contrat", value: contract.contract_type_name },
                         { label: "Poste", value: contract.position_title },
                         { label: "Début", value: formatDate(contract.start_date) },
-                        { label: "Fin", value: contract.end_date ? formatDate(contract.end_date) : "Durée indéterminée" },
+                        { label: "Fin", value: contract.end_date ? formatDate(contract.end_date) : t("Durée indéterminée") },
                         { label: "Date de signature", value: formatDate(contract.signed_date) },
-                        { label: "Période d'essai", value: contract.probation_days ? `${contract.probation_days} jours` : "" },
+                        { label: "Période d'essai", value: contract.probation_days ? t("{{count}} jour", { count: contract.probation_days }) : "" },
                         { label: "Salaire de base", value: formatMoney(contract.base_salary, contract.currency) },
                     ]}
                 />
@@ -92,7 +93,7 @@ export function MyContractDetailPage() {
                                 <div>
                                     <p className="font-bold">{document.title}</p>
                                     <p className="text-sm text-gray-dark">
-                                        PDF · {formatFileSize(document.size)} · ajouté le {formatDate(document.created_at)}
+                                        {t("PDF · {{size}} · ajouté le {{date}}", { size: formatFileSize(document.size), date: formatDate(document.created_at) })}
                                     </p>
                                 </div>
                                 <Button size="sm" variant="secondary" onClick={() => void download(document)} leftIcon={<Download className="size-4" aria-hidden="true" />}>

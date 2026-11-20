@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
+import { Trans } from "react-i18next";
 import { Alert, Button, DateField, Input, Modal, ModalForm, Select } from "@/components/ui";
 import { addDaysISO, todayISO } from "@/lib/format";
 import { applyApiErrors } from "@/lib/forms";
@@ -103,8 +104,7 @@ function RenewBody({ contract, onClose, onRenewed }: BodyProps) {
             }
         >
             <Alert tone="info">
-                Le contrat <strong>{contract.reference}</strong> n'est pas modifié : un nouveau contrat en brouillon est créé et
-                lié à celui-ci. À son activation, l'ancien contrat prend fin la veille de son début.
+                <Trans i18nKey="Le contrat <strong>{{reference}}</strong> n'est pas modifié : un nouveau contrat en brouillon est créé et lié à celui-ci. À son activation, l'ancien contrat prend fin la veille de son début." values={{ reference: contract.reference }} components={{ strong: <strong /> }} />
             </Alert>
             {messages.length > 0 && (
                 <Alert tone="error">

@@ -1,8 +1,10 @@
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
+import { useTranslation } from "react-i18next";
 import { Badge, Button, buttonStyles } from "@/components/ui";
 import { cx } from "@/lib/cx";
+import { tr } from "@/i18n/translate";
 import type { Department, DepartmentNode } from "../types";
 
 interface NodeProps {
@@ -14,6 +16,7 @@ interface NodeProps {
 }
 
 function TreeNode({ node, stats, collapsed, onToggle, onEdit }: NodeProps) {
+    const { t } = useTranslation();
     const info = stats.get(node.id);
     const hasChildren = node.children.length > 0;
     const isCollapsed = collapsed.has(node.id);
@@ -31,7 +34,7 @@ function TreeNode({ node, stats, collapsed, onToggle, onEdit }: NodeProps) {
                         type="button"
                         onClick={() => onToggle(node.id)}
                         aria-expanded={!isCollapsed}
-                        aria-label={`${isCollapsed ? "Déplier" : "Replier"} ${node.name}`}
+                        aria-label={t(isCollapsed ? "Déplier {{name}}" : "Replier {{name}}", { name: node.name })}
                         className="border-2 border-ink p-0.5 hover:bg-ink hover:text-paper"
                     >
                         {isCollapsed ? (
@@ -45,17 +48,17 @@ function TreeNode({ node, stats, collapsed, onToggle, onEdit }: NodeProps) {
                 )}
                 <span className="font-bold">{node.code}</span>
                 <span>{node.name}</span>
-                {!node.is_active && <Badge tone="muted">Inactif</Badge>}
+                {!node.is_active && <Badge tone="muted">{tr("Inactif")}</Badge>}
                 {info && (
                     <span className="ml-auto text-sm text-gray-dark">
-                        {info.employees_count} employé(s) · {info.positions_count} poste(s)
+                        {t("{{count}} employé", { count: info.employees_count })} · {t("{{count}} poste", { count: info.positions_count })}
                     </span>
                 )}
                 <Link
                     to={`/employees?department=${node.id}`}
                     className={buttonStyles({ variant: "ghost", size: "sm", className: info ? undefined : "ml-auto" })}
                 >
-                    Employés
+                    {t("Employés")}
                 </Link>
                 {info && (
                     <Button size="sm" variant="secondary" onClick={() => onEdit(info)}>

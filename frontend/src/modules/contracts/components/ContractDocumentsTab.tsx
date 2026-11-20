@@ -1,5 +1,6 @@
 import { Download, FileText, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import { Alert, Button, Card, ConfirmDialog, EmptyState, FileUpload, Input, Skeleton } from "@/components/ui";
 import { saveFile } from "@/lib/download";
 import { formatDate, formatFileSize } from "@/lib/format";
@@ -15,6 +16,7 @@ import {
 import type { ContractDocument } from "../types";
 
 export function ContractDocumentsTab({ contractId }: { contractId: number }) {
+    const { t } = useTranslation();
     const { user } = useSession();
     const [version, setVersion] = useState(0);
     const query = useApiQuery(["contract-documents", contractId, version], (signal) =>
@@ -69,7 +71,7 @@ export function ContractDocumentsTab({ contractId }: { contractId: number }) {
                                 <div>
                                     <p className="font-bold">{document.title}</p>
                                     <p className="text-sm text-gray-dark">
-                                        PDF · {formatFileSize(document.size)} · ajouté le {formatDate(document.created_at)}
+                                        {t("PDF · {{size}} · ajouté le {{date}}", { size: formatFileSize(document.size), date: formatDate(document.created_at) })}
                                     </p>
                                 </div>
                                 <div className="flex gap-2">
@@ -80,7 +82,7 @@ export function ContractDocumentsTab({ contractId }: { contractId: number }) {
                                         <Button
                                             size="sm"
                                             variant="danger"
-                                            aria-label={`Supprimer ${document.title}`}
+                                            aria-label={t("Supprimer {{title}}", { title: document.title })}
                                             onClick={() => setDeleting(document)}
                                             leftIcon={<Trash2 className="size-4" aria-hidden="true" />}
                                         >
@@ -120,7 +122,7 @@ export function ContractDocumentsTab({ contractId }: { contractId: number }) {
                 title="Supprimer ce document ?"
                 message={
                     <>
-                        Le document <strong>{deleting?.title}</strong> sera définitivement supprimé.
+                        <Trans i18nKey="Le document <strong>{{title}}</strong> sera définitivement supprimé." values={{ title: deleting?.title ?? "" }} components={{ strong: <strong /> }} />
                     </>
                 }
                 confirmLabel="Supprimer"

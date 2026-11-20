@@ -1,7 +1,10 @@
 import { History } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Alert, EmptyState, Pagination, Skeleton } from "@/components/ui";
 import { auditActionLabel } from "@/lib/auditLabels";
+import i18n from "@/i18n";
+import { tr } from "@/i18n/translate";
 import { formatDateTime } from "@/lib/format";
 import { useApiQuery } from "@/lib/hooks/useApiQuery";
 import { getContractHistory } from "../services/contractService";
@@ -27,15 +30,16 @@ const REASONS: Record<string, string> = {
 function describe(metadata: Record<string, unknown>): string {
     const parts: string[] = [];
     if (Array.isArray(metadata.fields)) {
-        parts.push(`Champs modifiés : ${metadata.fields.map((field) => FIELD_LABELS[String(field)] ?? String(field)).join(", ")}`);
+        parts.push(i18n.t("Champs modifiés : {{fields}}", { fields: metadata.fields.map((field) => tr(FIELD_LABELS[String(field)] ?? String(field))).join(", ") }));
     }
-    if (typeof metadata.reason === "string") parts.push(REASONS[metadata.reason] ?? metadata.reason);
-    if (typeof metadata.renews === "string") parts.push(`Renouvelle le contrat ${metadata.renews}`);
-    if (typeof metadata.renewed_by === "string") parts.push(`Renouvelé par ${metadata.renewed_by}`);
+    if (typeof metadata.reason === "string") parts.push(tr(REASONS[metadata.reason] ?? metadata.reason));
+    if (typeof metadata.renews === "string") parts.push(i18n.t("Renouvelle le contrat {{reference}}", { reference: metadata.renews }));
+    if (typeof metadata.renewed_by === "string") parts.push(i18n.t("Renouvelé par {{reference}}", { reference: metadata.renewed_by }));
     return parts.join(" · ");
 }
 
 export function ContractHistoryTab({ contractId }: { contractId: number }) {
+    useTranslation();
     const [page, setPage] = useState(1);
     const query = useApiQuery(["contract-history", contractId, page], (signal) =>
         getContractHistory(contractId, page, signal),
@@ -55,7 +59,7 @@ export function ContractHistoryTab({ contractId }: { contractId: number }) {
                                 <p className="font-bold">{auditActionLabel(entry.action)}</p>
                                 {detail && <p className="text-sm">{detail}</p>}
                                 <p className="text-sm text-gray-dark">
-                                    {entry.actor_email || "Système"} · <time dateTime={entry.created_at}>{formatDateTime(entry.created_at)}</time>
+                                    {entry.actor_email || tr("Système")} · <time dateTime={entry.created_at}>{formatDateTime(entry.created_at)}</time>
                                 </p>
                             </li>
                         );

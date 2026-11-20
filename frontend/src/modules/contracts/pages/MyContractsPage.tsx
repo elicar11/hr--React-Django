@@ -1,6 +1,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { FileText } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import { Alert, Badge, DataTable, EmptyState, PageHeader, Pagination, StatusBadge } from "@/components/ui";
 import { formatDate } from "@/lib/format";
@@ -9,18 +10,20 @@ import { listContracts } from "../services/contractService";
 import type { ContractListItem } from "../types";
 
 function Remaining({ contract }: { contract: ContractListItem }) {
+    const { t } = useTranslation();
     if (contract.status !== "ACTIVE") return <span className="text-gray-dark">—</span>;
-    if (contract.days_remaining === null) return <Badge tone="muted">Durée indéterminée</Badge>;
-    if (contract.days_remaining < 0) return <Badge tone="alert">Échu</Badge>;
+    if (contract.days_remaining === null) return <Badge tone="muted">{t("Durée indéterminée")}</Badge>;
+    if (contract.days_remaining < 0) return <Badge tone="alert">{t("Échu")}</Badge>;
     return (
         <Badge tone={contract.days_remaining <= 30 ? "alert" : "outline"}>
-            {contract.days_remaining} jour{contract.days_remaining > 1 ? "s" : ""} restant{contract.days_remaining > 1 ? "s" : ""}
+            {t("{{count}} jour restant", { count: contract.days_remaining })}
         </Badge>
     );
 }
 
 /** Employee space: the user's own signed contracts (the API hides drafts and other people's contracts). */
 export function MyContractsPage() {
+    const { t } = useTranslation();
     const [page, setPage] = useState(1);
     const params = { page, ordering: "-start_date" };
     const query = useApiQuery(["my-contracts", params], (signal) => listContracts(params, signal));
@@ -43,7 +46,7 @@ export function MyContractsPage() {
             header: "Période",
             enableSorting: false,
             cell: ({ row }) =>
-                `${formatDate(row.original.start_date)} → ${row.original.end_date ? formatDate(row.original.end_date) : "indéterminée"}`,
+                `${formatDate(row.original.start_date)} → ${row.original.end_date ? formatDate(row.original.end_date) : t("Durée indéterminée")}`,
         },
         { id: "status", header: "Statut", enableSorting: false, cell: ({ row }) => <StatusBadge domain="contract" status={row.original.status} /> },
         { id: "remaining", header: "Échéance", enableSorting: false, cell: ({ row }) => <Remaining contract={row.original} /> },

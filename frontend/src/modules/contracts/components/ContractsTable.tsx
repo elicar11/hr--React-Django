@@ -2,28 +2,32 @@ import type { ColumnDef, OnChangeFn, SortingState } from "@tanstack/react-table"
 import { Eye, Pencil, TriangleAlert } from "lucide-react";
 import type { ReactNode } from "react";
 import { Link } from "react-router";
+import { useTranslation } from "react-i18next";
 import { Badge, DataTable, RowActions, StatusBadge } from "@/components/ui";
 import { formatDate } from "@/lib/format";
+import { tr } from "@/i18n/translate";
 import type { ContractListItem } from "../types";
 
 /** Remaining time before the end of a running contract (display only). */
 function Deadline({ days }: { days: number | null }) {
+    const { t } = useTranslation();
     if (days === null) return <span className="text-gray-dark">—</span>;
     if (days < 0) {
         return (
             <Badge tone="alert" icon={TriangleAlert}>
-                Dépassé de {Math.abs(days)} j
+                {t("Dépassé de {{days}} j", { days: Math.abs(days) })}
             </Badge>
         );
     }
-    if (days === 0) return <Badge tone="alert">Aujourd'hui</Badge>;
-    return <Badge tone={days <= 30 ? "solid" : "outline"}>J-{days}</Badge>;
+    if (days === 0) return <Badge tone="alert">{t("Aujourd'hui")}</Badge>;
+    return <Badge tone={days <= 30 ? "solid" : "outline"}>{t("J-{{days}}", { days })}</Badge>;
 }
 
 function ContractActions({ contract }: { contract: ContractListItem }) {
+    const { t } = useTranslation();
     return (
         <RowActions
-            label={`Actions pour le contrat ${contract.reference}`}
+            label={t("Actions pour le contrat {{reference}}", { reference: contract.reference })}
             items={[
                 { label: "Voir le contrat", icon: Eye, to: `/contracts/${contract.id}` },
                 ...(contract.status === "DRAFT"
@@ -60,7 +64,7 @@ const columns: ColumnDef<ContractListItem>[] = [
     {
         accessorKey: "end_date",
         header: "Fin",
-        cell: ({ row }) => (row.original.end_date ? formatDate(row.original.end_date) : "Indéterminée"),
+        cell: ({ row }) => (row.original.end_date ? formatDate(row.original.end_date) : tr("Indéterminée")),
     },
     {
         id: "days_remaining",
@@ -76,7 +80,7 @@ const columns: ColumnDef<ContractListItem>[] = [
     },
     {
         id: "actions",
-        header: () => <span className="sr-only">Actions</span>,
+        header: () => <span className="sr-only">{tr("Actions")}</span>,
         enableSorting: false,
         cell: ({ row }) => <ContractActions contract={row.original} />,
     },
@@ -122,7 +126,7 @@ export function ContractsTable({
                         <ContractActions contract={row} />
                     </div>
                     <p className="text-sm">
-                        {formatDate(row.start_date)} → {row.end_date ? formatDate(row.end_date) : "indéterminée"}
+                        {formatDate(row.start_date)} → {row.end_date ? formatDate(row.end_date) : tr("indéterminée")}
                     </p>
                     <div className="flex flex-wrap items-center gap-2">
                         <StatusBadge domain="contract" status={row.status} />

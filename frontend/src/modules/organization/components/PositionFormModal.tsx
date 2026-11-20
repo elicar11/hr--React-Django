@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { tr } from "@/i18n/translate";
 import { Alert, Button, Input, Modal, ModalForm, Select, Textarea } from "@/components/ui";
 import { applyApiErrors } from "@/lib/forms";
 import { notify } from "@/lib/notify";
@@ -20,8 +21,8 @@ type FormValues = z.infer<typeof schema>;
 export const LEVELS = Array.from({ length: 10 }, (_, index) => index + 1);
 
 export function levelLabel(level: number): string {
-    if (level === 1) return "1 · Direction";
-    if (level === 10) return "10 · Opérationnel";
+    if (level === 1) return tr("1 · Direction");
+    if (level === 10) return tr("10 · Opérationnel");
     return String(level);
 }
 

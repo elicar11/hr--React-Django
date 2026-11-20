@@ -1,6 +1,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { FileText, Pencil, Plus, Power, PowerOff, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import {
     ActiveBadge,
     Alert,
@@ -18,12 +19,14 @@ import {
 } from "@/components/ui";
 import { useApiQuery } from "@/lib/hooks/useApiQuery";
 import { useListParams } from "@/lib/hooks/useListParams";
+import { tr } from "@/i18n/translate";
 import { notify } from "@/lib/notify";
 import { ContractTypeFormModal } from "../components/ContractTypeFormModal";
 import { deleteContractType, listContractTypes, updateContractType } from "../services/contractService";
 import type { ContractType } from "../types";
 
 export function ContractTypesPage() {
+    const { t } = useTranslation();
     const list = useListParams(["is_active", "is_fixed_term"]);
     const [version, setVersion] = useState(0);
     const refresh = () => setVersion((current) => current + 1);
@@ -52,7 +55,7 @@ export function ContractTypesPage() {
     function TypeActions({ type }: { type: ContractType }) {
         return (
             <RowActions
-                label={`Actions pour ${type.name}`}
+                label={t("Actions pour {{name}}", { name: type.name })}
                 items={[
                     { label: "Modifier", icon: Pencil, onSelect: () => setEditing(type) },
                     type.is_active
@@ -73,14 +76,14 @@ export function ContractTypesPage() {
             enableSorting: false,
             cell: ({ row }) => (
                 <Badge tone={row.original.is_fixed_term ? "outline" : "solid"}>
-                    {row.original.is_fixed_term ? "Déterminée" : "Indéterminée"}
+                    {row.original.is_fixed_term ? tr("Déterminée") : tr("Indéterminée")}
                 </Badge>
             ),
         },
         { id: "is_active", header: "Statut", enableSorting: false, cell: ({ row }) => <ActiveBadge active={row.original.is_active} /> },
         {
             id: "actions",
-            header: () => <span className="sr-only">Actions</span>,
+            header: () => <span className="sr-only">{t("Actions")}</span>,
             enableSorting: false,
             cell: ({ row }) => <TypeActions type={row.original} />,
         },
@@ -150,7 +153,7 @@ export function ContractTypesPage() {
                                 <TypeActions type={row} />
                             </div>
                             <div className="flex flex-wrap gap-2">
-                                <Badge tone="outline">{row.is_fixed_term ? "Déterminée" : "Indéterminée"}</Badge>
+                                <Badge tone="outline">{tr(row.is_fixed_term ? "Déterminée" : "Indéterminée")}</Badge>
                                 <ActiveBadge active={row.is_active} />
                             </div>
                         </div>
@@ -174,9 +177,9 @@ export function ContractTypesPage() {
                 message={
                     <>
                         <p>
-                            Supprimer le type <strong>{deleting?.name}</strong> est irréversible.
+                            <Trans i18nKey="Supprimer le type <strong>{{name}}</strong> est irréversible." values={{ name: deleting?.name ?? "" }} components={{ strong: <strong /> }} />
                         </p>
-                        <p className="mt-2 text-sm text-gray-dark">Si des contrats l'utilisent, la suppression sera refusée : désactivez-le plutôt.</p>
+                        <p className="mt-2 text-sm text-gray-dark">{t("Si des contrats l'utilisent, la suppression sera refusée : désactivez-le plutôt.")}</p>
                     </>
                 }
                 confirmLabel="Supprimer"

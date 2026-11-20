@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { Trans } from "react-i18next";
 import { Alert, Button, DateField, Modal, ModalForm } from "@/components/ui";
 import { todayISO } from "@/lib/format";
 import { applyApiErrors } from "@/lib/forms";
@@ -54,7 +55,7 @@ function TerminateBody({ contract, onClose, onSaved }: BodyProps) {
             }
         >
             <Alert tone="warning" title="Opération irréversible">
-                La rupture met fin au contrat <strong>{contract.reference}</strong> à la date choisie, avant son terme prévu.
+                <Trans i18nKey="La rupture met fin au contrat <strong>{{reference}}</strong> à la date choisie, avant son terme prévu." values={{ reference: contract.reference }} components={{ strong: <strong /> }} />
             </Alert>
             {messages.length > 0 && (
                 <Alert tone="error">

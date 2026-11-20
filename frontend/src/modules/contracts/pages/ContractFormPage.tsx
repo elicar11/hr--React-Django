@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router";
 import { z } from "zod";
+import { Trans, useTranslation } from "react-i18next";
 import {
     Alert,
     Button,
@@ -47,6 +48,7 @@ const FIELDS = [
 ] as const;
 
 function ContractFormBody({ contract, initialEmployee }: { contract: Contract | null; initialEmployee: PickedEmployee | null }) {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const creating = contract === null;
     const [employee, setEmployee] = useState<PickedEmployee | null>(initialEmployee);
@@ -120,7 +122,7 @@ function ContractFormBody({ contract, initialEmployee }: { contract: Contract | 
     return (
         <>
             <PageHeader
-                title={creating ? "Nouveau contrat" : `Modifier ${contract.reference}`}
+                title={creating ? "Nouveau contrat" : t("Modifier {{name}}", { name: contract.reference })}
                 breadcrumb={[
                     { label: "Contrats", to: "/contracts" },
                     ...(creating ? [] : [{ label: contract.reference, to: `/contracts/${contract.id}` }]),
@@ -130,7 +132,7 @@ function ContractFormBody({ contract, initialEmployee }: { contract: Contract | 
 
             <form noValidate onSubmit={handleSubmit(onSubmit)} className="max-w-4xl space-y-6">
                 {creating ? (
-                    <Alert tone="info">Le contrat est créé en <strong>brouillon</strong> : il reste modifiable jusqu'à sa signature.</Alert>
+                    <Alert tone="info"><Trans i18nKey="Le contrat est créé en <strong>brouillon</strong> : il reste modifiable jusqu'à sa signature." components={{ strong: <strong /> }} /></Alert>
                 ) : (
                     <Alert tone="info">Seul un brouillon est modifiable. L'employé d'un contrat ne peut pas être changé.</Alert>
                 )}
@@ -170,8 +172,7 @@ function ContractFormBody({ contract, initialEmployee }: { contract: Contract | 
                             .filter((type) => type.is_active || type.id === contract?.contract_type)
                             .map((type) => (
                                 <option key={type.id} value={type.id}>
-                                    {type.code} · {type.name}
-                                    {type.is_fixed_term ? " (durée déterminée)" : ""}
+                                    {`${type.code} · ${type.name}${type.is_fixed_term ? ` (${t("durée déterminée")})` : ""}`}
                                 </option>
                             ))}
                     </Select>
@@ -207,7 +208,7 @@ function ContractFormBody({ contract, initialEmployee }: { contract: Contract | 
                         Enregistrer
                     </Button>
                     <Link to={creating ? "/contracts" : `/contracts/${contract.id}`} className={buttonStyles({ variant: "secondary" })}>
-                        Annuler
+                        {t("Annuler")}
                     </Link>
                 </div>
             </form>
@@ -217,6 +218,7 @@ function ContractFormBody({ contract, initialEmployee }: { contract: Contract | 
 
 /** Create (`/contracts/new`, optional `?employee=ID`) and edit (`/contracts/:id/edit`, drafts only). */
 export function ContractFormPage() {
+    const { t } = useTranslation();
     const { id } = useParams();
     const [searchParams] = useSearchParams();
     const contractId = id ? Number(id) : null;
@@ -238,7 +240,7 @@ export function ContractFormPage() {
                         icon={FileX}
                         title={contractQuery.error.status === 404 ? "Contrat introuvable" : "Chargement impossible"}
                         description={contractQuery.error.message}
-                        action={<Link to="/contracts" className={buttonStyles()}>Retour à la liste</Link>}
+                        action={<Link to="/contracts" className={buttonStyles()}>{t("Retour à la liste")}</Link>}
                     />
                 </>
             );
@@ -247,12 +249,12 @@ export function ContractFormPage() {
         if (contractQuery.data.status !== "DRAFT") {
             return (
                 <>
-                    <PageHeader title={`Contrat ${contractQuery.data.reference}`} />
+                    <PageHeader title={t("Contrat {{reference}}", { reference: contractQuery.data.reference })} />
                     <EmptyState
                         icon={FileX}
                         title="Ce contrat n'est plus modifiable"
                         description="Seul un brouillon peut être modifié. Pour changer les conditions d'un contrat en cours, renouvelez-le."
-                        action={<Link to={`/contracts/${contractQuery.data.id}`} className={buttonStyles()}>Voir le contrat</Link>}
+                        action={<Link to={`/contracts/${contractQuery.data.id}`} className={buttonStyles()}>{t("Voir le contrat")}</Link>}
                     />
                 </>
             );

@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { Trans } from "react-i18next";
 import { Alert, Button, DateField, Modal, ModalForm } from "@/components/ui";
 import { todayISO } from "@/lib/format";
 import { applyApiErrors } from "@/lib/forms";
@@ -54,8 +55,7 @@ function ActivateBody({ contract, onClose, onSaved }: BodyProps) {
             }
         >
             <Alert tone="warning" title="Les conditions seront figées">
-                Une fois signé, le contrat <strong>{contract.reference}</strong> n'est plus modifiable : pour changer ses
-                conditions, il faudra le renouveler. S'il en renouvelle un autre, celui-ci prend fin la veille de son début.
+                <Trans i18nKey="Une fois signé, le contrat <strong>{{reference}}</strong> n'est plus modifiable : pour changer ses conditions, il faudra le renouveler. S'il en renouvelle un autre, celui-ci prend fin la veille de son début." values={{ reference: contract.reference }} components={{ strong: <strong /> }} />
             </Alert>
             {messages.length > 0 && (
                 <Alert tone="error">

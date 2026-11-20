@@ -1,5 +1,6 @@
 import { FileText, Plus, Tags } from "lucide-react";
 import { Link } from "react-router";
+import { useTranslation } from "react-i18next";
 import {
     Alert,
     Button,
@@ -28,6 +29,7 @@ const VIEWS = [
 ];
 
 function AllContractsView({ list }: { list: ListParams }) {
+    const { t } = useTranslation();
     const params = {
         page: list.page,
         search: list.search || undefined,
@@ -95,7 +97,7 @@ function AllContractsView({ list }: { list: ListParams }) {
                                 description="Créez d'abord un type de contrat, puis le premier contrat."
                                 action={
                                     <Link to="/contracts/new" className={buttonStyles()}>
-                                        Créer un contrat
+                                        {t("Créer un contrat")}
                                     </Link>
                                 }
                             />
@@ -109,6 +111,7 @@ function AllContractsView({ list }: { list: ListParams }) {
 }
 
 function ExpiringContractsView({ list }: { list: ListParams }) {
+    const { t } = useTranslation();
     const days = list.filters.days;
     const params = { page: list.page, days: days || undefined };
     const query = useApiQuery(["contracts-expiring", params], (signal) => listExpiringContracts(params, signal));
@@ -122,7 +125,7 @@ function ExpiringContractsView({ list }: { list: ListParams }) {
                     <option value="180">180 prochains jours</option>
                 </Select>
                 <p className="self-center text-sm text-gray-dark">
-                    Contrats en cours dont la fin approche, ou dont la date de fin est dépassée (à clôturer).
+                    {t("Contrats en cours dont la fin approche, ou dont la date de fin est dépassée (à clôturer).")}
                 </p>
             </FilterBar>
 
@@ -146,6 +149,7 @@ function ExpiringContractsView({ list }: { list: ListParams }) {
 }
 
 export function ContractsPage() {
+    const { t } = useTranslation();
     const list = useListParams(["status", "contract_type", "employee", "end_date_from", "end_date_to", "days"]);
     const view = list.getParam("view") === "expiring" ? "expiring" : "all";
 
@@ -158,11 +162,11 @@ export function ContractsPage() {
                     <>
                         <Link to="/contract-types" className={buttonStyles({ variant: "secondary" })}>
                             <Tags className="size-4" aria-hidden="true" />
-                            Types de contrat
+                            {t("Types de contrat")}
                         </Link>
                         <Link to="/contracts/new" className={buttonStyles()}>
                             <Plus className="size-4" aria-hidden="true" />
-                            Nouveau contrat
+                            {t("Nouveau contrat")}
                         </Link>
                     </>
                 }

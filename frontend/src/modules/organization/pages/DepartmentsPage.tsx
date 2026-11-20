@@ -2,6 +2,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { Building2, List, Network, Plus, Power, PowerOff, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
+import { Trans, useTranslation } from "react-i18next";
 import {
     ActiveBadge,
     Alert,
@@ -38,6 +39,7 @@ const VIEWS = [
 ];
 
 export function DepartmentsPage() {
+    const { t } = useTranslation();
     const list = useListParams(["is_active", "parent"]);
     const view = list.getParam("view") === "tree" ? "tree" : "list";
 
@@ -92,7 +94,7 @@ export function DepartmentsPage() {
         { id: "is_active", header: "Statut", enableSorting: false, cell: ({ row }) => <ActiveBadge active={row.original.is_active} /> },
         {
             id: "actions",
-            header: () => <span className="sr-only">Actions</span>,
+            header: () => <span className="sr-only">{t("Actions")}</span>,
             enableSorting: false,
             cell: ({ row }) => <DepartmentActions department={row.original} />,
         },
@@ -101,7 +103,7 @@ export function DepartmentsPage() {
     function DepartmentActions({ department }: { department: Department }) {
         return (
             <RowActions
-                label={`Actions pour ${department.name}`}
+                label={t("Actions pour {{name}}", { name: department.name })}
                 items={[
                     { label: "Modifier", icon: Pencil, onSelect: () => setEditing(department) },
                     department.is_active
@@ -192,14 +194,14 @@ export function DepartmentsPage() {
                                 <div className="flex items-start justify-between gap-3">
                                     <div>
                                         <p className="font-bold">{row.code} · {row.name}</p>
-                                        <p className="text-sm text-gray-dark">{row.parent_name ? `Rattaché à ${row.parent_name}` : "Département racine"}</p>
+                                        <p className="text-sm text-gray-dark">{row.parent_name ? t("Rattaché à {{name}}", { name: row.parent_name }) : t("Département racine")}</p>
                                     </div>
                                     <DepartmentActions department={row} />
                                 </div>
                                 <div className="flex flex-wrap items-center gap-3 text-sm">
                                     <ActiveBadge active={row.is_active} />
-                                    <span>{row.employees_count} employé(s)</span>
-                                    <span>{row.positions_count} poste(s)</span>
+                                    <span>{t("{{count}} employé", { count: row.employees_count })}</span>
+                                    <span>{t("{{count}} poste", { count: row.positions_count })}</span>
                                 </div>
                             </div>
                         )}
@@ -226,8 +228,8 @@ export function DepartmentsPage() {
                 title="Désactiver ce département ?"
                 message={
                     <>
-                        Le département <strong>{toggling?.name}</strong> ne pourra plus recevoir de nouveaux employés ni de nouveaux postes.
-                        Il reste consultable et peut être réactivé.
+                        <Trans i18nKey="Le département <strong>{{name}}</strong> ne pourra plus recevoir de nouveaux employés ni de nouveaux postes." values={{ name: toggling?.name ?? "" }} components={{ strong: <strong /> }} />{" "}
+                        {t("Il reste consultable et peut être réactivé.")}
                     </>
                 }
                 confirmLabel="Désactiver"
@@ -247,11 +249,10 @@ export function DepartmentsPage() {
                 message={
                     <>
                         <p>
-                            Supprimer le département <strong>{deleting?.name}</strong> est irréversible.
+                            <Trans i18nKey="Supprimer le département <strong>{{name}}</strong> est irréversible." values={{ name: deleting?.name ?? "" }} components={{ strong: <strong /> }} />
                         </p>
                         <p className="mt-2 text-sm text-gray-dark">
-                            Si des sous-départements, des postes ou des employés y sont rattachés, la suppression sera refusée :
-                            désactivez-le plutôt.
+                            {t("Si des sous-départements, des postes ou des employés y sont rattachés, la suppression sera refusée : désactivez-le plutôt.")}
                         </p>
                     </>
                 }

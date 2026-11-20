@@ -1,5 +1,6 @@
 import { Clock, FileText, FileX, Pencil, Repeat, Trash2, XCircle, CircleCheck, History } from "lucide-react";
 import { useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router";
 import {
     Alert,
@@ -33,6 +34,7 @@ const TABS = [
 type Dialog = "activate" | "renew" | "terminate" | "delete" | null;
 
 export function ContractDetailPage() {
+    const { t } = useTranslation();
     const { id } = useParams();
     const contractId = Number(id);
     const navigate = useNavigate();
@@ -53,7 +55,7 @@ export function ContractDetailPage() {
                     icon={FileX}
                     title={query.error.status === 404 ? "Contrat introuvable" : "Chargement impossible"}
                     description={query.error.message}
-                    action={<Link to="/contracts" className={buttonStyles()}>Retour à la liste</Link>}
+                    action={<Link to="/contracts" className={buttonStyles()}>{t("Retour à la liste")}</Link>}
                 />
             </>
         );
@@ -66,7 +68,7 @@ export function ContractDetailPage() {
     return (
         <>
             <PageHeader
-                title={`Contrat ${contract.reference}`}
+                title={t("Contrat {{reference}}", { reference: contract.reference })}
                 breadcrumb={[{ label: "Contrats", to: "/contracts" }, { label: contract.reference }]}
                 actions={
                     <>
@@ -74,13 +76,13 @@ export function ContractDetailPage() {
                             <>
                                 <Link to={`/contracts/${contract.id}/edit`} className={buttonStyles({ variant: "secondary" })}>
                                     <Pencil className="size-4" aria-hidden="true" />
-                                    Modifier
+                                    {t("Modifier")}
                                 </Link>
                                 <Button onClick={() => setDialog("activate")} leftIcon={<CircleCheck className="size-4" aria-hidden="true" />}>
-                                    Activer
+                                    {t("Activer")}
                                 </Button>
                                 <Button variant="danger" onClick={() => setDialog("delete")} leftIcon={<Trash2 className="size-4" aria-hidden="true" />}>
-                                    Supprimer
+                                    {t("Supprimer")}
                                 </Button>
                             </>
                         )}
@@ -88,11 +90,11 @@ export function ContractDetailPage() {
                             <>
                                 {contract.renewed_by === null && (
                                     <Button variant="secondary" onClick={() => setDialog("renew")} leftIcon={<Repeat className="size-4" aria-hidden="true" />}>
-                                        Renouveler
+                                        {t("Renouveler")}
                                     </Button>
                                 )}
                                 <Button variant="danger" onClick={() => setDialog("terminate")} leftIcon={<XCircle className="size-4" aria-hidden="true" />}>
-                                    Rompre
+                                    {t("Rompre")}
                                 </Button>
                             </>
                         )}
@@ -107,7 +109,7 @@ export function ContractDetailPage() {
             )}
             {!isDraft && (
                 <Alert tone="info" className="mb-4">
-                    Les conditions de ce contrat sont figées. {isRunning ? "Pour les changer, renouvelez-le." : ""}
+                    {t("Les conditions de ce contrat sont figées.")} {isRunning ? t("Pour les changer, renouvelez-le.") : ""}
                 </Alert>
             )}
 
@@ -130,8 +132,8 @@ export function ContractDetailPage() {
                         { label: "Poste", value: contract.position_title },
                         { label: "Rémunération de base", value: formatMoney(contract.base_salary, contract.currency) },
                         { label: "Date de début", value: formatDate(contract.start_date) },
-                        { label: "Date de fin", value: contract.end_date ? formatDate(contract.end_date) : "Durée indéterminée" },
-                        { label: "Période d'essai", value: contract.probation_days ? `${contract.probation_days} jours` : "" },
+                        { label: "Date de fin", value: contract.end_date ? formatDate(contract.end_date) : t("Durée indéterminée") },
+                        { label: "Période d'essai", value: contract.probation_days ? t("{{count}} jour", { count: contract.probation_days }) : "" },
                         { label: "Date de signature", value: formatDate(contract.signed_date) },
                         ...(contract.renews
                             ? [
@@ -139,7 +141,7 @@ export function ContractDetailPage() {
                                     label: "Renouvelle",
                                     value: (
                                         <Link to={`/contracts/${contract.renews}`} className="underline underline-offset-4 hover:bg-ink hover:text-paper">
-                                            Voir le contrat précédent
+                                            {t("Voir le contrat précédent")}
                                         </Link>
                                     ),
                                 },
@@ -151,7 +153,7 @@ export function ContractDetailPage() {
                                     label: "Renouvelé par",
                                     value: (
                                         <Link to={`/contracts/${contract.renewed_by}`} className="underline underline-offset-4 hover:bg-ink hover:text-paper">
-                                            Voir le renouvellement
+                                            {t("Voir le renouvellement")}
                                         </Link>
                                     ),
                                 },
@@ -163,8 +165,8 @@ export function ContractDetailPage() {
                     <p className="mt-4 flex items-center gap-2 text-sm font-bold">
                         <Clock className="size-4" aria-hidden="true" />
                         {contract.days_remaining < 0
-                            ? `Date de fin dépassée de ${Math.abs(contract.days_remaining)} jour(s) : le contrat sera clôturé automatiquement.`
-                            : `${contract.days_remaining} jour(s) avant la fin.`}
+                            ? t("Date de fin dépassée de {{count}} jour : le contrat sera clôturé automatiquement.", { count: Math.abs(contract.days_remaining) })
+                            : t("{{count}} jour avant la fin.", { count: contract.days_remaining })}
                     </p>
                 )}
             </Card>
@@ -203,8 +205,7 @@ export function ContractDetailPage() {
                 title="Supprimer ce brouillon ?"
                 message={
                     <>
-                        Le brouillon <strong>{contract.reference}</strong> sera définitivement supprimé, avec ses documents. Un contrat
-                        signé ne peut pas être supprimé.
+                        <Trans i18nKey="Le brouillon <strong>{{reference}}</strong> sera définitivement supprimé, avec ses documents. Un contrat signé ne peut pas être supprimé." values={{ reference: contract.reference }} components={{ strong: <strong /> }} />
                     </>
                 }
                 confirmLabel="Supprimer"
