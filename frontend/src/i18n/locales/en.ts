@@ -9,6 +9,7 @@ import { enPayroll } from "./en.payroll";
 import { enAdmin } from "./en.admin";
 import { enAudit } from "./en.audit";
 import { enApi } from "./en.api";
+import { enRemaining } from "./en.remaining";
 
 export const en: Record<string, string> = {
     // --- Navigation ---------------------------------------------------------------------------------------
@@ -53,4 +54,5 @@ export const en: Record<string, string> = {
     ...enAdmin,
     ...enAudit,
     ...enApi,
+    ...enRemaining,
 };

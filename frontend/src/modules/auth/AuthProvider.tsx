@@ -5,6 +5,7 @@ import { refreshAccessToken } from "./services/refreshAccessToken";
 import * as authService from "./services/authService";
 import { clearAccessToken, getAccessToken, setAccessToken } from "./tokenStore";
 import type { User } from "./types";
+import i18n from "@/i18n";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [status, setStatus] = useState<AuthStatus>("loading");
@@ -43,7 +44,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         setSessionExpiredHandler(() => {
             // No token = the user already logged out: nothing to announce.
-            if (getAccessToken() !== null) endSession("Votre session a expiré. Veuillez vous reconnecter.");
+            if (getAccessToken() !== null) endSession(i18n.t("Votre session a expiré. Veuillez vous reconnecter."));
         });
         return () => setSessionExpiredHandler(null);
     }, [endSession]);

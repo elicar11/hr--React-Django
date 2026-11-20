@@ -69,7 +69,7 @@ function ImportBody({ onClose, onImported }: { onClose: () => void; onImported: 
         setError(null);
         try {
             const result = await importEmployees(file, false);
-            notify.success(`${result.created} employé(s) importé(s)`);
+            notify.success(t("{{count}} employé importé", { count: result.created }));
             onImported();
             onClose();
         } catch (failure) {

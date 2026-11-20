@@ -106,10 +106,7 @@ export function MyProfilePage() {
             </div>
 
             <Alert tone="info" className="mb-6">
-                Ces informations sont gérées par les ressources humaines : pour corriger une donnée, contactez-les. Votre mot de passe se
-                change dans{" "}
                 <Trans i18nKey="Ces informations sont gérées par les ressources humaines : pour corriger une donnée, contactez-les. Votre mot de passe se change dans <lien>Mon compte</lien>." components={{ lien: <Link to="/profile" className="font-bold underline underline-offset-4" /> }} />
-                .
             </Alert>
 
             <div className="grid gap-6 lg:grid-cols-2">

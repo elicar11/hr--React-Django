@@ -17,6 +17,8 @@ export const fr: Record<string, string> = {
     "{{count}} résultat : affinez votre recherche._other": "{{count}} résultats : affinez votre recherche.",
     "{{count}} employé_one": "{{count}} employé",
     "{{count}} employé_other": "{{count}} employés",
+    "{{count}} employé importé_one": "{{count}} employé importé",
+    "{{count}} employé importé_other": "{{count}} employés importés",
     "{{count}} poste_one": "{{count}} poste",
     "{{count}} poste_other": "{{count}} postes",
     "{{count}} jour restant_one": "{{count}} jour restant",

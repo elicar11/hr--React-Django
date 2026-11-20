@@ -223,7 +223,7 @@ export function PeriodDetailPage() {
                 {payslips.error && <Alert tone="error">{payslips.error.message}</Alert>}
                 <div aria-busy={payslips.loading || undefined} className={payslips.loading && payslips.data ? "opacity-60" : undefined}>
                     <PayslipsTable
-                        caption={`Bulletins de la période ${period.code}`}
+                        caption={t("Bulletins de la période {{code}}", { code: period.code })}
                         rows={payslips.data?.results ?? []}
                         loading={payslips.loading && !payslips.data}
                         showEmployee
