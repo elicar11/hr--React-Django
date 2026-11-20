@@ -1,22 +1,24 @@
 // Pure decoration: no figures, so it cannot be mistaken for real data.
+import { useTranslation } from "react-i18next";
 const HATCH = "repeating-linear-gradient(45deg, #000 0 2px, #fff 2px 7px)";
 const BARS = [55, 80, 45, 100, 70, 90];
 const TILES = ["Effectif", "Présences", "Congés"];
 
 export function HeroPreview() {
+    const { t } = useTranslation();
     return (
         <div aria-hidden="true" className="border-2 border-ink bg-paper shadow-hard-lg">
             <div className="flex items-center gap-2 border-b-2 border-ink bg-ink px-3 py-2">
                 <span className="size-3 border-2 border-paper" />
                 <span className="size-3 border-2 border-paper" />
                 <span className="size-3 border-2 border-paper" />
-                <span className="ml-2 text-xs font-bold uppercase tracking-widest text-paper">Tableau de bord</span>
+                <span className="ml-2 text-xs font-bold uppercase tracking-widest text-paper">{t("Tableau de bord")}</span>
             </div>
 
             <div className="grid grid-cols-3 gap-3 p-4">
                 {TILES.map((label) => (
                     <div key={label} className="space-y-2 border-2 border-ink p-3">
-                        <p className="text-[10px] font-bold uppercase tracking-widest">{label}</p>
+                        <p className="text-[10px] font-bold uppercase tracking-widest">{t(label)}</p>
                         <div className="h-6 bg-ink" />
                         <div className="h-2 bg-gray-mid" />
                     </div>

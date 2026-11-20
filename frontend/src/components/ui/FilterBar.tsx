@@ -1,6 +1,7 @@
 import { RotateCcw } from "lucide-react";
 import type { ReactNode } from "react";
 import { Button } from "./Button";
+import { tr } from "@/i18n/translate";
 
 export function FilterBar({
     children,
@@ -13,7 +14,7 @@ export function FilterBar({
     canReset?: boolean;
 }) {
     return (
-        <div role="group" aria-label="Filtres" className="mb-4 flex flex-wrap items-end gap-3 border-2 border-ink bg-gray-light p-4">
+        <div role="group" aria-label={tr("Filtres")} className="mb-4 flex flex-wrap items-end gap-3 border-2 border-ink bg-gray-light p-4">
             {children}
             {onReset && canReset && (
                 <Button size="sm" variant="secondary" onClick={onReset} leftIcon={<RotateCcw className="size-4" aria-hidden="true" />}>

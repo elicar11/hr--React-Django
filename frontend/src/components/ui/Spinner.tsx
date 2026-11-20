@@ -1,4 +1,5 @@
 import { cx } from "@/lib/cx";
+import { tr } from "@/i18n/translate";
 
 const SIZES = { sm: "size-4", md: "size-6", lg: "size-10" } as const;
 
@@ -15,7 +16,7 @@ export function Spinner({
                 aria-hidden="true"
                 className={cx("inline-block animate-spin border-2 border-current border-t-transparent", SIZES[size])}
             />
-            <span className="sr-only">{label}</span>
+            <span className="sr-only">{tr(label)}</span>
         </span>
     );
 }

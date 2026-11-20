@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { z } from "zod";
+import { tr } from "@/i18n/translate";
 import { Alert, Button, Card, DefinitionList, PageHeader, PasswordField } from "@/components/ui";
 import { toApiError } from "@/lib/api";
 import { formatDate, formatDateTime } from "@/lib/format";
@@ -58,9 +59,9 @@ export function ProfilePage() {
                 <Card title="Informations">
                     <DefinitionList
                         items={[
-                            { label: "Nom", value: `${user.first_name} ${user.last_name}` },
+                            { label: "Nom complet", value: `${user.first_name} ${user.last_name}` },
                             { label: "Adresse e-mail", value: user.email },
-                            { label: "Rôle", value: ROLE_LABELS[user.role] },
+                            { label: "Rôle", value: tr(ROLE_LABELS[user.role]) },
                             { label: "Dernière connexion", value: formatDateTime(user.last_login) },
                             { label: "Compte créé le", value: formatDate(user.date_joined) },
                         ]}

@@ -2,6 +2,7 @@ import { Search, X } from "lucide-react";
 import { useId } from "react";
 import { cx } from "@/lib/cx";
 import { controlClass } from "./fieldStyles";
+import { tr } from "@/i18n/translate";
 
 export function SearchInput({
     value,
@@ -20,7 +21,7 @@ export function SearchInput({
     return (
         <div role="search" className={cx("relative", className)}>
             <label htmlFor={id} className="sr-only">
-                {label}
+                {tr(label)}
             </label>
             <Search className="pointer-events-none absolute left-3 top-1/2 size-5 -translate-y-1/2" aria-hidden="true" />
             <input
@@ -28,13 +29,13 @@ export function SearchInput({
                 type="search"
                 value={value}
                 onChange={(event) => onChange(event.target.value)}
-                placeholder={placeholder}
+                placeholder={tr(placeholder)}
                 className={cx(controlClass(), "pl-10 pr-10 [&::-webkit-search-cancel-button]:appearance-none")}
             />
             {value && (
                 <button
                     type="button"
-                    aria-label="Effacer la recherche"
+                    aria-label={tr("Effacer la recherche")}
                     onClick={() => onChange("")}
                     className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-ink hover:text-paper"
                 >

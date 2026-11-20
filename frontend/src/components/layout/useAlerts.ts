@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import i18n from "@/i18n";
 import { useSession } from "@/modules/auth/sessionContext";
 import { getEmployeeDashboard, getHrDashboard } from "@/modules/dashboard/services/dashboardService";
 import type { EmployeeDashboard, HrDashboard } from "@/modules/dashboard/types";
@@ -18,24 +19,24 @@ function staffAlerts(data: HrDashboard): AlertItem[] {
     if (kpis.pending_leave_requests > 0) {
         alerts.push({
             id: "pending-leaves",
-            title: `${kpis.pending_leave_requests} demande(s) de congé en attente`,
-            description: "À valider",
+            title: i18n.t("{{count}} demande de congé en attente", { count: kpis.pending_leave_requests }),
+            description: i18n.t("À valider"),
             to: "/leaves?status=PENDING",
         });
     }
     if (kpis.contracts_overdue > 0) {
         alerts.push({
             id: "overdue-contracts",
-            title: `${kpis.contracts_overdue} contrat(s) à clôturer`,
-            description: "La date de fin est dépassée",
+            title: i18n.t("{{count}} contrat à clôturer", { count: kpis.contracts_overdue }),
+            description: i18n.t("La date de fin est dépassée"),
             to: "/contracts?view=expiring",
         });
     }
     if (kpis.contracts_expiring_soon > 0) {
         alerts.push({
             id: "expiring-contracts",
-            title: `${kpis.contracts_expiring_soon} contrat(s) arrivent à échéance`,
-            description: `Dans les ${kpis.contract_alert_days} prochains jours`,
+            title: i18n.t("{{count}} contrat arrive à échéance", { count: kpis.contracts_expiring_soon }),
+            description: i18n.t("Dans les {{days}} prochains jours", { days: kpis.contract_alert_days }),
             to: "/contracts?view=expiring",
         });
     }
@@ -47,8 +48,8 @@ function employeeAlerts(data: EmployeeDashboard): AlertItem[] {
     if (data.today.is_working_day && !data.today.record) {
         alerts.push({
             id: "clock-in",
-            title: "Pointage du jour",
-            description: "Vous n'avez pas encore pointé votre entrée.",
+            title: i18n.t("Pointage du jour"),
+            description: i18n.t("Vous n'avez pas encore pointé votre entrée."),
             to: "/",
         });
     }

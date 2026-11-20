@@ -2,6 +2,7 @@ import { useId, useRef, useState, type ChangeEvent } from "react";
 import { Button } from "./Button";
 import { FieldShell } from "./FieldShell";
 import { describedBy } from "./fieldStyles";
+import { useTranslation } from "react-i18next";
 
 export interface FileUploadProps {
     label: string;
@@ -16,17 +17,20 @@ export interface FileUploadProps {
 }
 
 export function FileUpload({ label, hint, error, accept, maxSizeMb = 5, file, onChange, required }: FileUploadProps) {
+    const { t } = useTranslation();
     const id = useId();
     const inputRef = useRef<HTMLInputElement>(null);
     const [localError, setLocalError] = useState<string>();
     const message = error ?? localError;
-    const help = hint ?? (accept ? `Formats : ${accept}. ${maxSizeMb} Mo maximum.` : `${maxSizeMb} Mo maximum.`);
+    const help = hint ?? (accept
+        ? t("Formats : {{accept}}. {{size}} Mo maximum.", { accept, size: maxSizeMb })
+        : t("{{size}} Mo maximum.", { size: maxSizeMb }));
 
     function handleChange(event: ChangeEvent<HTMLInputElement>) {
         const selected = event.target.files?.[0] ?? null;
         // UX only: the API validates type, content and size again.
         if (selected && selected.size > maxSizeMb * 1024 * 1024) {
-            setLocalError(`Le fichier dépasse ${maxSizeMb} Mo.`);
+            setLocalError(t("Le fichier dépasse {{size}} Mo.", { size: maxSizeMb }));
             event.target.value = "";
             onChange(null);
             return;

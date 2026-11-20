@@ -37,7 +37,7 @@ export function Checkbox({ id, label, hint, error, className, ...props }: Checkb
                 >
                     <Check className="size-4 text-paper opacity-0" />
                 </span>
-                <span className="font-medium">{label}</span>
+                <span className="font-medium">{tr(label)}</span>
             </label>
             {hint && !error && (
                 <p id={`${fieldId}-hint`} className="pl-8 text-sm text-gray-dark">

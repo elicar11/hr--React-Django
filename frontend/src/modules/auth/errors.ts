@@ -1,4 +1,5 @@
 import type { ApiError } from "@/lib/api";
+import i18n from "@/i18n";
 
 /** Seconds to wait, as sent by the API on a 429 (`details.retry_after`). */
 export function retryAfterSeconds(error: ApiError): number | undefined {
@@ -13,6 +14,6 @@ export function retryAfterSeconds(error: ApiError): number | undefined {
 export function throttleMessage(error: ApiError): string {
     const seconds = retryAfterSeconds(error);
     return seconds
-        ? `Trop de tentatives. Réessayez dans ${seconds} seconde${seconds > 1 ? "s" : ""}.`
-        : "Trop de tentatives. Réessayez dans quelques instants.";
+        ? i18n.t("Trop de tentatives. Réessayez dans {{count}} seconde", { count: seconds })
+        : i18n.t("Trop de tentatives. Réessayez dans quelques instants.");
 }

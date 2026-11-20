@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate, useSearchParams } from "react-router";
 import { z } from "zod";
+import { useTranslation } from "react-i18next";
 import { Alert, Button, PasswordField } from "@/components/ui";
 import { toApiError } from "@/lib/api";
 import { applyApiErrors } from "@/lib/forms";
@@ -22,11 +23,10 @@ const schema = z
     });
 type ResetForm = z.infer<typeof schema>;
 
-const newLink = (
-    <Link to="/forgot-password" className="font-bold underline underline-offset-4 hover:bg-ink hover:text-paper">
-        Demander un nouveau lien
-    </Link>
-);
+function NewLink() {
+    const { t } = useTranslation();
+    return <Link to="/forgot-password" className="font-bold underline underline-offset-4 hover:bg-ink hover:text-paper">{t("Demander un nouveau lien")}</Link>;
+}
 
 export function ResetPasswordPage() {
     const [params] = useSearchParams();
@@ -61,7 +61,7 @@ export function ResetPasswordPage() {
 
     if (!uid || !token) {
         return (
-            <AuthLayout title="Lien invalide" footer={newLink}>
+            <AuthLayout title="Lien invalide" footer={<NewLink />}>
                 <Alert tone="error">Ce lien de réinitialisation est incomplet. Utilisez le lien reçu par e-mail.</Alert>
             </AuthLayout>
         );
@@ -71,7 +71,7 @@ export function ResetPasswordPage() {
         <AuthLayout
             title="Nouveau mot de passe"
             description="Choisissez un mot de passe robuste : 8 caractères minimum, ni uniquement numérique, ni trop courant."
-            footer={linkInvalid ? newLink : undefined}
+            footer={linkInvalid ? <NewLink /> : undefined}
         >
             {messages.length > 0 && (
                 <Alert tone="error">

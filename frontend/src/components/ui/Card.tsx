@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { cx } from "@/lib/cx";
+import { tr } from "@/i18n/translate";
 
 export function Card({
     title,
@@ -21,8 +22,8 @@ export function Card({
             {(title || actions) && (
                 <header className="flex flex-wrap items-center justify-between gap-3 border-b-2 border-ink px-5 py-4">
                     <div>
-                        {title && <h2 className="text-xl">{title}</h2>}
-                        {description && <p className="text-sm text-gray-dark">{description}</p>}
+                        {title && <h2 className="text-xl">{tr(title)}</h2>}
+                        {description && <p className="text-sm text-gray-dark">{tr(description)}</p>}
                     </div>
                     {actions}
                 </header>

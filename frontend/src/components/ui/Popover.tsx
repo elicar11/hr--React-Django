@@ -1,5 +1,6 @@
 import { useId, useRef, type ReactNode } from "react";
 import { cx } from "@/lib/cx";
+import { tr } from "@/i18n/translate";
 
 export interface PopoverProps {
     /** Accessible name of the button and of the panel. */
@@ -55,7 +56,7 @@ export function Popover({
                 type="button"
                 popoverTarget={id}
                 aria-haspopup={role}
-                aria-label={label}
+                aria-label={tr(label)}
                 className={triggerClassName}
             >
                 {trigger}
@@ -65,7 +66,7 @@ export function Popover({
                 id={id}
                 popover="auto"
                 role={role}
-                aria-label={label}
+                aria-label={tr(label)}
                 onToggle={(event) => {
                     if (event.newState !== "open") return;
                     place();

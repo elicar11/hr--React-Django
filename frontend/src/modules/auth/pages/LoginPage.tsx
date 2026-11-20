@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router";
 import { z } from "zod";
+import { useTranslation } from "react-i18next";
 import { Alert, Button, Input, PasswordField } from "@/components/ui";
 import { toApiError } from "@/lib/api";
 import { useAuth } from "../authContext";
@@ -14,6 +15,11 @@ const schema = z.object({
     password: z.string().min(1, "Le mot de passe est obligatoire."),
 });
 type LoginForm = z.infer<typeof schema>;
+
+function ForgotPasswordLink() {
+    const { t } = useTranslation();
+    return <Link to="/forgot-password" className="font-bold underline underline-offset-4 hover:bg-ink hover:text-paper">{t("Mot de passe oublié ?")}</Link>;
+}
 
 function loginErrorMessage(error: unknown): string {
     const apiError = toApiError(error);
@@ -72,9 +78,7 @@ export function LoginPage() {
                 </Button>
             </form>
             <p className="text-sm">
-                <Link to="/forgot-password" className="font-bold underline underline-offset-4 hover:bg-ink hover:text-paper">
-                    Mot de passe oublié ?
-                </Link>
+                <ForgotPasswordLink />
             </p>
         </AuthLayout>
     );

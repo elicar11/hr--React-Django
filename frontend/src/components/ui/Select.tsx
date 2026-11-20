@@ -48,8 +48,8 @@ export function Select({
                     className={cx(controlClass(error), "appearance-none pr-10")}
                     {...props}
                 >
-                    {placeholder !== undefined && <option value="">{placeholder}</option>}
-                    {children}
+                    {placeholder !== undefined && <option value="">{tr(placeholder)}</option>}
+                    {translateOptions(children)}
                 </select>
                 <ChevronDown
                     className="pointer-events-none absolute right-3 top-1/2 size-5 -translate-y-1/2"

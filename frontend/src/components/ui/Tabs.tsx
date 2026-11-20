@@ -1,6 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import type { KeyboardEvent, ReactNode } from "react";
 import { cx } from "@/lib/cx";
+import { tr } from "@/i18n/translate";
 
 export interface TabItem {
     id: string;
@@ -42,7 +43,7 @@ export function Tabs({
     return (
         <div
             role="tablist"
-            aria-label={label}
+            aria-label={tr(label)}
             onKeyDown={handleKeyDown}
             className="flex flex-wrap gap-0 border-b-2 border-ink"
         >
@@ -65,7 +66,7 @@ export function Tabs({
                         )}
                     >
                         {Icon && <Icon className="size-4" aria-hidden="true" />}
-                        {item.label}
+                        {tr(item.label)}
                     </button>
                 );
             })}

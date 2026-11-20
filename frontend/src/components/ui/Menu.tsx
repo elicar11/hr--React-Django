@@ -3,6 +3,7 @@ import type { KeyboardEvent, ReactNode } from "react";
 import { Link } from "react-router";
 import { cx } from "@/lib/cx";
 import { Popover } from "./Popover";
+import { tr } from "@/i18n/translate";
 
 export interface MenuItem {
     label: string;
@@ -65,7 +66,7 @@ export function Menu({
                         const content = (
                             <>
                                 {Icon && <Icon className="size-4 shrink-0" aria-hidden="true" />}
-                                {item.label}
+                                {tr(item.label)}
                             </>
                         );
                         return (

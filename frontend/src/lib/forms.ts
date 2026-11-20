@@ -1,5 +1,6 @@
 import type { FieldValues, Path, UseFormSetError } from "react-hook-form";
 import { toApiError } from "@/lib/api";
+import { tr } from "@/i18n/translate";
 
 /**
  * Puts the API validation errors on the matching form fields.
@@ -12,7 +13,9 @@ export function applyApiErrors<T extends FieldValues>(
 ): string[] {
     const apiError = toApiError(error);
     const entries = Object.entries(apiError.fieldErrors);
-    if (apiError.code !== "validation_error" || entries.length === 0) return [apiError.message];
+    if (apiError.code !== "validation_error" || entries.length === 0) {
+        return apiError.technical ? [apiError.message, `${tr("Détail technique")} : ${apiError.technical}`] : [apiError.message];
+    }
 
     const leftovers: string[] = [];
     for (const [field, messages] of entries) {

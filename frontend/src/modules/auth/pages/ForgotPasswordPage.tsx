@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router";
 import { z } from "zod";
+import { useTranslation } from "react-i18next";
 import { Alert, Button, Input } from "@/components/ui";
 import { toApiError } from "@/lib/api";
 import { AuthLayout } from "../../../components/AuthLayout";
@@ -12,11 +13,10 @@ import { requestPasswordReset } from "../services/authService";
 const schema = z.object({ email: z.email("Adresse e-mail invalide.") });
 type ForgotForm = z.infer<typeof schema>;
 
-const backLink = (
-    <Link to="/login" className="font-bold underline underline-offset-4 hover:bg-ink hover:text-paper">
-        Retour à la connexion
-    </Link>
-);
+function BackLink() {
+    const { t } = useTranslation();
+    return <Link to="/login" className="font-bold underline underline-offset-4 hover:bg-ink hover:text-paper">{t("Retour à la connexion")}</Link>;
+}
 
 export function ForgotPasswordPage() {
     const [sent, setSent] = useState(false);
@@ -42,7 +42,7 @@ export function ForgotPasswordPage() {
         <AuthLayout
             title="Mot de passe oublié"
             description="Saisissez votre adresse e-mail : si un compte actif correspond, vous recevrez un lien valable une heure."
-            footer={backLink}
+            footer={<BackLink />}
         >
             {sent ? (
                 <Alert tone="success" title="Demande envoyée">

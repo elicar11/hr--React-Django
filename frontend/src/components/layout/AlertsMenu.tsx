@@ -2,12 +2,14 @@ import { Bell } from "lucide-react";
 import { Link } from "react-router";
 import { Popover } from "@/components/ui/Popover";
 import { Spinner } from "@/components/ui/Spinner";
+import { useTranslation } from "react-i18next";
 import type { AlertItem } from "./useAlerts";
 
 export function AlertsMenu({ alerts, loading }: { alerts: AlertItem[]; loading: boolean }) {
+    const { t } = useTranslation();
     return (
         <Popover
-            label={alerts.length > 0 ? `Alertes (${alerts.length})` : "Alertes"}
+            label={alerts.length > 0 ? t("Alertes ({{count}})", { count: alerts.length }) : t("Alertes")}
             align="end"
             panelClassName="w-80 max-w-[calc(100vw-1rem)]"
             triggerClassName="relative border-2 border-ink bg-paper p-2 hover:bg-ink hover:text-paper"
@@ -28,14 +30,14 @@ export function AlertsMenu({ alerts, loading }: { alerts: AlertItem[]; loading: 
             {(close) => (
                 <div>
                     <p className="border-b-2 border-ink bg-ink px-4 py-2 text-sm font-bold uppercase tracking-wide text-paper">
-                        Alertes
+                        {t("Alertes")}
                     </p>
                     {loading ? (
                         <div className="flex justify-center p-6">
                             <Spinner />
                         </div>
                     ) : alerts.length === 0 ? (
-                        <p className="p-4 text-sm text-gray-dark">Aucune alerte pour le moment.</p>
+                        <p className="p-4 text-sm text-gray-dark">{t("Aucune alerte pour le moment.")}</p>
                     ) : (
                         <ul>
                             {alerts.map((alert) => (

@@ -3,6 +3,7 @@ import { useId, useState, type ComponentProps } from "react";
 import { cx } from "@/lib/cx";
 import { FieldShell } from "./FieldShell";
 import { controlClass, describedBy } from "./fieldStyles";
+import { tr } from "@/i18n/translate";
 
 export interface PasswordFieldProps extends Omit<ComponentProps<"input">, "id" | "type"> {
     id?: string;
@@ -32,7 +33,7 @@ export function PasswordField({ id, label, hint, error, required, className, ...
                 <button
                     type="button"
                     onClick={() => setVisible((current) => !current)}
-                    aria-label={visible ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                    aria-label={visible ? tr("Masquer le mot de passe") : tr("Afficher le mot de passe")}
                     aria-pressed={visible}
                     className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-ink hover:text-paper"
                 >

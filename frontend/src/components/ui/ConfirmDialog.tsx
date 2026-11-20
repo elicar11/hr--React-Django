@@ -3,6 +3,7 @@ import { notify } from "@/lib/notify";
 import { Button } from "./Button";
 import { Modal } from "./Modal";
 import { Textarea } from "./Textarea";
+import { trNode } from "@/i18n/translate";
 
 export interface ConfirmDialogProps {
     open: boolean;
@@ -51,7 +52,7 @@ function ConfirmBody({
     return (
         <>
             <div className="space-y-4 p-5">
-                <div>{message}</div>
+                <div>{trNode(message)}</div>
                 {reason && (
                     <Textarea
                         label={reason.label}

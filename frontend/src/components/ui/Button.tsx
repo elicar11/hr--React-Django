@@ -1,6 +1,7 @@
 import type { ComponentProps, ReactNode } from "react";
 import { buttonStyles, type ButtonSize, type ButtonVariant } from "./buttonStyles";
 import { Spinner } from "./Spinner";
+import { trNode } from "@/i18n/translate";
 
 export interface ButtonProps extends ComponentProps<"button"> {
     variant?: ButtonVariant;
@@ -29,7 +30,7 @@ export function Button({
             {...props}
         >
             {loading ? <Spinner size="sm" label="Chargement" /> : leftIcon}
-            {children}
+            {trNode(children)}
         </button>
     );
 }

@@ -9,4 +9,5 @@ logs/
 dist
 .env.local
 .env.*.local
-.vscode/
+.vscode/AGENT.md
+AGENT.md

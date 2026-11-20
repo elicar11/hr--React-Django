@@ -4,6 +4,7 @@ import {
     getSortedRowModel,
     useReactTable,
     type ColumnDef,
+    type HeaderContext,
     type OnChangeFn,
     type SortingState,
 } from "@tanstack/react-table";
@@ -12,6 +13,7 @@ import { useState, type ReactNode } from "react";
 import { cx } from "@/lib/cx";
 import { EmptyState } from "./EmptyState";
 import { Skeleton } from "./Skeleton";
+import { tr } from "@/i18n/translate";
 
 export interface DataTableProps<T> {
     /** Accessible name of the table. */
@@ -79,7 +81,7 @@ export function DataTable<T>({
     return (
         <>
             {renderMobileCard && (
-                <ul className="space-y-3 md:hidden" aria-label={caption} aria-busy={loading || undefined}>
+                <ul className="space-y-3 md:hidden" aria-label={tr(caption)} aria-busy={loading || undefined}>
                     {loading
                         ? Array.from({ length: 3 }, (_, index) => (
                             <li key={index} className="border-2 border-ink bg-paper p-4">
@@ -97,13 +99,13 @@ export function DataTable<T>({
 
             <div
                 role="region"
-                aria-label={caption}
+                aria-label={tr(caption)}
                 tabIndex={0}
                 aria-busy={loading || undefined}
                 className={cx("overflow-x-auto border-2 border-ink bg-paper shadow-hard", renderMobileCard && "hidden md:block")}
             >
                 <table className="w-full border-collapse text-left text-sm">
-                    <caption className="sr-only">{caption}</caption>
+                    <caption className="sr-only">{tr(caption)}</caption>
                     <thead className="bg-ink text-paper">
                         {table.getHeaderGroups().map((group) => (
                             <tr key={group.id}>
@@ -123,11 +125,11 @@ export function DataTable<T>({
                                                     onClick={header.column.getToggleSortingHandler()}
                                                     className="inline-flex items-center gap-2 font-bold uppercase tracking-wide focus-visible:outline-paper"
                                                 >
-                                                    {flexRender(header.column.columnDef.header, header.getContext())}
+                                                    {headerContent(header.column.columnDef.header, header.getContext())}
                                                     <SortIcon state={state} />
                                                 </button>
                                             ) : (
-                                                flexRender(header.column.columnDef.header, header.getContext())
+                                                headerContent(header.column.columnDef.header, header.getContext())
                                             )}
                                         </th>
                                     );
@@ -172,4 +174,8 @@ export function DataTable<T>({
             </div>
         </>
     );
+}
+
+function headerContent<T>(header: ColumnDef<T, unknown>["header"], context: HeaderContext<T, unknown>) {
+    return typeof header === "string" ? tr(header) : flexRender(header, context);
 }

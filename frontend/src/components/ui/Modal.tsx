@@ -2,6 +2,7 @@ import { X } from "lucide-react";
 import { useId, type ReactNode } from "react";
 import { cx } from "@/lib/cx";
 import { useModalDialog } from "./useModalDialog";
+import { tr } from "@/i18n/translate";
 
 const SIZES = { sm: "max-w-md", md: "max-w-xl", lg: "max-w-3xl", xl: "max-w-5xl" } as const;
 
@@ -38,18 +39,18 @@ export function Modal({ open, onClose, title, description, size = "md", footer, 
                     <header className="flex items-start justify-between gap-4 border-b-2 border-ink p-5">
                         <div>
                             <h2 id={titleId} className="text-2xl">
-                                {title}
+                                {tr(title)}
                             </h2>
                             {description && (
                                 <p id={descriptionId} className="mt-1 text-sm text-gray-dark">
-                                    {description}
+                                    {tr(description)}
                                 </p>
                             )}
                         </div>
                         <button
                             type="button"
                             onClick={onClose}
-                            aria-label="Fermer"
+                            aria-label={tr("Fermer")}
                             className="border-2 border-ink p-1 hover:bg-ink hover:text-paper"
                         >
                             <X className="size-5" aria-hidden="true" />

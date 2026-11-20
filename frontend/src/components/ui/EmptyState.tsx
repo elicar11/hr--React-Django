@@ -1,5 +1,6 @@
 import { Inbox, type LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
+import { tr } from "@/i18n/translate";
 
 /** Shown instead of an empty list. Always propose a useful action when there is one. */
 export function EmptyState({
@@ -19,8 +20,8 @@ export function EmptyState({
                 <Icon className="size-7" aria-hidden="true" />
             </span>
             <div className="space-y-1">
-                <h2 className="text-2xl">{title}</h2>
-                {description && <p className="mx-auto max-w-md text-gray-dark">{description}</p>}
+                <h2 className="text-2xl">{tr(title)}</h2>
+                {description && <p className="mx-auto max-w-md text-gray-dark">{tr(description)}</p>}
             </div>
             {action}
         </div>

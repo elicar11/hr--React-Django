@@ -1,4 +1,6 @@
 // English dictionary: the key is the French source text, exactly as written in the code.
+import { enI2 } from "./en.i2";
+
 export const en: Record<string, string> = {
     // --- Navigation ---------------------------------------------------------------------------------------
     "Tableau de bord": "Dashboard",
@@ -51,4 +53,17 @@ export const en: Record<string, string> = {
         "This page could not be displayed. Your data is not lost: reload the page or go back to the home page. If the problem persists, contact the administrator.",
     "Recharger la page": "Reload the page",
     "Retour à l'accueil": "Back to home",
+
+
+    // Errors without the usual API body
+    "Détail technique": "Technical detail",
+    "Authentification requise (401).": "Authentication required (401).",
+    "Accès refusé (403).": "Access denied (403).",
+    "Adresse introuvable (404).": "Address not found (404).",
+    "Requête trop volumineuse (413).": "Request too large (413).",
+    "Trop de requêtes (429) : réessayez dans quelques instants.": "Too many requests (429): try again in a few moments.",
+    "Le serveur ne répond pas ({{status}}) : vérifiez qu'il est démarré.": "The server is not responding ({{status}}): check that it is running.",
+    "Erreur interne du serveur ({{status}}).": "Internal server error ({{status}}).",
+    "Requête refusée par le serveur ({{status}}).": "Request refused by the server ({{status}}).",
+    ...enI2,
 };

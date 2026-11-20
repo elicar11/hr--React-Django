@@ -18,6 +18,7 @@ import {
     type LucideIcon,
 } from "lucide-react";
 import { Badge, type BadgeTone } from "./Badge";
+import { tr } from "@/i18n/translate";
 
 export type StatusDomain =
     | "employee"
@@ -79,7 +80,7 @@ export function StatusBadge({ domain, status }: { domain: StatusDomain; status: 
     if (!config) return <Badge tone="muted">{status}</Badge>;
     return (
         <Badge tone={config.tone} icon={config.icon}>
-            {config.label}
+            {tr(config.label)}
         </Badge>
     );
 }
@@ -88,11 +89,11 @@ export function StatusBadge({ domain, status }: { domain: StatusDomain; status: 
 export function ActiveBadge({ active }: { active: boolean }) {
     return active ? (
         <Badge tone="solid" icon={CircleCheck}>
-            Actif
+            {tr("Actif")}
         </Badge>
     ) : (
         <Badge tone="muted" icon={Ban}>
-            Inactif
+            {tr("Inactif")}
         </Badge>
     );
 }

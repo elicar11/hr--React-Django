@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Link } from "react-router";
 import { cx } from "@/lib/cx";
 import { Skeleton } from "./Skeleton";
+import { tr } from "@/i18n/translate";
 
 export function StatCard({
     label,
@@ -22,13 +23,13 @@ export function StatCard({
     const content = (
         <>
             <div className="flex items-start justify-between gap-3">
-                <p className="text-sm font-bold uppercase tracking-wide">{label}</p>
+                <p className="text-sm font-bold uppercase tracking-wide">{tr(label)}</p>
                 {Icon && <Icon className="size-6 shrink-0" aria-hidden="true" />}
             </div>
             <div className="mt-3 font-display text-5xl font-bold leading-none">
                 {loading ? <Skeleton className="h-12 w-24" /> : value}
             </div>
-            {hint && <p className="mt-2 text-sm text-gray-dark">{hint}</p>}
+            {hint && <p className="mt-2 text-sm text-gray-dark">{tr(hint)}</p>}
         </>
     );
     const base = "block border-2 border-ink bg-paper p-5 shadow-hard";

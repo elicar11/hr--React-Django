@@ -13,10 +13,12 @@ import {
     type LucideIcon,
 } from "lucide-react";
 import { useEffect, type ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import { buttonStyles } from "@/components/ui/buttonStyles";
 import { cx } from "@/lib/cx";
 import { HeroPreview } from "../components/HeroPreview";
+import { LanguageSwitcher } from "@/i18n/LanguageSwitcher";
 
 interface Feature {
     icon: LucideIcon;
@@ -98,14 +100,15 @@ function Section({
     shaded?: boolean;
     children: ReactNode;
 }) {
+    const { t } = useTranslation();
     return (
         <section id={id} aria-labelledby={`${id}-titre`} className={cx("scroll-mt-20 border-b-2 border-ink", shaded && "bg-gray-light")}>
             <div className="mx-auto max-w-6xl space-y-10 px-4 py-14 md:px-8 lg:py-20">
                 <div className="max-w-2xl space-y-3">
                     <h2 id={`${id}-titre`} className="text-4xl md:text-5xl">
-                        {title}
+                        {t(title)}
                     </h2>
-                    {intro && <p className="text-lg text-gray-dark">{intro}</p>}
+                {intro && <p className="text-lg text-gray-dark">{t(intro)}</p>}
                 </div>
                 {children}
             </div>
@@ -115,9 +118,10 @@ function Section({
 
 /** Public home page, shown to visitors who are not signed in. */
 export function LandingPage() {
+    const { t } = useTranslation();
     useEffect(() => {
-        document.title = "HR · Gestion des ressources humaines";
-    }, []);
+        document.title = `HR · ${t("Gestion des ressources humaines")}`;
+    }, [t]);
 
     return (
         <div className="min-h-dvh overflow-x-clip bg-paper text-ink">
@@ -125,25 +129,23 @@ export function LandingPage() {
                 href="#contenu"
                 className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:border-2 focus:border-ink focus:bg-paper focus:px-4 focus:py-2 focus:font-bold"
             >
-                Aller au contenu
+                {t("Aller au contenu")}
             </a>
 
             <header className="sticky top-0 z-30 border-b-2 border-ink bg-paper">
                 <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 md:px-8">
-                    <Link to="/" aria-label="HR, ressources humaines" className="flex items-center gap-3">
+                    <Link to="/" aria-label={t("HR, ressources humaines")} className="flex items-center gap-3">
                         <span className="flex size-10 items-center justify-center border-2 border-ink bg-ink font-display text-xl font-bold text-paper">
                             HR
                         </span>
-                        <span className="hidden font-display text-lg font-bold sm:block">Ressources humaines</span>
+                        <span className="hidden font-display text-lg font-bold sm:block">{t("Ressources humaines")}</span>
                     </Link>
-                    <nav aria-label="Sections de la page" className="hidden items-center gap-6 font-bold md:flex">
-                        <a href="#fonctionnalites" className="underline-offset-4 hover:underline">Fonctionnalités</a>
-                        <a href="#roles" className="underline-offset-4 hover:underline">Rôles</a>
-                        <a href="#securite" className="underline-offset-4 hover:underline">Sécurité</a>
+                    <nav aria-label={t("Sections de la page")} className="hidden items-center gap-6 font-bold md:flex">
+                        <a href="#fonctionnalites" className="underline-offset-4 hover:underline">{t("Fonctionnalités")}</a>
+                        <a href="#roles" className="underline-offset-4 hover:underline">{t("Rôles")}</a>
+                        <a href="#securite" className="underline-offset-4 hover:underline">{t("Sécurité")}</a>
                     </nav>
-                    <Link to="/login" className={buttonStyles()}>
-                        Se connecter
-                    </Link>
+                    <div className="flex items-center gap-3"><LanguageSwitcher /><Link to="/login" className={buttonStyles()}>{t("Se connecter")}</Link></div>
                 </div>
             </header>
 
@@ -152,21 +154,21 @@ export function LandingPage() {
                     <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 py-14 md:px-8 lg:grid-cols-2 lg:py-24">
                         <div className="min-w-0 space-y-6">
                             <p className="inline-block border-2 border-ink px-3 py-1 text-xs font-bold uppercase tracking-widest">
-                                Gestion des ressources humaines
+                                {t("Gestion des ressources humaines")}
                             </p>
                             <h1 id="titre-accueil" className="break-words text-5xl sm:text-6xl lg:text-7xl">
-                                La gestion RH, claire et sous contrôle.
+                                {t("La gestion RH, claire et sous contrôle.")}
                             </h1>
                             <p className="max-w-xl text-lg text-gray-dark">
-                                Employés, contrats, présences, congés et paie réunis dans une seule application, avec des accès adaptés à chaque rôle.
+                                {t("Employés, contrats, présences, congés et paie réunis dans une seule application, avec des accès adaptés à chaque rôle.")}
                             </p>
                             <div className="flex flex-wrap gap-3">
                                 <Link to="/login" className={buttonStyles()}>
-                                    Se connecter
+                                    {t("Se connecter")}
                                     <ArrowRight className="size-4" aria-hidden="true" />
                                 </Link>
                                 <a href="#fonctionnalites" className={buttonStyles({ variant: "secondary" })}>
-                                    Découvrir les fonctionnalités
+                                    {t("Découvrir les fonctionnalités")}
                                 </a>
                             </div>
                         </div>
@@ -186,8 +188,8 @@ export function LandingPage() {
                         {FEATURES.map(({ icon: Icon, title, description }) => (
                             <li key={title} className="min-w-0 space-y-3 border-2 border-ink bg-paper p-5 shadow-hard">
                                 <Icon className="size-8" aria-hidden="true" />
-                                <h3 className="text-xl">{title}</h3>
-                                <p className="text-sm text-gray-dark">{description}</p>
+                                <h3 className="text-xl">{t(title)}</h3>
+                                <p className="text-sm text-gray-dark">{t(description)}</p>
                             </li>
                         ))}
                     </ul>
@@ -200,8 +202,8 @@ export function LandingPage() {
                                 <span aria-hidden="true" className="font-display text-6xl font-bold">
                                     {index + 1}
                                 </span>
-                                <h3 className="text-2xl">{step.title}</h3>
-                                <p className="text-gray-dark">{step.description}</p>
+                                <h3 className="text-2xl">{t(step.title)}</h3>
+                                <p className="text-gray-dark">{t(step.description)}</p>
                             </li>
                         ))}
                     </ol>
@@ -211,12 +213,12 @@ export function LandingPage() {
                     <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
                         {ROLES.map((role) => (
                             <article key={role.name} className="min-w-0 space-y-4 border-2 border-ink bg-paper p-5 shadow-hard">
-                                <h3 className="border-b-2 border-ink pb-3 text-2xl">{role.name}</h3>
+                                <h3 className="border-b-2 border-ink pb-3 text-2xl">{t(role.name)}</h3>
                                 <ul className="space-y-3">
                                     {role.points.map((point) => (
                                         <li key={point} className="flex gap-3">
                                             <Check className="mt-1 size-4 shrink-0" aria-hidden="true" />
-                                            <span>{point}</span>
+                                            <span>{t(point)}</span>
                                         </li>
                                     ))}
                                 </ul>
@@ -230,7 +232,7 @@ export function LandingPage() {
                         {SECURITY.map(({ icon: Icon, text }) => (
                             <li key={text} className="flex min-w-0 gap-4 border-2 border-ink p-5">
                                 <Icon className="size-7 shrink-0" aria-hidden="true" />
-                                <p>{text}</p>
+                            <p>{t(text)}</p>
                             </li>
                         ))}
                     </ul>
@@ -240,17 +242,17 @@ export function LandingPage() {
                     <div className="mx-auto flex max-w-6xl flex-col items-start gap-6 px-4 py-14 md:px-8 lg:flex-row lg:items-center lg:justify-between lg:py-20">
                         <div className="max-w-2xl space-y-3">
                             <h2 id="titre-connexion" className="text-4xl md:text-5xl">
-                                Prêt à vous connecter ?
+                                {t("Prêt à vous connecter ?")}
                             </h2>
-                            <p className="text-lg">Utilisez le compte créé par votre administrateur.</p>
+                            <p className="text-lg">{t("Utilisez le compte créé par votre administrateur.")}</p>
                         </div>
                         <div className="flex flex-wrap items-center gap-6">
                             <Link to="/login" className={INVERTED_BUTTON}>
-                                Se connecter
+                                {t("Se connecter")}
                                 <ArrowRight className="size-4" aria-hidden="true" />
                             </Link>
                             <Link to="/forgot-password" className="font-bold underline underline-offset-4 focus-visible:outline-paper">
-                                Mot de passe oublié ?
+                                {t("Mot de passe oublié ?")}
                             </Link>
                         </div>
                     </div>
@@ -259,10 +261,10 @@ export function LandingPage() {
 
             <footer className="border-t-2 border-ink">
                 <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-6 text-sm md:px-8">
-                    <p>© {new Date().getFullYear()} HR · Gestion des ressources humaines</p>
-                    <nav aria-label="Liens du pied de page" className="flex gap-5 font-bold">
-                        <Link to="/login" className="underline-offset-4 hover:underline">Connexion</Link>
-                        <Link to="/forgot-password" className="underline-offset-4 hover:underline">Mot de passe oublié</Link>
+                    <p>© {new Date().getFullYear()} HR · {t("Gestion des ressources humaines")}</p>
+                    <nav aria-label={t("Liens du pied de page")} className="flex gap-5 font-bold">
+                        <Link to="/login" className="underline-offset-4 hover:underline">{t("Connexion")}</Link>
+                        <Link to="/forgot-password" className="underline-offset-4 hover:underline">{t("Mot de passe oublié")}</Link>
                     </nav>
                 </div>
             </footer>

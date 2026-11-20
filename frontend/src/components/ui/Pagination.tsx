@@ -2,6 +2,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "./Button";
 import { DEFAULT_PAGE_SIZE } from "@/lib/api/pagination";
 import { cx } from "@/lib/cx";
+import { useTranslation } from "react-i18next";
 
 /** [1, "gap", 4, 5, 6, "gap", 20]: first, last and the neighbours of the current page. */
 function pageWindow(current: number, total: number): (number | "gap")[] {
@@ -31,15 +32,16 @@ export function Pagination({
     onPageChange: (page: number) => void;
     className?: string;
 }) {
+    const { t } = useTranslation();
     if (count === 0) return null;
     const pageCount = Math.max(1, Math.ceil(count / pageSize));
     const from = (page - 1) * pageSize + 1;
     const to = Math.min(page * pageSize, count);
 
     return (
-        <nav aria-label="Pagination" className={cx("mt-4 flex flex-wrap items-center justify-between gap-3", className)}>
+        <nav aria-label={t("Pagination")} className={cx("mt-4 flex flex-wrap items-center justify-between gap-3", className)}>
             <p className="text-sm text-gray-dark">
-                {from}–{to} sur {count} résultat{count > 1 ? "s" : ""}
+                {t("{{from}}–{{to}} sur {{count}} résultat", { from, to, count })}
             </p>
             <ul className="flex flex-wrap items-center gap-2">
                 <li>
@@ -63,7 +65,7 @@ export function Pagination({
                             <button
                                 type="button"
                                 onClick={() => onPageChange(item)}
-                                aria-label={`Page ${item}`}
+                                aria-label={t("Page {{page}}", { page: item })}
                                 aria-current={item === page ? "page" : undefined}
                                 className={cx(
                                     "min-w-9 border-2 border-ink px-2 py-1 text-sm font-bold",
@@ -77,7 +79,7 @@ export function Pagination({
                 )}
                 <li>
                     <Button size="sm" variant="secondary" disabled={page >= pageCount} onClick={() => onPageChange(page + 1)}>
-                        Suivant
+                        {t("Suivant")}
                         <ChevronRight className="size-4" aria-hidden="true" />
                     </Button>
                 </li>

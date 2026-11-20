@@ -1,6 +1,7 @@
 import { CircleAlert, CircleCheck, Info, TriangleAlert, type LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { cx } from "@/lib/cx";
+import { tr, trNode } from "@/i18n/translate";
 
 export type AlertTone = "info" | "success" | "warning" | "error";
 
@@ -28,8 +29,8 @@ export function Alert({
         <div role={role} className={cx("flex items-start gap-3 p-4", classes, className)}>
             <Icon className="mt-0.5 size-5 shrink-0" aria-hidden="true" />
             <div className="space-y-1">
-                {title && <p className="font-bold uppercase tracking-wide">{title}</p>}
-                {children && <div className="text-sm">{children}</div>}
+                {title && <p className="font-bold uppercase tracking-wide">{tr(title)}</p>}
+                {children && <div className="text-sm">{trNode(children)}</div>}
             </div>
         </div>
     );
