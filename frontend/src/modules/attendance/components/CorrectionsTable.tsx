@@ -1,5 +1,6 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import type { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import { DataTable, StatusBadge } from "@/components/ui";
 import { formatDate, formatDateTime, formatTime } from "@/lib/format";
@@ -14,8 +15,9 @@ function Proposed({ correction }: { correction: AttendanceCorrection }) {
 }
 
 function Decision({ correction }: { correction: AttendanceCorrection }) {
+    const { t } = useTranslation();
     if (!correction.decision_comment) return null;
-    return <p className="mt-1 text-sm text-gray-dark">Commentaire : {correction.decision_comment}</p>;
+    return <p className="mt-1 text-sm text-gray-dark">{t("Commentaire : {{comment}}", { comment: correction.decision_comment })}</p>;
 }
 
 /** Correction requests, for the HR queue (with employee) and for the employee's own list. */

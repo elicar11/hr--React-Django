@@ -1,5 +1,6 @@
 import { Check, ClipboardCheck, X } from "lucide-react";
 import { useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import { Alert, Button, ConfirmDialog, FilterBar, Pagination, Select } from "@/components/ui";
 import { formatDate } from "@/lib/format";
 import { useApiQuery } from "@/lib/hooks/useApiQuery";
@@ -13,6 +14,7 @@ import { CorrectionsTable } from "./CorrectionsTable";
 type ListParams = ReturnType<typeof useListParams>;
 
 export function CorrectionsQueue({ list }: { list: ListParams }) {
+    const { t } = useTranslation();
     const status = list.filters.correction_status || "PENDING";
     const params = {
         page: list.page,
@@ -27,9 +29,7 @@ export function CorrectionsQueue({ list }: { list: ListParams }) {
 
     const target = deciding?.correction;
     const summary = target ? (
-        <>
-            Demande de <strong>{target.employee_name}</strong> pour le <strong>{formatDate(target.date)}</strong>.
-        </>
+        <Trans i18nKey="Demande de <strong>{{name}}</strong> pour le <strong>{{date}}</strong>." values={{ name: target.employee_name, date: formatDate(target.date) }} components={{ strong: <strong /> }} />
     ) : null;
 
     return (
@@ -84,7 +84,7 @@ export function CorrectionsQueue({ list }: { list: ListParams }) {
                 title="Approuver la correction ?"
                 message={
                     <>
-                        {summary} L'enregistrement du jour sera créé ou remplacé, et les retards et heures supplémentaires recalculés.
+                        {summary} {t("L'enregistrement du jour sera créé ou remplacé, et les retards et heures supplémentaires recalculés.")}
                     </>
                 }
                 reason={{ label: "Commentaire (facultatif)", maxLength: 500 }}
@@ -101,7 +101,7 @@ export function CorrectionsQueue({ list }: { list: ListParams }) {
                 onClose={() => setDeciding(null)}
                 tone="danger"
                 title="Refuser la correction ?"
-                message={<>{summary} Le motif du refus sera communiqué à l'employé.</>}
+                message={<>{summary} {t("Le motif du refus sera communiqué à l'employé.")}</>}
                 reason={{ label: "Motif du refus", required: true, maxLength: 500 }}
                 confirmLabel="Refuser"
                 onConfirm={async (comment) => {

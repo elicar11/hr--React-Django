@@ -1,6 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CircleAlert } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { tr } from "@/i18n/translate";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { Alert, Button, Checkbox, Input, Modal, ModalForm } from "@/components/ui";
@@ -42,6 +44,7 @@ interface BodyProps {
 }
 
 function ScheduleFormBody({ schedule, onClose, onSaved }: BodyProps) {
+    const { t } = useTranslation();
     const [messages, setMessages] = useState<string[]>([]);
     const {
         register,
@@ -144,7 +147,7 @@ function ScheduleFormBody({ schedule, onClose, onSaved }: BodyProps) {
                 render={({ field }) => (
                     <fieldset className="space-y-2">
                         <legend className="text-sm font-bold uppercase tracking-wide">
-                            Jours travaillés<span aria-hidden="true"> *</span>
+                            {t("Jours travaillés")}<span aria-hidden="true"> *</span>
                         </legend>
                         <div className="flex flex-wrap gap-x-5 gap-y-2">
                             {WEEKDAYS.map((day) => (
@@ -165,7 +168,7 @@ function ScheduleFormBody({ schedule, onClose, onSaved }: BodyProps) {
                         {errors.working_days?.message && (
                             <p role="alert" className="flex items-start gap-1.5 text-sm font-bold text-danger">
                                 <CircleAlert className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-                                {errors.working_days.message}
+                                {tr(errors.working_days.message)}
                             </p>
                         )}
                     </fieldset>

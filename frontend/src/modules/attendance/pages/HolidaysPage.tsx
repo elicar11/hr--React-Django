@@ -13,7 +13,8 @@ import {
     RowActions,
     Select,
 } from "@/components/ui";
-import { formatDate } from "@/lib/format";
+import { currentLocale, formatDate } from "@/lib/format";
+import { Trans, useTranslation } from "react-i18next";
 import { useApiQuery } from "@/lib/hooks/useApiQuery";
 import { useListParams } from "@/lib/hooks/useListParams";
 import { notify } from "@/lib/notify";
@@ -21,9 +22,12 @@ import { HolidayFormModal } from "../components/HolidayFormModal";
 import { deleteHoliday, listHolidays } from "../services/scheduleService";
 import type { Holiday } from "../types";
 
-const weekday = new Intl.DateTimeFormat("fr-FR", { weekday: "long" });
+function weekdayName(date: Date): string {
+    return new Intl.DateTimeFormat(currentLocale(), { weekday: "long" }).format(date);
+}
 
 export function HolidaysPage() {
+    const { t } = useTranslation();
     const list = useListParams(["year"]);
     const currentYear = new Date().getFullYear();
     // Current year by default; "all" shows every year.
@@ -39,7 +43,7 @@ export function HolidaysPage() {
     function Actions({ holiday }: { holiday: Holiday }) {
         return (
             <RowActions
-                label={`Actions pour ${holiday.name}`}
+                label={t("Actions pour {{name}}", { name: holiday.name })}
                 items={[
                     { label: "Modifier", icon: Pencil, onSelect: () => setEditing(holiday) },
                     { label: "Supprimer", icon: Trash2, tone: "danger", separatorBefore: true, onSelect: () => setDeleting(holiday) },
@@ -54,12 +58,12 @@ export function HolidaysPage() {
             id: "weekday",
             header: "Jour",
             enableSorting: false,
-            cell: ({ row }) => weekday.format(new Date(`${row.original.date}T00:00:00`)),
+            cell: ({ row }) => weekdayName(new Date(`${row.original.date}T00:00:00`)),
         },
         { accessorKey: "name", header: "Nom" },
         {
             id: "actions",
-            header: () => <span className="sr-only">Actions</span>,
+            header: () => <span className="sr-only">{t("Actions")}</span>,
             enableSorting: false,
             cell: ({ row }) => <Actions holiday={row.original} />,
         },
@@ -108,7 +112,7 @@ export function HolidaysPage() {
                         <div className="flex items-start justify-between gap-3">
                             <div>
                                 <p className="font-bold">{row.name}</p>
-                                <p className="text-sm text-gray-dark">{weekday.format(new Date(`${row.date}T00:00:00`))} {formatDate(row.date)}</p>
+                                <p className="text-sm text-gray-dark">{weekdayName(new Date(`${row.date}T00:00:00`))} {formatDate(row.date)}</p>
                             </div>
                             <Actions holiday={row} />
                         </div>
@@ -130,8 +134,7 @@ export function HolidaysPage() {
                 title="Supprimer ce jour férié ?"
                 message={
                     <>
-                        <strong>{deleting?.name}</strong> ({deleting ? formatDate(deleting.date) : ""}) ne sera plus traité comme un jour férié. Les
-                        enregistrements déjà calculés ne changent pas.
+                        <Trans i18nKey="<strong>{{name}}</strong> ({{date}}) ne sera plus traité comme un jour férié. Les enregistrements déjà calculés ne changent pas." values={{ name: deleting?.name ?? "", date: deleting ? formatDate(deleting.date) : "" }} components={{ strong: <strong /> }} />
                     </>
                 }
                 confirmLabel="Supprimer"

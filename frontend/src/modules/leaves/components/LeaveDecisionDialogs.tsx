@@ -1,4 +1,5 @@
 import { ConfirmDialog } from "@/components/ui";
+import { Trans, useTranslation } from "react-i18next";
 import { formatDate, formatDecimal } from "@/lib/format";
 import { notify } from "@/lib/notify";
 import { approveLeave, cancelLeave, rejectLeave } from "../services/leaveService";
@@ -20,11 +21,11 @@ export function LeaveDecisionDialogs({
     onClose: () => void;
     onDone: () => void;
 }) {
+    const { t } = useTranslation();
     const leave = target?.leave;
     const summary = leave ? (
         <>
-            Demande de <strong>{leave.employee_name}</strong> : {leave.leave_type_name}, du {formatDate(leave.start_date)} au{" "}
-            {formatDate(leave.end_date)} ({formatDecimal(leave.days)} j).
+            <Trans i18nKey="Demande de <strong>{{name}}</strong> : {{type}}, du {{start}} au {{end}} ({{days}} j)." values={{ name: leave.employee_name, type: leave.leave_type_name, start: formatDate(leave.start_date), end: formatDate(leave.end_date), days: formatDecimal(leave.days) }} components={{ strong: <strong /> }} />
         </>
     ) : null;
 
@@ -38,7 +39,7 @@ export function LeaveDecisionDialogs({
                     <>
                         <p>{summary}</p>
                         <p className="mt-2 text-sm text-gray-dark">
-                            Les jours seront déduits du solde (si le type en a un). Vous ne pouvez pas approuver votre propre demande.
+                            {t("Les jours seront déduits du solde (si le type en a un). Vous ne pouvez pas approuver votre propre demande.")}
                         </p>
                     </>
                 }
@@ -59,7 +60,7 @@ export function LeaveDecisionDialogs({
                 message={
                     <>
                         <p>{summary}</p>
-                        <p className="mt-2 text-sm text-gray-dark">Le motif du refus sera communiqué à l'employé.</p>
+                        <p className="mt-2 text-sm text-gray-dark">{t("Le motif du refus sera communiqué à l'employé.")}</p>
                     </>
                 }
                 reason={{ label: "Motif du refus", required: true, maxLength: 500 }}
@@ -80,7 +81,7 @@ export function LeaveDecisionDialogs({
                     <>
                         <p>{summary}</p>
                         <p className="mt-2 text-sm text-gray-dark">
-                            Si elle était approuvée, les jours sont rendus au solde. Un congé déjà commencé ne peut être annulé que par les RH.
+                            {t("Si elle était approuvée, les jours sont rendus au solde. Un congé déjà commencé ne peut être annulé que par les RH.")}
                         </p>
                     </>
                 }

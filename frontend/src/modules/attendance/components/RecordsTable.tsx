@@ -1,6 +1,8 @@
 import type { ColumnDef, OnChangeFn, SortingState } from "@tanstack/react-table";
 import { Pencil, Trash2 } from "lucide-react";
 import type { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
+import { tr } from "@/i18n/translate";
 import { Link } from "react-router";
 import { Badge, DataTable, RowActions, StatusBadge } from "@/components/ui";
 import { formatDate, formatMinutes, formatTime } from "@/lib/format";
@@ -34,13 +36,14 @@ export function RecordsTable({
     onDelete?: (record: AttendanceRecord) => void;
     emptyState: ReactNode;
 }) {
+    const { t } = useTranslation();
     const present = (record: AttendanceRecord) => record.status === "PRESENT";
 
     function Actions({ record }: { record: AttendanceRecord }) {
         if (!onEdit && !onDelete) return null;
         return (
             <RowActions
-                label={`Actions pour le ${formatDate(record.date)}`}
+                label={t("Actions pour le {{date}}", { date: formatDate(record.date) })}
                 items={[
                     ...(onEdit ? [{ label: "Modifier", icon: Pencil, onSelect: () => onEdit(record) }] : []),
                     // A presence is corrected, never erased: only absences can be deleted.
@@ -97,13 +100,13 @@ export function RecordsTable({
             id: "source",
             header: "Source",
             enableSorting: false,
-            cell: ({ row }) => <Badge tone="muted">{SOURCES[row.original.source] ?? row.original.source}</Badge>,
+            cell: ({ row }) => <Badge tone="muted">{tr(SOURCES[row.original.source] ?? row.original.source)}</Badge>,
         },
         ...(onEdit || onDelete
             ? ([
                 {
                     id: "actions",
-                    header: () => <span className="sr-only">Actions</span>,
+                    header: () => <span className="sr-only">{t("Actions")}</span>,
                     enableSorting: false,
                     cell: ({ row }) => <Actions record={row.original} />,
                 },
@@ -132,11 +135,11 @@ export function RecordsTable({
                     </div>
                     <div className="flex flex-wrap items-center gap-2">
                         <StatusBadge domain="attendance" status={row.status} />
-                        {row.late_minutes > 0 && <Badge tone="alert">Retard {formatMinutes(row.late_minutes)}</Badge>}
+                        {row.late_minutes > 0 && <Badge tone="alert">{t("Retard {{duration}}", { duration: formatMinutes(row.late_minutes) })}</Badge>}
                     </div>
                     {present(row) && (
                         <p className="text-sm">
-                            {formatTime(row.check_in) || "—"} → {formatTime(row.check_out) || "en cours"}
+                            {formatTime(row.check_in) || "—"} → {formatTime(row.check_out) || t("en cours")}
                             {row.check_out && ` · ${formatMinutes(row.worked_minutes)}`}
                         </p>
                     )}

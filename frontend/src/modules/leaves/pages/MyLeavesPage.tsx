@@ -1,5 +1,6 @@
 import { Ban, CalendarDays, Eye, Plus } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import { Alert, Button, Card, EmptyState, FilterBar, PageHeader, Pagination, Select, type MenuItem } from "@/components/ui";
 import { formatDecimal } from "@/lib/format";
@@ -14,6 +15,7 @@ import type { LeaveRequest } from "../types";
 
 /** Employee space: own balances, own requests, new request. The API only returns the user's own data. */
 export function MyLeavesPage() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const list = useListParams(["status"]);
     const year = new Date().getFullYear();
@@ -46,8 +48,8 @@ export function MyLeavesPage() {
                 }
             />
 
-            <section aria-label={`Soldes ${year}`} className="mb-8 space-y-3">
-                <h2 className="text-2xl">Mes soldes {year}</h2>
+            <section aria-label={t("Soldes {{year}}", { year })} className="mb-8 space-y-3">
+                <h2 className="text-2xl">{t("Mes soldes {{year}}", { year })}</h2>
                 {balances.error && <Alert tone="error">{balances.error.message}</Alert>}
                 {balances.data && balances.data.results.length === 0 && (
                     <EmptyState icon={CalendarDays} title="Aucun solde" description="Aucun solde n'a encore été défini pour cette année. Contactez les ressources humaines." />
@@ -58,11 +60,11 @@ export function MyLeavesPage() {
                             <p className="font-bold uppercase tracking-wide">{balance.leave_type_name}</p>
                             <p>
                                 <strong className="font-display text-4xl">{formatDecimal(balance.remaining)}</strong>{" "}
-                                <span className="text-sm">j restants</span>
+                                <span className="text-sm">{t("j restants")}</span>
                             </p>
                             <BalanceMeter balance={balance} />
                             <p className="text-sm text-gray-dark">
-                                {formatDecimal(balance.used)} utilisés sur {formatDecimal(balance.allocated)}
+                                {t("{{used}} utilisés sur {{allocated}}", { used: formatDecimal(balance.used), allocated: formatDecimal(balance.allocated) })}
                             </p>
                         </div>
                     ))}

@@ -1,6 +1,8 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { Pencil, Plus, Star, Timer, Trash2, Users } from "lucide-react";
 import { useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
+import { tr } from "@/i18n/translate";
 import { Link } from "react-router";
 import {
     Alert,
@@ -55,7 +57,7 @@ const assignmentColumns: ColumnDef<ScheduleAssignment>[] = [
     {
         accessorKey: "end_date",
         header: "Fin",
-        cell: ({ row }) => (row.original.end_date ? formatDate(row.original.end_date) : <Badge tone="solid">En cours</Badge>),
+        cell: ({ row }) => (row.original.end_date ? formatDate(row.original.end_date) : <Badge tone="solid">{tr("En cours")}</Badge>),
     },
 ];
 
@@ -66,6 +68,7 @@ function SchedulesView({ list, version, onEdit, onDelete, onChanged }: {
     onDelete: (schedule: WorkSchedule) => void;
     onChanged: () => void;
 }) {
+    const { t } = useTranslation();
     const params = { page: list.page, search: list.search || undefined, ordering: list.ordering || undefined };
     const query = useApiQuery(["schedules", params, version], (signal) => listSchedules(params, signal));
 
@@ -82,7 +85,7 @@ function SchedulesView({ list, version, onEdit, onDelete, onChanged }: {
     function Actions({ schedule }: { schedule: WorkSchedule }) {
         return (
             <RowActions
-                label={`Actions pour ${schedule.name}`}
+                label={t("Actions pour {{name}}", { name: schedule.name })}
                 items={[
                     { label: "Modifier", icon: Pencil, onSelect: () => onEdit(schedule) },
                     { label: "Définir par défaut", icon: Star, disabled: schedule.is_default, onSelect: () => void makeDefault(schedule) },
@@ -104,7 +107,7 @@ function SchedulesView({ list, version, onEdit, onDelete, onChanged }: {
                     {row.original.start_time.slice(0, 5)} – {row.original.end_time.slice(0, 5)}
                     {row.original.break_start && row.original.break_end && (
                         <span className="block text-sm text-gray-dark">
-                            Pause {row.original.break_start.slice(0, 5)} – {row.original.break_end.slice(0, 5)}
+                            {t("Pause {{from}} – {{to}}", { from: row.original.break_start.slice(0, 5), to: row.original.break_end.slice(0, 5) })}
                         </span>
                     )}
                 </span>
@@ -121,11 +124,11 @@ function SchedulesView({ list, version, onEdit, onDelete, onChanged }: {
             id: "is_default",
             header: "Défaut",
             enableSorting: false,
-            cell: ({ row }) => (row.original.is_default ? <Badge tone="solid" icon={Star}>Par défaut</Badge> : "—"),
+            cell: ({ row }) => (row.original.is_default ? <Badge tone="solid" icon={Star}>{tr("Par défaut")}</Badge> : "—"),
         },
         {
             id: "actions",
-            header: () => <span className="sr-only">Actions</span>,
+            header: () => <span className="sr-only">{t("Actions")}</span>,
             enableSorting: false,
             cell: ({ row }) => <Actions schedule={row.original} />,
         },
@@ -160,7 +163,7 @@ function SchedulesView({ list, version, onEdit, onDelete, onChanged }: {
                                 <Actions schedule={row} />
                             </div>
                             <p className="text-sm">{row.start_time.slice(0, 5)} – {row.end_time.slice(0, 5)} · {formatWorkingDays(row.working_days)}</p>
-                            {row.is_default && <Badge tone="solid" icon={Star}>Par défaut</Badge>}
+                            {row.is_default && <Badge tone="solid" icon={Star}>{tr("Par défaut")}</Badge>}
                         </div>
                     )}
                 />
@@ -216,6 +219,7 @@ function AssignmentsView({ list, version }: { list: ListParams; version: number 
 }
 
 export function WorkSchedulesPage() {
+    const { t } = useTranslation();
     const list = useListParams(["employee", "schedule"]);
     const view = list.getParam("view") === "assignments" ? "assignments" : "schedules";
     const [version, setVersion] = useState(0);
@@ -270,10 +274,8 @@ export function WorkSchedulesPage() {
                 title="Supprimer cet horaire ?"
                 message={
                     <>
-                        <p>
-                            Supprimer l'horaire <strong>{deleting?.name}</strong> est irréversible.
-                        </p>
-                        <p className="mt-2 text-sm text-gray-dark">S'il est utilisé par des affectations ou des relevés, la suppression sera refusée.</p>
+                        <p><Trans i18nKey="Supprimer l'horaire <strong>{{name}}</strong> est irréversible." values={{ name: deleting?.name ?? "" }} components={{ strong: <strong /> }} /></p>
+                        <p className="mt-2 text-sm text-gray-dark">{t("S'il est utilisé par des affectations ou des relevés, la suppression sera refusée.")}</p>
                     </>
                 }
                 confirmLabel="Supprimer"

@@ -9,13 +9,17 @@ import { notify } from "@/lib/notify";
 import { createLeaveType, updateLeaveType } from "../services/leaveService";
 import type { LeaveType } from "../types";
 
+const isValidDecimal = (value: string) => DECIMAL_PATTERN.test(value.trim());
+
+const isOptionalDecimal = (value: string) => value.trim() === "" || isValidDecimal(value);
+
 const schema = z.object({
     code: z.string().trim().min(1, "Le code est obligatoire.").max(20, "20 caractères maximum."),
     name: z.string().trim().min(1, "Le nom est obligatoire.").max(150, "150 caractères maximum."),
     description: z.string(),
     day_count_mode: z.enum(["WORKING_DAYS", "CALENDAR_DAYS"]),
     uses_balance: z.boolean(),
-    annual_allowance: z.string().refine((value) => value.trim() === "" || DECIMAL_PATTERN.test(value.trim()), "Nombre de jours invalide (ex. 25 ou 2,5)."),
+    annual_allowance: z.string().refine(isOptionalDecimal, "Nombre de jours invalide (ex. 25 ou 2,5)."),
     requires_document: z.boolean(),
     is_paid: z.boolean(),
     is_active: z.boolean(),

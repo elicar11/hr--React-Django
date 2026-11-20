@@ -1,9 +1,10 @@
+import { currentLocale } from "@/lib/format";
+
 const pad = (value: number) => String(value).padStart(2, "0");
 
 export function toISO(date: Date): string {
     return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 }
-
 /** "2026-10" */
 export function currentMonthKey(): string {
     return toISO(new Date()).slice(0, 7);
@@ -14,9 +15,8 @@ export function shiftMonth(key: string, delta: number): string {
     return toISO(new Date(year, month - 1 + delta, 1)).slice(0, 7);
 }
 
-const monthLabel = new Intl.DateTimeFormat("fr-FR", { month: "long", year: "numeric" });
 export function formatMonthLong(key: string): string {
-    return monthLabel.format(new Date(`${key}-01T00:00:00`));
+    return new Intl.DateTimeFormat(currentLocale(), { month: "long", year: "numeric" }).format(new Date(`${key}-01T00:00:00`));
 }
 
 /** Weeks (Monday first) covering the month, as ISO dates. Days of neighbouring months are included. */

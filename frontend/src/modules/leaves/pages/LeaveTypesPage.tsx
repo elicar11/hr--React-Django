@@ -1,6 +1,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { CalendarDays, Pencil, Plus, Power, PowerOff, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import {
     ActiveBadge,
     Alert,
@@ -25,6 +26,7 @@ import { deleteLeaveType, listLeaveTypes, updateLeaveType } from "../services/le
 import type { LeaveType } from "../types";
 
 export function LeaveTypesPage() {
+    const { t } = useTranslation();
     const list = useListParams(["is_active", "uses_balance", "is_paid"]);
     const [version, setVersion] = useState(0);
     const refresh = () => setVersion((current) => current + 1);
@@ -54,7 +56,7 @@ export function LeaveTypesPage() {
     function Actions({ type }: { type: LeaveType }) {
         return (
             <RowActions
-                label={`Actions pour ${type.name}`}
+                label={t("Actions pour {{name}}", { name: type.name })}
                 items={[
                     { label: "Modifier", icon: Pencil, onSelect: () => setEditing(type) },
                     type.is_active
@@ -73,7 +75,10 @@ export function LeaveTypesPage() {
             id: "mode",
             header: "Décompte",
             enableSorting: false,
-            cell: ({ row }) => (row.original.day_count_mode === "WORKING_DAYS" ? "Jours ouvrés" : "Jours calendaires"),
+            cell: ({ row }) => {
+                const label = row.original.day_count_mode === "WORKING_DAYS" ? "Jours ouvrés" : "Jours calendaires";
+                return t(label);
+            },
         },
         {
             id: "balance",
@@ -82,10 +87,10 @@ export function LeaveTypesPage() {
             cell: ({ row }) =>
                 row.original.uses_balance ? (
                     <Badge tone="outline">
-                        {row.original.annual_allowance ? `${formatDecimal(row.original.annual_allowance)} j/an` : "Avec solde"}
+                        {row.original.annual_allowance ? t("{{days}} j/an", { days: formatDecimal(row.original.annual_allowance) }) : t("Avec solde")}
                     </Badge>
                 ) : (
-                    <Badge tone="muted">Sans solde</Badge>
+                    <Badge tone="muted">{t("Sans solde")}</Badge>
                 ),
         },
         {
@@ -94,8 +99,8 @@ export function LeaveTypesPage() {
             enableSorting: false,
             cell: ({ row }) => (
                 <span className="flex flex-wrap gap-1">
-                    {row.original.requires_document && <Badge tone="dashed">Justificatif</Badge>}
-                    {!row.original.is_paid && <Badge tone="solid">Non payé</Badge>}
+                    {row.original.requires_document && <Badge tone="dashed">{t("Justificatif")}</Badge>}
+                    {!row.original.is_paid && <Badge tone="solid">{t("Non payé")}</Badge>}
                 </span>
             ),
         },
@@ -174,7 +179,7 @@ export function LeaveTypesPage() {
                                 <Actions type={row} />
                             </div>
                             <div className="flex flex-wrap gap-2">
-                                <Badge tone="outline">{row.uses_balance ? "Avec solde" : "Sans solde"}</Badge>
+                                <Badge tone="outline">{row.uses_balance ? t("Avec solde") : t("Sans solde")}</Badge>
                                 <ActiveBadge active={row.is_active} />
                             </div>
                         </div>
@@ -192,9 +197,9 @@ export function LeaveTypesPage() {
                 message={
                     <>
                         <p>
-                            Supprimer le type <strong>{deleting?.name}</strong> est irréversible.
+                            <Trans i18nKey="Supprimer le type <strong>{{name}}</strong> est irréversible." values={{ name: deleting?.name ?? "" }} components={{ strong: <strong /> }} />
                         </p>
-                        <p className="mt-2 text-sm text-gray-dark">Si des demandes ou des soldes l'utilisent, la suppression sera refusée : désactivez-le plutôt.</p>
+                        <p className="mt-2 text-sm text-gray-dark">{t("Si des demandes ou des soldes l'utilisent, la suppression sera refusée : désactivez-le plutôt.")}</p>
                     </>
                 }
                 confirmLabel="Supprimer"

@@ -1,5 +1,6 @@
 import { ClipboardList, Plus } from "lucide-react";
 import { useState } from "react";
+import { Trans } from "react-i18next";
 import { Alert, Button, Card, ConfirmDialog, DateField, EmptyState, Pagination } from "@/components/ui";
 import { firstOfMonthISO, formatDate, todayISO } from "@/lib/format";
 import { useApiQuery } from "@/lib/hooks/useApiQuery";
@@ -97,9 +98,7 @@ export function MyAttendancePage() {
                 onClose={() => setCancelling(null)}
                 title="Annuler cette demande ?"
                 message={
-                    <>
-                        Votre demande pour le <strong>{cancelling ? formatDate(cancelling.date) : ""}</strong> sera retirée.
-                    </>
+                    <Trans i18nKey="Votre demande pour le <strong>{{date}}</strong> sera retirée." values={{ date: cancelling ? formatDate(cancelling.date) : "" }} components={{ strong: <strong /> }} />
                 }
                 confirmLabel="Annuler la demande"
                 cancelLabel="Conserver"

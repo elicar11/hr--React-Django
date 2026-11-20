@@ -11,6 +11,7 @@ export const WEEKDAYS = [
 
 export function formatWorkingDays(days: number[]): string {
     return WEEKDAYS.filter((day) => days.includes(day.id))
-        .map((day) => day.short)
+        .map((day) => tr(day.short))
         .join(" ");
 }
+import { tr } from "@/i18n/translate";

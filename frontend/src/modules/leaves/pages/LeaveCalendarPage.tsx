@@ -1,5 +1,6 @@
 import { ChevronLeft, ChevronRight, CalendarDays } from "lucide-react";
 import { Link } from "react-router";
+import { useTranslation } from "react-i18next";
 import { Alert, Button, EmptyState, FilterBar, PageHeader, Select, Skeleton, StatusBadge } from "@/components/ui";
 import { currentMonthKey, formatMonthLong, monthGrid, shiftMonth } from "@/lib/calendar";
 import { formatDate, formatDecimal } from "@/lib/format";
@@ -10,6 +11,7 @@ import { MonthCalendar } from "../components/MonthCalendar";
 import { getAllLeaveTypes, getLeaveCalendar } from "../services/leaveService";
 
 export function LeaveCalendarPage() {
+    const { t } = useTranslation();
     const list = useListParams(["department", "leave_type", "status"]);
     const requested = list.getParam("month");
     const month = /^\d{4}-(0[1-9]|1[0-2])$/.test(requested) ? requested : currentMonthKey();
@@ -46,13 +48,13 @@ export function LeaveCalendarPage() {
             <PageHeader title="Calendrier RH" description="Congés approuvés, demandes en attente et jours fériés." />
 
             <div className="mb-4 flex flex-wrap items-center gap-3">
-                <Button variant="secondary" aria-label="Mois précédent" onClick={() => goTo(shiftMonth(month, -1))}>
+                <Button variant="secondary" aria-label={t("Mois précédent")} onClick={() => goTo(shiftMonth(month, -1))}>
                     <ChevronLeft className="size-5" aria-hidden="true" />
                 </Button>
                 <h2 aria-live="polite" className="min-w-48 text-center text-2xl capitalize">
                     {formatMonthLong(month)}
                 </h2>
-                <Button variant="secondary" aria-label="Mois suivant" onClick={() => goTo(shiftMonth(month, 1))}>
+                <Button variant="secondary" aria-label={t("Mois suivant")} onClick={() => goTo(shiftMonth(month, 1))}>
                     <ChevronRight className="size-5" aria-hidden="true" />
                 </Button>
                 <Button variant="secondary" onClick={() => goTo(currentMonthKey())}>
@@ -92,10 +94,10 @@ export function LeaveCalendarPage() {
 
             <p className="mb-3 flex flex-wrap items-center gap-x-5 gap-y-1 text-sm" aria-hidden="true">
                 <span className="flex items-center gap-2">
-                    <span className="inline-block size-4 border-2 border-ink bg-ink" /> Approuvé
+                    <span className="inline-block size-4 border-2 border-ink bg-ink" /> {t("Approuvé")}
                 </span>
                 <span className="flex items-center gap-2">
-                    <span className="inline-block size-4 border-2 border-dashed border-ink bg-paper" /> En attente
+                    <span className="inline-block size-4 border-2 border-dashed border-ink bg-paper" /> {t("En attente")}
                 </span>
             </p>
 
@@ -110,7 +112,7 @@ export function LeaveCalendarPage() {
 
             {query.data && (
                 <section className="mt-8 space-y-3">
-                    <h2 className="text-2xl">Congés du mois ({agenda.length})</h2>
+                    <h2 className="text-2xl">{t("Congés du mois ({{count}})", { count: agenda.length })}</h2>
                     {agenda.length === 0 ? (
                         <EmptyState icon={CalendarDays} title="Aucun congé ce mois-ci" />
                     ) : (

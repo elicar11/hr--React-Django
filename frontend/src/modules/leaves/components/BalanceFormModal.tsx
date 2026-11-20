@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Alert, Button, Input, Modal, ModalForm, Select } from "@/components/ui";
@@ -12,10 +13,12 @@ import { EmployeePicker, type PickedEmployee } from "@/modules/employees/compone
 import { createBalance, getAllLeaveTypes, updateBalance } from "../services/leaveService";
 import type { LeaveBalance } from "../types";
 
+const isValidDecimal = (value: string) => DECIMAL_PATTERN.test(value.trim());
+
 const schema = z.object({
     leave_type: z.string(),
     year: z.string(),
-    allocated: z.string().refine((value) => DECIMAL_PATTERN.test(value.trim()), "Nombre de jours invalide (ex. 25 ou 2,5)."),
+    allocated: z.string().refine(isValidDecimal, "Nombre de jours invalide (ex. 25 ou 2,5)."),
 });
 type FormValues = z.infer<typeof schema>;
 
@@ -27,6 +30,7 @@ interface BodyProps {
 }
 
 function BalanceBody({ balance, onClose, onSaved }: BodyProps) {
+    const { t } = useTranslation();
     const creating = balance === null;
     const [employee, setEmployee] = useState<PickedEmployee | null>(null);
     const [employeeError, setEmployeeError] = useState<string>();
@@ -119,8 +123,7 @@ function BalanceBody({ balance, onClose, onSaved }: BodyProps) {
                 </>
             ) : (
                 <Alert tone="info">
-                    {balance.employee_name} · {balance.leave_type_name} · {balance.year} : {formatDecimal(balance.used)} jour(s) déjà utilisé(s).
-                    L'allocation ne peut pas être inférieure.
+                    {balance.employee_name} · {balance.leave_type_name} · {balance.year} : {t("{{days}} jour déjà utilisé. L'allocation ne peut pas être inférieure.", { count: Number(balance.used), days: formatDecimal(balance.used) })}
                 </Alert>
             )}
             <Input

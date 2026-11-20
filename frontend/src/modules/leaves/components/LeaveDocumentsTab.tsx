@@ -1,5 +1,6 @@
 import { Download, FileText, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import { Alert, Button, Card, ConfirmDialog, EmptyState, FileUpload, Input, Skeleton } from "@/components/ui";
 import { saveFile } from "@/lib/download";
 import { formatDate, formatFileSize } from "@/lib/format";
@@ -14,6 +15,7 @@ import {
 import type { LeaveDocument, LeaveStatus } from "../types";
 
 export function LeaveDocumentsTab({ leaveId, status }: { leaveId: number; status: LeaveStatus }) {
+    const { t } = useTranslation();
     const [version, setVersion] = useState(0);
     const query = useApiQuery(["leave-documents", leaveId, version], (signal) => listLeaveDocuments(leaveId, signal));
     const [title, setTitle] = useState("");
@@ -65,7 +67,7 @@ export function LeaveDocumentsTab({ leaveId, status }: { leaveId: number; status
                                 <div>
                                     <p className="font-bold">{document.title}</p>
                                     <p className="text-sm text-gray-dark">
-                                        {formatFileSize(document.size)} · ajouté le {formatDate(document.created_at)}
+                                        {t("{{size}} · ajouté le {{date}}", { size: formatFileSize(document.size), date: formatDate(document.created_at) })}
                                     </p>
                                 </div>
                                 <div className="flex gap-2">
@@ -75,7 +77,7 @@ export function LeaveDocumentsTab({ leaveId, status }: { leaveId: number; status
                                     <Button
                                         size="sm"
                                         variant="danger"
-                                        aria-label={`Retirer ${document.title}`}
+                                        aria-label={t("Retirer {{title}}", { title: document.title })}
                                         onClick={() => setDeleting(document)}
                                         leftIcon={<Trash2 className="size-4" aria-hidden="true" />}
                                     >
@@ -116,7 +118,7 @@ export function LeaveDocumentsTab({ leaveId, status }: { leaveId: number; status
                 title="Retirer ce justificatif ?"
                 message={
                     <>
-                        Le justificatif <strong>{deleting?.title}</strong> sera supprimé. Après décision, seuls les RH peuvent le faire.
+                        <Trans i18nKey="Le justificatif <strong>{{title}}</strong> sera supprimé. Après décision, seuls les RH peuvent le faire." values={{ title: deleting?.title ?? "" }} components={{ strong: <strong /> }} />
                     </>
                 }
                 confirmLabel="Retirer"

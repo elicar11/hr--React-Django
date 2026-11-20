@@ -1,6 +1,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { Pencil, Plus, Scale, Wand2 } from "lucide-react";
 import { useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import {
     Alert,
@@ -25,6 +26,7 @@ import { getAllLeaveTypes, listBalances } from "../services/leaveService";
 import type { LeaveBalance } from "../types";
 
 export function LeaveBalancesPage() {
+    const { t } = useTranslation();
     const list = useListParams(["year", "leave_type", "employee"]);
     const currentYear = new Date().getFullYear();
     const year = list.filters.year || String(currentYear);
@@ -76,7 +78,7 @@ export function LeaveBalancesPage() {
             enableSorting: false,
             cell: ({ row }) => (
                 <RowActions
-                    label={`Actions pour le solde de ${row.original.employee_name}`}
+                    label={t("Actions pour le solde de {{name}}", { name: row.original.employee_name })}
                     items={[{ label: "Modifier l'allocation", icon: Pencil, onSelect: () => setEditing(row.original) }]}
                 />
             ),
@@ -150,10 +152,10 @@ export function LeaveBalancesPage() {
                                     <p className="font-bold">{row.employee_name}</p>
                                     <p className="text-sm text-gray-dark">{row.leave_type_name} · {row.year}</p>
                                 </div>
-                                <RowActions label={`Actions pour ${row.employee_name}`} items={[{ label: "Modifier l'allocation", icon: Pencil, onSelect: () => setEditing(row) }]} />
+                                <RowActions label={t("Actions pour le solde de {{name}}", { name: row.employee_name })} items={[{ label: "Modifier l'allocation", icon: Pencil, onSelect: () => setEditing(row) }]} />
                             </div>
                             <p className="text-sm">
-                                <strong className="font-display text-xl">{formatDecimal(row.remaining)}</strong> j restants sur {formatDecimal(row.allocated)}
+                                <Trans i18nKey="<strong>{{remaining}}</strong> j restants sur {{allocated}}" values={{ remaining: formatDecimal(row.remaining), allocated: formatDecimal(row.allocated) }} components={{ strong: <strong className="font-display text-xl" /> }} />
                             </p>
                             <BalanceMeter balance={row} />
                         </div>

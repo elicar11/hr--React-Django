@@ -1,5 +1,6 @@
 import { Ban, CalendarDays, Check, Eye, ListChecks, Plus, Scale, X } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router";
 import {
     Alert,
@@ -26,6 +27,7 @@ import type { LeaveRequest } from "../types";
 
 /** HR queue of leave requests (the dashboard links here with ?status=PENDING). */
 export function LeavesPage() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const list = useListParams(["status", "leave_type", "employee", "department", "period_from", "period_to"]);
     const [version, setVersion] = useState(0);
@@ -72,11 +74,11 @@ export function LeavesPage() {
                     <>
                         <Link to="/leave-types" className={buttonStyles({ variant: "secondary" })}>
                             <ListChecks className="size-4" aria-hidden="true" />
-                            Types de congé
+                            {t("Types de congé")}
                         </Link>
                         <Link to="/leave-balances" className={buttonStyles({ variant: "secondary" })}>
                             <Scale className="size-4" aria-hidden="true" />
-                            Soldes de congé
+                            {t("Soldes de congé")}
                         </Link>
                         <Button onClick={() => setCreating(true)} leftIcon={<Plus className="size-4" aria-hidden="true" />}>
                             Nouvelle demande

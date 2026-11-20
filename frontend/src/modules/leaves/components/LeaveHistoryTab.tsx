@@ -1,4 +1,5 @@
 import { History } from "lucide-react";
+import { tr } from "@/i18n/translate";
 import { Alert, EmptyState, Skeleton, StatusBadge } from "@/components/ui";
 import { formatDateTime } from "@/lib/format";
 import { useApiQuery } from "@/lib/hooks/useApiQuery";
@@ -6,11 +7,11 @@ import { getLeaveHistory } from "../services/leaveService";
 import type { LeaveHistoryEntry } from "../types";
 
 const ACTIONS: Record<LeaveHistoryEntry["action"], string> = {
-    CREATED: "Demande créée",
-    UPDATED: "Demande modifiée",
-    APPROVED: "Demande approuvée",
-    REJECTED: "Demande refusée",
-    CANCELLED: "Demande annulée",
+    ["CREATED"]: "Demande créée",
+    ["UPDATED"]: "Demande modifiée",
+    ["APPROVED"]: "Demande approuvée",
+    ["REJECTED"]: "Demande refusée",
+    ["CANCELLED"]: "Demande annulée",
 };
 
 export function LeaveHistoryTab({ leaveId, version }: { leaveId: number; version: number }) {
@@ -25,7 +26,7 @@ export function LeaveHistoryTab({ leaveId, version }: { leaveId: number; version
                     {query.data.map((entry) => (
                         <li key={entry.id} className="space-y-1 p-3">
                             <div className="flex flex-wrap items-center gap-3">
-                                <p className="font-bold">{ACTIONS[entry.action] ?? entry.action}</p>
+                                <p className="font-bold">{tr(ACTIONS[entry.action] ?? entry.action)}</p>
                                 {entry.from_status && entry.to_status && entry.from_status !== entry.to_status && (
                                     <span className="flex items-center gap-2 text-sm">
                                         <StatusBadge domain="leave" status={entry.from_status} /> →{" "}
@@ -35,7 +36,7 @@ export function LeaveHistoryTab({ leaveId, version }: { leaveId: number; version
                             </div>
                             {entry.comment && <p className="text-sm">« {entry.comment} »</p>}
                             <p className="text-sm text-gray-dark">
-                                {entry.actor_email || "Système"} · <time dateTime={entry.created_at}>{formatDateTime(entry.created_at)}</time>
+                                {entry.actor_email || tr("Système")} · <time dateTime={entry.created_at}>{formatDateTime(entry.created_at)}</time>
                             </p>
                         </li>
                     ))}

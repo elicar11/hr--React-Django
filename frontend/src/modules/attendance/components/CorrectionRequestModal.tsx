@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
+import { Trans } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Alert, Button, DateField, Input, Modal, ModalForm, Textarea } from "@/components/ui";
@@ -65,8 +66,7 @@ function CorrectionBody({ onClose, onSaved }: BodyProps) {
             }
         >
             <Alert tone="info">
-                Indiquez les horaires <strong>réels</strong> de la journée. Une demande n'est possible que pour les jours
-                récents (30 jours par défaut), une seule à la fois par jour. Les RH la valident ou la refusent.
+                <Trans i18nKey="Indiquez les horaires <strong>réels</strong> de la journée. Une demande n'est possible que pour les jours récents (30 jours par défaut), une seule à la fois par jour. Les RH la valident ou la refusent." components={{ strong: <strong /> }} />
             </Alert>
             {messages.length > 0 && (
                 <Alert tone="error">

@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import { Alert, Button, Modal, Select } from "@/components/ui";
 import { notify } from "@/lib/notify";
 import { initializeBalances } from "../services/leaveService";
 
 function InitializeBody({ onClose, onDone }: { onClose: () => void; onDone: () => void }) {
+    const { t } = useTranslation();
     const currentYear = new Date().getFullYear();
     const [year, setYear] = useState(String(currentYear));
     const [busy, setBusy] = useState(false);
@@ -12,7 +14,7 @@ function InitializeBody({ onClose, onDone }: { onClose: () => void; onDone: () =
         setBusy(true);
         try {
             const result = await initializeBalances(Number(year));
-            notify.success(`${result.created} solde(s) créé(s) pour ${result.year}`, "Les soldes existants n'ont pas été modifiés.");
+            notify.success(t("{{count}} solde créé pour {{year}}", { count: result.created, year: result.year }), t("Les soldes existants n'ont pas été modifiés."));
             onDone();
             onClose();
         } catch (error) {
@@ -25,8 +27,7 @@ function InitializeBody({ onClose, onDone }: { onClose: () => void; onDone: () =
         <>
             <div className="space-y-4 p-5">
                 <Alert tone="info">
-                    Crée, pour chaque employé en poste, le solde de l'année choisie avec l'<strong>allocation annuelle</strong> de chaque type
-                    décompté d'un solde (les types sans allocation sont ignorés). Aucun prorata n'est appliqué, et les soldes existants sont conservés.
+                    <Trans i18nKey="Crée, pour chaque employé en poste, le solde de l'année choisie avec l'<strong>allocation annuelle</strong> de chaque type décompté d'un solde (les types sans allocation sont ignorés). Aucun prorata n'est appliqué, et les soldes existants sont conservés." components={{ strong: <strong /> }} />
                 </Alert>
                 <Select label="Année" value={year} onChange={(event) => setYear(event.target.value)}>
                     {[currentYear - 1, currentYear, currentYear + 1].map((value) => (
@@ -41,7 +42,7 @@ function InitializeBody({ onClose, onDone }: { onClose: () => void; onDone: () =
                     Annuler
                 </Button>
                 <Button onClick={() => void run()} loading={busy}>
-                    Initialiser {year}
+                    {t("Initialiser {{year}}", { year })}
                 </Button>
             </div>
         </>

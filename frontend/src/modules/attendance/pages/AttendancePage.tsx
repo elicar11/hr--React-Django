@@ -1,6 +1,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { CalendarCheck, Download, Flag, Plus, Timer } from "lucide-react";
 import { useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import {
     Alert,
     Button,
@@ -243,6 +244,7 @@ function SummaryView({ list, departments }: { list: ListParams; departments: { i
 }
 
 export function AttendancePage() {
+    const { t } = useTranslation();
     const list = useListParams(FILTER_KEYS);
     const view = list.getParam("view") === "summary" ? "summary" : list.getParam("view") === "corrections" ? "corrections" : "records";
     const [version, setVersion] = useState(0);
@@ -289,11 +291,11 @@ export function AttendancePage() {
                     <>
                         <Link to="/work-schedules" className={buttonStyles({ variant: "secondary" })}>
                             <Timer className="size-4" aria-hidden="true" />
-                            Horaires de travail
+                            {t("Horaires de travail")}
                         </Link>
                         <Link to="/holidays" className={buttonStyles({ variant: "secondary" })}>
                             <Flag className="size-4" aria-hidden="true" />
-                            Jours fériés
+                            {t("Jours fériés")}
                         </Link>
                         <Button variant="secondary" onClick={() => void handleExport()} loading={exporting} leftIcon={<Download className="size-4" aria-hidden="true" />}>
                             Exporter
@@ -333,10 +335,7 @@ export function AttendancePage() {
                 tone="danger"
                 title="Supprimer cette absence ?"
                 message={
-                    <>
-                        L'absence de <strong>{deleting?.employee_name}</strong> sera supprimée. Une présence ne peut pas être supprimée :
-                        elle se corrige.
-                    </>
+                    <Trans i18nKey="L'absence de <strong>{{name}}</strong> sera supprimée. Une présence ne peut pas être supprimée : elle se corrige." values={{ name: deleting?.employee_name ?? "" }} components={{ strong: <strong /> }} />
                 }
                 confirmLabel="Supprimer"
                 onConfirm={async () => {

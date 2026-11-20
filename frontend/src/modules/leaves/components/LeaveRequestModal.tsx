@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Alert, Button, DateField, Input, Modal, ModalForm, Select, Textarea } from "@/components/ui";
@@ -34,6 +35,7 @@ interface BodyProps {
 }
 
 function LeaveRequestBody({ leave, asHr, onClose, onSaved }: BodyProps) {
+    const { t } = useTranslation();
     const creating = leave === null;
     const [employee, setEmployee] = useState<PickedEmployee | null>(null);
     const [employeeError, setEmployeeError] = useState<string>();
@@ -71,7 +73,7 @@ function LeaveRequestBody({ leave, asHr, onClose, onSaved }: BodyProps) {
                 : await updateLeaveRequest(leave.id, input);
             notify.success(
                 creating ? "Demande envoyée" : "Demande modifiée",
-                `${formatDecimal(saved.days)} jour(s) décompté(s) par le serveur.`,
+                t("{{days}} jour décompté par le serveur.", { count: Number(saved.days), days: formatDecimal(saved.days) }),
             );
             onSaved(saved);
             onClose();
@@ -95,8 +97,7 @@ function LeaveRequestBody({ leave, asHr, onClose, onSaved }: BodyProps) {
             }
         >
             <Alert tone="info">
-                Le nombre de jours est <strong>calculé par le serveur</strong> (jours travaillés selon l'horaire de l'employé,
-                jours fériés exclus) et le solde est vérifié. Une demande qui chevauche une autre est refusée.
+                <Trans i18nKey="Le nombre de jours est <strong>calculé par le serveur</strong> (jours travaillés selon l'horaire de l'employé, jours fériés exclus) et le solde est vérifié. Une demande qui chevauche une autre est refusée." components={{ strong: <strong /> }} />
             </Alert>
             {messages.length > 0 && (
                 <Alert tone="error">

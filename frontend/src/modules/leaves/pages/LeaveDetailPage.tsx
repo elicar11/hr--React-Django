@@ -1,5 +1,6 @@
 import { Ban, Check, FileText, FileX, History, Pencil, X } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useParams, useSearchParams } from "react-router";
 import {
     Alert,
@@ -30,6 +31,7 @@ const TABS = [
 
 /** Detail of a request: ADMIN / HR, or the employee who owns it (the API answers 404 to anyone else). */
 export function LeaveDetailPage() {
+    const { t } = useTranslation();
     const { id } = useParams();
     const leaveId = Number(id);
     const { user } = useSession();
@@ -54,7 +56,7 @@ export function LeaveDetailPage() {
                     icon={FileX}
                     title={query.error.status === 404 ? "Demande introuvable" : "Chargement impossible"}
                     description={query.error.message}
-                    action={<Link to={backTo} className={buttonStyles()}>Retour à la liste</Link>}
+                    action={<Link to={backTo} className={buttonStyles()}>{t("Retour à la liste")}</Link>}
                 />
             </>
         );
@@ -69,7 +71,7 @@ export function LeaveDetailPage() {
     return (
         <>
             <PageHeader
-                title={`Congé · ${leave.leave_type_name}`}
+                title={t("Congé · {{type}}", { type: leave.leave_type_name })}
                 breadcrumb={[{ label: staff ? "Congés" : "Mes congés", to: backTo }, { label: `${formatDate(leave.start_date)} → ${formatDate(leave.end_date)}` }]}
                 actions={
                     <>
@@ -127,7 +129,7 @@ export function LeaveDetailPage() {
                                     <strong className="font-display text-2xl">{formatDecimal(leave.days)}</strong>{" "}
                                     {years.length > 1 && (
                                         <span className="text-sm text-gray-dark">
-                                            ({years.map(([year, days]) => `${formatDecimal(days)} en ${year}`).join(", ")})
+                                            ({years.map(([year, days]) => t("{{days}} en {{year}}", { days: formatDecimal(days), year })).join(", ")})
                                         </span>
                                     )}
                                 </span>
@@ -139,7 +141,7 @@ export function LeaveDetailPage() {
                         ...(leave.decision_comment ? [{ label: "Commentaire de la décision", value: leave.decision_comment }] : []),
                     ]}
                 />
-                <p className="mt-4 text-sm text-gray-dark">Le décompte est calculé par le serveur à la création de la demande et conservé tel quel.</p>
+                <p className="mt-4 text-sm text-gray-dark">{t("Le décompte est calculé par le serveur à la création de la demande et conservé tel quel.")}</p>
             </Card>
 
             <Tabs

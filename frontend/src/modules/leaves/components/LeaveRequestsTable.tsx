@@ -1,5 +1,6 @@
 import type { ColumnDef, OnChangeFn, SortingState } from "@tanstack/react-table";
 import type { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import { DataTable, RowActions, StatusBadge, type MenuItem } from "@/components/ui";
 import { formatDate, formatDecimal } from "@/lib/format";
@@ -24,8 +25,9 @@ export function LeaveRequestsTable({
     getActions: (leave: LeaveRequest) => MenuItem[];
     emptyState: ReactNode;
 }) {
+    const { t } = useTranslation();
     const actions = (leave: LeaveRequest) => (
-        <RowActions label={`Actions pour la demande du ${formatDate(leave.start_date)}`} items={getActions(leave)} />
+        <RowActions label={t("Actions pour la demande du {{date}}", { date: formatDate(leave.start_date) })} items={getActions(leave)} />
     );
 
     const columns: ColumnDef<LeaveRequest>[] = [
@@ -87,7 +89,7 @@ export function LeaveRequestsTable({
                             </Link>
                             {showEmployee && <p className="text-sm text-gray-dark">{row.employee_name}</p>}
                             <p className="text-sm text-gray-dark">
-                                {row.leave_type_name} · {formatDecimal(row.days)} j
+                                {row.leave_type_name} · {t("{{days}} j", { days: formatDecimal(row.days) })}
                             </p>
                         </div>
                         {actions(row)}
