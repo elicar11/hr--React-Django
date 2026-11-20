@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
+import { Trans } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Alert, Button, DateField, Input, Modal, ModalForm, Select } from "@/components/ui";
@@ -62,8 +63,7 @@ function PayBody({ payslip, onClose, onSaved }: BodyProps) {
             }
         >
             <Alert tone="info">
-                Enregistre le règlement du net à payer : <strong>{formatMoney(payslip.net_pay, payslip.currency)}</strong>. Ce n'est pas un virement
-                : aucune coordonnée bancaire n'est conservée par l'application.
+                <Trans i18nKey="Enregistre le règlement du net à payer : <strong>{{amount}}</strong>. Ce n'est pas un virement : aucune coordonnée bancaire n'est conservée par l'application." values={{ amount: formatMoney(payslip.net_pay, payslip.currency) }} components={{ strong: <strong /> }} />
             </Alert>
             {messages.length > 0 && (
                 <Alert tone="error">

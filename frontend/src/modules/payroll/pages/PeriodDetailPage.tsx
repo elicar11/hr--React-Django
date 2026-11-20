@@ -1,5 +1,6 @@
 import { Banknote, Calculator, CircleCheck, Download, FileX, Lock, LockOpen, Pencil, Trash2, UserPlus } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useNavigate, useParams } from "react-router";
 import {
     Alert,
@@ -47,6 +48,7 @@ interface Outcome {
 }
 
 export function PeriodDetailPage() {
+    const { t } = useTranslation();
     const { id } = useParams();
     const periodId = Number(id);
     const navigate = useNavigate();
@@ -75,7 +77,7 @@ export function PeriodDetailPage() {
                     icon={FileX}
                     title={query.error.status === 404 ? "Période introuvable" : "Chargement impossible"}
                     description={query.error.message}
-                    action={<Link to="/payroll" className={buttonStyles()}>Retour à la paie</Link>}
+                    action={<Link to="/payroll" className={buttonStyles()}>{t("Retour à la paie")}</Link>}
                 />
             </>
         );
@@ -112,7 +114,7 @@ export function PeriodDetailPage() {
     return (
         <>
             <PageHeader
-                title={`Période ${period.code}`}
+                title={t("Période {{code}}", { code: period.code })}
                 description={`${period.name} · du ${formatDate(period.start_date)} au ${formatDate(period.end_date)}`}
                 breadcrumb={[{ label: "Paie", to: "/payroll" }, { label: period.code }]}
                 actions={
@@ -132,7 +134,7 @@ export function PeriodDetailPage() {
 
             <div className="mb-6 flex flex-wrap items-center gap-3">
                 <StatusBadge domain="period" status={period.status} />
-                {!open && <p className="text-sm text-gray-dark">Période clôturée : aucun bulletin ne peut plus être généré, calculé ni validé.</p>}
+                {!open && <p className="text-sm text-gray-dark">{t("Période clôturée : aucun bulletin ne peut plus être généré, calculé ni validé.")}</p>}
             </div>
 
             <section aria-label="Totaux" className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -153,7 +155,7 @@ export function PeriodDetailPage() {
                                 count: result.created,
                                 errors: [],
                                 extra: result.skipped_without_contract.length
-                                    ? `Sans contrat applicable (ignorés) : ${result.skipped_without_contract.join(", ")}.`
+                                    ? t("Sans contrat applicable (ignorés) : {{list}}.", { list: result.skipped_without_contract.join(", ") })
                                     : undefined,
                             }))
                         }
@@ -196,11 +198,13 @@ export function PeriodDetailPage() {
 
             {outcome && (
                 <BulkResult
-                    title={outcome.kind === "generate" ? "Génération terminée" : outcome.kind === "calculate" ? "Calcul terminé" : "Validation terminée"}
-                    successLabel={outcome.kind === "generate" ? "bulletin(s) créé(s)" : outcome.kind === "calculate" ? "bulletin(s) calculé(s)" : "bulletin(s) validé(s)"}
-                    count={outcome.count}
+                    title={t(outcome.kind === "generate" ? "Génération terminée" : outcome.kind === "calculate" ? "Calcul terminé" : "Validation terminée")}
+                    message={[
+                        t(outcome.kind === "generate" ? "{{count}} bulletin créé" : outcome.kind === "calculate" ? "{{count}} bulletin calculé" : "{{count}} bulletin validé", { count: outcome.count }),
+                        ...(outcome.errors.length ? [t("{{errors}} en erreur", { count: outcome.errors.length, errors: outcome.errors.length })] : []),
+                        ...(outcome.extra ? [outcome.extra] : []),
+                    ].join(" · ")}
                     errors={outcome.errors}
-                    extra={outcome.extra}
                     onDismiss={() => setOutcome(null)}
                 />
             )}

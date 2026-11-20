@@ -5,6 +5,7 @@ import { enOrganization } from "./en.organization";
 import { enContracts } from "./en.contracts";
 import { enAttendance } from "./en.attendance";
 import { enLeaves } from "./en.leaves";
+import { enPayroll } from "./en.payroll";
 
 export const en: Record<string, string> = {
     // --- Navigation ---------------------------------------------------------------------------------------
@@ -76,4 +77,5 @@ export const en: Record<string, string> = {
     ...enContracts,
     ...enAttendance,
     ...enLeaves,
+    ...enPayroll,
 };

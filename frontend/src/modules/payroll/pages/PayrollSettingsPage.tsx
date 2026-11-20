@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Alert, Button, Card, Checkbox, ConfirmDialog, Input, PageHeader, Skeleton } from "@/components/ui";
@@ -27,6 +28,7 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 function SettingsForm({ settings, onSaved }: { settings: PayrollSettings; onSaved: () => void }) {
+    const { t } = useTranslation();
     const [messages, setMessages] = useState<string[]>([]);
     const {
         register,
@@ -62,7 +64,7 @@ function SettingsForm({ settings, onSaved }: { settings: PayrollSettings; onSave
     }
 
     return (
-        <Card title="Paramètres" description={`Dernière modification : ${formatDateTime(settings.updated_at)}`}>
+        <Card title="Paramètres" description={t("Dernière modification : {{date}}", { date: formatDateTime(settings.updated_at) })}>
             <form noValidate onSubmit={handleSubmit(onSubmit)} className="max-w-2xl space-y-4">
                 {messages.length > 0 && (
                     <Alert tone="error" title="Enregistrement impossible">
@@ -111,6 +113,7 @@ function SettingsForm({ settings, onSaved }: { settings: PayrollSettings; onSave
 }
 
 export function PayrollSettingsPage() {
+    const { t } = useTranslation();
     const { user } = useSession();
     const isAdmin = user.role === "ADMIN";
     const query = usePayrollSettings();
@@ -134,10 +137,10 @@ export function PayrollSettingsPage() {
                         {settings.is_demo ? (
                             <div className="space-y-3">
                                 <p>
-                                    Les paramètres sont <strong>fictifs</strong>. Les bulletins sont marqués « Démo » et ne doivent pas servir à payer de vrais salaires.
+                                    <Trans i18nKey="Les paramètres sont <strong>fictifs</strong>. Les bulletins sont marqués « Démo » et ne doivent pas servir à payer de vrais salaires." components={{ strong: <strong /> }} />
                                 </p>
                                 <p className="text-sm text-gray-dark">
-                                    Ne désactivez ce mode qu'une fois le pays, la devise, les cotisations, les impôts et les règles légales confirmés par un spécialiste.
+                                    {t("Ne désactivez ce mode qu'une fois le pays, la devise, les cotisations, les impôts et les règles légales confirmés par un spécialiste.")}
                                 </p>
                                 {isAdmin ? (
                                     <Button variant="danger" onClick={() => setConfirmingLive(true)}>
@@ -149,7 +152,7 @@ export function PayrollSettingsPage() {
                             </div>
                         ) : (
                             <div className="space-y-3">
-                                <p>Le mode démonstration est <strong>désactivé</strong> : les nouveaux bulletins ne sont plus marqués « Démo ».</p>
+                                <p><Trans i18nKey="Le mode démonstration est <strong>désactivé</strong> : les nouveaux bulletins ne sont plus marqués « Démo »." components={{ strong: <strong /> }} /></p>
                                 {isAdmin && (
                                     <Button variant="secondary" onClick={() => setConfirmingDemo(true)}>
                                         Repasser en mode démonstration
@@ -168,8 +171,8 @@ export function PayrollSettingsPage() {
                 title="Désactiver le mode démonstration ?"
                 message={
                     <>
-                        <p>Les bulletins calculés ensuite ne porteront plus la mention « Démo » et pourront être utilisés comme des documents de paie réels.</p>
-                        <p className="mt-2 font-bold">Vérifiez avant que les paramètres et les types d'éléments ne sont plus fictifs.</p>
+                        <p>{t("Les bulletins calculés ensuite ne porteront plus la mention « Démo » et pourront être utilisés comme des documents de paie réels.")}</p>
+                        <p className="mt-2 font-bold">{t("Vérifiez avant que les paramètres et les types d'éléments ne sont plus fictifs.")}</p>
                     </>
                 }
                 confirmLabel="Désactiver"

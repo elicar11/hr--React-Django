@@ -1,5 +1,7 @@
 import { Ban, Calculator, CircleCheck, FileX, HandCoins, History, Plus, ReceiptText, SlidersHorizontal } from "lucide-react";
 import { useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
+import { tr, translateApiMessage } from "@/i18n/translate";
 import { Link, useParams, useSearchParams } from "react-router";
 import {
     Alert,
@@ -63,7 +65,7 @@ function HistoryTab({ payslipId, version }: { payslipId: number; version: number
                     {query.data.map((entry) => (
                         <li key={entry.id} className="space-y-1 p-3">
                             <div className="flex flex-wrap items-center gap-3">
-                                <p className="font-bold">{ACTIONS[entry.action] ?? entry.action}</p>
+                                <p className="font-bold">{tr(ACTIONS[entry.action] ?? entry.action)}</p>
                                 {entry.from_status && entry.to_status && entry.from_status !== entry.to_status && (
                                     <span className="flex items-center gap-2 text-sm">
                                         <StatusBadge domain="payslip" status={entry.from_status} /> → <StatusBadge domain="payslip" status={entry.to_status} />
@@ -72,7 +74,7 @@ function HistoryTab({ payslipId, version }: { payslipId: number; version: number
                             </div>
                             {entry.comment && <p className="text-sm">« {entry.comment} »</p>}
                             <p className="text-sm text-gray-dark">
-                                {entry.actor_email || "Système"} · <time dateTime={entry.created_at}>{formatDateTime(entry.created_at)}</time>
+                                {entry.actor_email || tr("Système")} · <time dateTime={entry.created_at}>{formatDateTime(entry.created_at)}</time>
                             </p>
                         </li>
                     ))}
@@ -87,6 +89,7 @@ function HistoryTab({ payslipId, version }: { payslipId: number; version: number
  * an employee only sees their own validated or paid payslips (the API answers 404 to anyone else).
  */
 export function PayslipDetailPage() {
+    const { t } = useTranslation();
     const { id } = useParams();
     const payslipId = Number(id);
     const { user } = useSession();
@@ -114,7 +117,7 @@ export function PayslipDetailPage() {
                     icon={FileX}
                     title={query.error.status === 404 ? "Bulletin introuvable" : "Chargement impossible"}
                     description={query.error.message}
-                    action={<Link to={backTo} className={buttonStyles()}>Retour</Link>}
+                    action={<Link to={backTo} className={buttonStyles()}>{t("Retour")}</Link>}
                 />
             </>
         );
@@ -141,8 +144,8 @@ export function PayslipDetailPage() {
     return (
         <>
             <PageHeader
-                title={`Bulletin ${payslip.reference}`}
-                description={`${payslip.employee_name} · ${payslip.department_name} · période ${payslip.period_code} (${formatDate(payslip.period_start)} → ${formatDate(payslip.period_end)})`}
+                title={t("Bulletin {{reference}}", { reference: payslip.reference })}
+                description={t("{{name}} · {{department}} · période {{code}} ({{start}} → {{end}})", { name: payslip.employee_name, department: payslip.department_name, code: payslip.period_code, start: formatDate(payslip.period_start), end: formatDate(payslip.period_end) })}
                 breadcrumb={
                     staff
                         ? [{ label: "Paie", to: "/payroll" }, { label: payslip.period_code, to: `/payroll/periods/${payslip.period}` }, { label: payslip.reference }]
@@ -184,15 +187,15 @@ export function PayslipDetailPage() {
 
             {payslip.is_demo && (
                 <Alert tone="warning" title="DÉMO : bulletin non utilisable pour une paie réelle" className="mb-4">
-                    {payslip.demo_warning ?? "Ce bulletin a été calculé avec des paramètres fictifs."}
+                    {payslip.demo_warning ? translateApiMessage(payslip.demo_warning) : t("Ce bulletin a été calculé avec des paramètres fictifs.")}
                 </Alert>
             )}
             {query.error && <Alert tone="error" className="mb-4">{query.error.message}</Alert>}
 
             <div className="mb-6 flex flex-wrap items-center gap-3">
                 <StatusBadge domain="payslip" status={payslip.status} />
-                {payslip.revision > 1 && <Badge tone="outline">Révision {payslip.revision}</Badge>}
-                {payslip.validated_at && <span className="text-sm text-gray-dark">Validé le {formatDateTime(payslip.validated_at)}</span>}
+                {payslip.revision > 1 && <Badge tone="outline">{t("Révision {{number}}", { number: payslip.revision })}</Badge>}
+                {payslip.validated_at && <span className="text-sm text-gray-dark">{t("Validé le {{date}}", { date: formatDateTime(payslip.validated_at) })}</span>}
             </div>
 
             {staff && payslip.status === "VALIDATED" && user.role !== "ADMIN" && (
@@ -203,8 +206,8 @@ export function PayslipDetailPage() {
             )}
             {staff && payslip.status === "CANCELLED" && (
                 <Alert tone="warning" title="Bulletin annulé" className="mb-4">
-                    {payslip.cancelled_at ? `Annulé le ${formatDateTime(payslip.cancelled_at)}. ` : ""}
-                    {payslip.cancel_reason && <>Motif : {payslip.cancel_reason}</>}
+                    {payslip.cancelled_at && <p>{t("Annulé le {{date}}.", { date: formatDateTime(payslip.cancelled_at) })}</p>}
+                    {payslip.cancel_reason && <p>{t("Motif : {{reason}}", { reason: payslip.cancel_reason })}</p>}
                 </Alert>
             )}
 
@@ -212,7 +215,7 @@ export function PayslipDetailPage() {
                 <Card title="Paiement" className="mb-6">
                     <DefinitionList
                         items={[
-                            { label: "Mode", value: METHOD_LABELS[payslip.payment.method] },
+                            { label: "Mode", value: tr(METHOD_LABELS[payslip.payment.method]) },
                             { label: "Date", value: formatDate(payslip.payment.payment_date) },
                             { label: "Montant", value: formatMoney(payslip.payment.amount, payslip.currency) },
                         ]}
@@ -246,12 +249,12 @@ export function PayslipDetailPage() {
                                         { label: "Devise", value: context?.settings?.currency ?? "" },
                                         { label: "Contrats pris en compte", value: context?.contracts?.join(", ") ?? "" },
                                         { label: "Jours ouvrés de la période", value: context?.working_days_in_period !== undefined ? String(context.working_days_in_period) : "" },
-                                        { label: "Heures supplémentaires (présences)", value: context?.overtime_minutes ? formatMinutes(context.overtime_minutes) : "Aucune" },
-                                        { label: "Jours de congé sans solde", value: context?.unpaid_leave_days ? String(context.unpaid_leave_days) : "Aucun" },
+                                        { label: "Heures supplémentaires (présences)", value: context?.overtime_minutes ? formatMinutes(context.overtime_minutes) : tr("Aucune") },
+                                        { label: "Jours de congé sans solde", value: context?.unpaid_leave_days ? String(context.unpaid_leave_days) : tr("Aucun") },
                                         { label: "Heures mensuelles de référence", value: context?.settings?.monthly_hours ? formatDecimal(context.settings.monthly_hours) : "" },
                                         { label: "Majoration des heures sup", value: context?.settings?.overtime_multiplier ? formatDecimal(context.settings.overtime_multiplier) : "" },
-                                        { label: "Prorata", value: context?.settings?.prorate_partial_periods === undefined ? "" : context.settings.prorate_partial_periods ? "Activé" : "Désactivé" },
-                                        { label: "Paramètres", value: context?.settings?.is_demo ? "Démonstration (fictifs)" : "Réels" },
+                                        { label: "Prorata", value: context?.settings?.prorate_partial_periods === undefined ? "" : context.settings.prorate_partial_periods ? tr("Activé") : tr("Désactivé") },
+                                        { label: "Paramètres", value: context?.settings?.is_demo ? tr("Démonstration (fictifs)") : tr("Réels") },
                                     ]}
                                 />
                             ) : (
@@ -276,9 +279,9 @@ export function PayslipDetailPage() {
                 title="Valider ce bulletin ?"
                 message={
                     <>
-                        <p>Net à payer : <strong>{formatMoney(payslip.net_pay, payslip.currency)}</strong>. Une fois validé, le bulletin est <strong>figé</strong> : ses lignes et ses montants ne peuvent plus changer.</p>
+                        <p><Trans i18nKey="Net à payer : <strong>{{amount}}</strong>. Une fois validé, le bulletin est <strong>figé</strong> : ses lignes et ses montants ne peuvent plus changer." values={{ amount: formatMoney(payslip.net_pay, payslip.currency) }} components={{ strong: <strong /> }} /></p>
                         <p className="mt-2 text-sm text-gray-dark">
-                            Le serveur refait le calcul avant de valider : si les données ont changé depuis, il demandera de recalculer. Vous ne pouvez pas valider votre propre bulletin.
+                            {t("Le serveur refait le calcul avant de valider : si les données ont changé depuis, il demandera de recalculer. Vous ne pouvez pas valider votre propre bulletin.")}
                         </p>
                     </>
                 }
@@ -297,8 +300,8 @@ export function PayslipDetailPage() {
                 title="Annuler ce bulletin ?"
                 message={
                     <>
-                        <p>L'annulation est une procédure contrôlée, enregistrée dans l'historique. Un nouveau bulletin (révision suivante) pourra être généré pour la période.</p>
-                        {payslip.status === "VALIDATED" && <p className="mt-2 font-bold">Ce bulletin est validé : seul un administrateur peut l'annuler.</p>}
+                        <p>{t("L'annulation est une procédure contrôlée, enregistrée dans l'historique. Un nouveau bulletin (révision suivante) pourra être généré pour la période.")}</p>
+                        {payslip.status === "VALIDATED" && <p className="mt-2 font-bold">{t("Ce bulletin est validé : seul un administrateur peut l'annuler.")}</p>}
                     </>
                 }
                 reason={{ label: "Motif de l'annulation", required: true, maxLength: 500 }}
@@ -317,7 +320,7 @@ export function PayslipDetailPage() {
                 title="Retirer cette ligne ?"
                 message={
                     <>
-                        La ligne <strong>{lineToRemove?.label}</strong> sera retirée et le bulletin recalculé.
+                        <Trans i18nKey="La ligne <strong>{{label}}</strong> sera retirée et le bulletin recalculé." values={{ label: lineToRemove?.label ?? "" }} components={{ strong: <strong /> }} />
                     </>
                 }
                 confirmLabel="Retirer"

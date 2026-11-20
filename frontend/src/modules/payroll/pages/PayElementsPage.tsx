@@ -1,6 +1,8 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { CalendarX, ListPlus, Plus } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { tr } from "@/i18n/translate";
 import { Link } from "react-router";
 import {
     Alert,
@@ -26,6 +28,7 @@ import { getAllPayItemTypes, listPayElements } from "../services/payrollService"
 import type { PayElement } from "../types";
 
 export function PayElementsPage() {
+    const { t } = useTranslation();
     const list = useListParams(["employee", "item_type", "active_on"]);
     const [version, setVersion] = useState(0);
     const refresh = () => setVersion((current) => current + 1);
@@ -71,7 +74,7 @@ export function PayElementsPage() {
             id: "end_date",
             header: "Fin",
             enableSorting: false,
-            cell: ({ row }) => (row.original.end_date ? formatDate(row.original.end_date) : <Badge tone="solid">En cours</Badge>),
+            cell: ({ row }) => (row.original.end_date ? formatDate(row.original.end_date) : <Badge tone="solid">{tr("En cours")}</Badge>),
         },
         {
             id: "actions",
@@ -80,7 +83,7 @@ export function PayElementsPage() {
             cell: ({ row }) =>
                 row.original.end_date === null || row.original.end_date >= today ? (
                     <RowActions
-                        label={`Actions pour ${row.original.item_type_name}`}
+                        label={t("Actions pour {{name}}", { name: row.original.item_type_name })}
                         items={[{ label: "Terminer l'élément", icon: CalendarX, tone: "danger", onSelect: () => setEnding(row.original) }]}
                     />
                 ) : null,
@@ -144,8 +147,8 @@ export function PayElementsPage() {
                         <div className="space-y-1">
                             <p className="font-bold">{row.employee_matricule} · {row.item_type_name}</p>
                             <p className="text-sm">
-                                {row.amount !== null ? formatDecimal(row.amount) : `${formatDecimal(row.rate ?? "0", 4)} %`} · depuis le {formatDate(row.start_date)}
-                                {row.end_date ? ` jusqu'au ${formatDate(row.end_date)}` : ""}
+                                {row.amount !== null ? formatDecimal(row.amount) : `${formatDecimal(row.rate ?? "0", 4)} %`} · {t("Depuis le {{date}}", { date: formatDate(row.start_date) })}
+                                {row.end_date ? ` ${t("jusqu'au {{date}}", { date: formatDate(row.end_date) })}` : ""}
                             </p>
                             {(row.end_date === null || row.end_date >= today) && (
                                 <Button size="sm" variant="secondary" onClick={() => setEnding(row)}>

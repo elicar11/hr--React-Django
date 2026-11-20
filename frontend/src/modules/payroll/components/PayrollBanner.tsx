@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import { Trans } from "react-i18next";
 import { Alert } from "@/components/ui";
 import { usePayrollSettings } from "../hooks";
 
@@ -10,10 +11,7 @@ export function PayrollBanner() {
     if (!data.currency) {
         return (
             <Alert tone="warning" title="Paramètres de paie non configurés" className="mb-6">
-                La devise n'est pas définie : aucun bulletin ne peut être généré.{" "}
-                <Link to="/payroll/settings" className="font-bold underline underline-offset-4">
-                    Configurer la paie
-                </Link>
+                <Trans i18nKey="La devise n'est pas définie : aucun bulletin ne peut être généré. <settings>Configurer la paie</settings>" components={{ settings: <Link to="/payroll/settings" className="font-bold underline underline-offset-4" /> }} />
             </Alert>
         );
     }

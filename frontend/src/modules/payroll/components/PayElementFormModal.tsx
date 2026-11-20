@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
+import { tr } from "@/i18n/translate";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { Alert, Button, DateField, Input, Modal, ModalForm, Select } from "@/components/ui";
@@ -111,7 +112,7 @@ function PayElementBody({ initialEmployee = null, onClose, onSaved }: BodyProps)
             <Select label="Type d'élément" required placeholder="Choisir…" error={errors.item_type?.message} {...register("item_type")}>
                 {options.map((type) => (
                     <option key={type.id} value={type.id}>
-                        {type.code} · {type.name} ({CALCULATION_LABELS[type.calculation]})
+                        {type.code} · {type.name} ({tr(CALCULATION_LABELS[type.calculation])})
                     </option>
                 ))}
             </Select>

@@ -1,6 +1,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { Banknote, Eye, Layers, ListPlus, Pencil, Plus, Settings2, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router";
 import {
     Alert,
@@ -45,6 +46,7 @@ function PeriodsView({ list, version, onEdit, onDelete, onCreate }: {
     onDelete: (period: PayrollPeriod) => void;
     onCreate: () => void;
 }) {
+    const { t } = useTranslation();
     const settings = usePayrollSettings();
     const currency = settings.data?.currency ?? "";
     const params = {
@@ -59,7 +61,7 @@ function PeriodsView({ list, version, onEdit, onDelete, onCreate }: {
         const open = period.status === "OPEN";
         return (
             <RowActions
-                label={`Actions pour la période ${period.code}`}
+                label={t("Actions pour la période {{code}}", { code: period.code })}
                 items={[
                     { label: "Ouvrir", icon: Eye, to: `/payroll/periods/${period.id}` },
                     ...(open ? [{ label: "Modifier", icon: Pencil, onSelect: () => onEdit(period) }] : []),
@@ -197,6 +199,7 @@ function PayslipsView({ list }: { list: ListParams }) {
 }
 
 export function PayrollPage() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const list = useListParams(["period_status", "status", "period", "employee"]);
     // The employee sheet links here with ?employee=ID: that means the payslips view.
@@ -215,15 +218,15 @@ export function PayrollPage() {
                     <>
                         <Link to="/payroll/item-types" className={buttonStyles({ variant: "secondary" })}>
                             <Layers className="size-4" aria-hidden="true" />
-                            Types d'éléments
+                            {t("Types d'éléments")}
                         </Link>
                         <Link to="/payroll/elements" className={buttonStyles({ variant: "secondary" })}>
                             <ListPlus className="size-4" aria-hidden="true" />
-                            Éléments par employé
+                            {t("Éléments par employé")}
                         </Link>
                         <Link to="/payroll/settings" className={buttonStyles({ variant: "secondary" })}>
                             <Settings2 className="size-4" aria-hidden="true" />
-                            Paramètres
+                            {t("Paramètres")}
                         </Link>
                         <Button onClick={() => setEditing("new")} leftIcon={<Plus className="size-4" aria-hidden="true" />}>
                             Nouvelle période
@@ -260,8 +263,8 @@ export function PayrollPage() {
                 title="Supprimer cette période ?"
                 message={
                     <>
-                        <p>Supprimer la période <strong>{deleting?.code}</strong> est irréversible.</p>
-                        <p className="mt-2 text-sm text-gray-dark">Si elle contient des bulletins (même annulés), la suppression sera refusée.</p>
+                        <p><Trans i18nKey="Supprimer la période <strong>{{code}}</strong> est irréversible." values={{ code: deleting?.code ?? "" }} components={{ strong: <strong /> }} /></p>
+                        <p className="mt-2 text-sm text-gray-dark">{t("Si elle contient des bulletins (même annulés), la suppression sera refusée.")}</p>
                     </>
                 }
                 confirmLabel="Supprimer"

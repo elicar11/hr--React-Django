@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Alert, Button, DateField, Modal, ModalForm } from "@/components/ui";
@@ -19,6 +20,7 @@ interface BodyProps {
 }
 
 function EndBody({ element, onClose, onSaved }: BodyProps) {
+    const { t } = useTranslation();
     const [messages, setMessages] = useState<string[]>([]);
     const {
         register,
@@ -54,8 +56,7 @@ function EndBody({ element, onClose, onSaved }: BodyProps) {
             }
         >
             <Alert tone="info">
-                L'élément « {element.item_type_name} » ({element.employee_matricule}) ne sera plus appliqué après cette date. Les bulletins déjà
-                validés ne changent pas.
+                {t("L'élément {{name}} ({{matricule}}) ne sera plus appliqué après cette date. Les bulletins déjà validés ne changent pas.", { name: element.item_type_name, matricule: element.employee_matricule })}
             </Alert>
             {messages.length > 0 && (
                 <Alert tone="error">

@@ -1,6 +1,8 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { Layers, Pencil, Plus, Power, PowerOff, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
+import { tr } from "@/i18n/translate";
 import {
     ActiveBadge,
     Alert,
@@ -27,6 +29,7 @@ import { deletePayItemType, listPayItemTypes, updatePayItemType } from "../servi
 import type { PayItemCalculation, PayItemCategory, PayItemType } from "../types";
 
 export function PayItemTypesPage() {
+    const { t } = useTranslation();
     const list = useListParams(["category", "calculation", "applies_to_all", "is_active"]);
     const [version, setVersion] = useState(0);
     const refresh = () => setVersion((current) => current + 1);
@@ -57,7 +60,7 @@ export function PayItemTypesPage() {
     function Actions({ type }: { type: PayItemType }) {
         return (
             <RowActions
-                label={`Actions pour ${type.name}`}
+                label={t("Actions pour {{name}}", { name: type.name })}
                 items={[
                     { label: "Modifier", icon: Pencil, onSelect: () => setEditing(type) },
                     type.is_active
@@ -78,14 +81,14 @@ export function PayItemTypesPage() {
     const columns: ColumnDef<PayItemType>[] = [
         { accessorKey: "code", header: "Code", cell: ({ getValue }) => <strong>{String(getValue())}</strong> },
         { accessorKey: "name", header: "Nom" },
-        { id: "category", header: "Catégorie", enableSorting: false, cell: ({ row }) => CATEGORY_LABELS[row.original.category] },
-        { id: "calculation", header: "Calcul", enableSorting: false, cell: ({ row }) => CALCULATION_LABELS[row.original.calculation] },
+        { id: "category", header: "Catégorie", enableSorting: false, cell: ({ row }) => tr(CATEGORY_LABELS[row.original.category]) },
+        { id: "calculation", header: "Calcul", enableSorting: false, cell: ({ row }) => tr(CALCULATION_LABELS[row.original.calculation]) },
         { id: "value", header: "Valeur par défaut", enableSorting: false, cell: ({ row }) => value(row.original) },
         {
             id: "all",
             header: "Application",
             enableSorting: false,
-            cell: ({ row }) => (row.original.applies_to_all ? <Badge tone="solid">Tous les employés</Badge> : <Badge tone="muted">Par employé</Badge>),
+            cell: ({ row }) => (row.original.applies_to_all ? <Badge tone="solid">{t("Tous les employés")}</Badge> : <Badge tone="muted">{t("Par employé")}</Badge>),
         },
         { id: "is_active", header: "Statut", enableSorting: false, cell: ({ row }) => <ActiveBadge active={row.original.is_active} /> },
         {
@@ -171,7 +174,7 @@ export function PayItemTypesPage() {
                                 <p className="font-bold">{row.code} · {row.name}</p>
                                 <Actions type={row} />
                             </div>
-                            <p className="text-sm text-gray-dark">{CATEGORY_LABELS[row.category]} · {CALCULATION_LABELS[row.calculation]}</p>
+                            <p className="text-sm text-gray-dark">{tr(CATEGORY_LABELS[row.category])} · {tr(CALCULATION_LABELS[row.calculation])}</p>
                             <ActiveBadge active={row.is_active} />
                         </div>
                     )}
@@ -187,8 +190,8 @@ export function PayItemTypesPage() {
                 title="Supprimer ce type ?"
                 message={
                     <>
-                        <p>Supprimer le type <strong>{deleting?.name}</strong> est irréversible.</p>
-                        <p className="mt-2 text-sm text-gray-dark">S'il est utilisé par des éléments ou des bulletins, la suppression sera refusée : désactivez-le plutôt.</p>
+                        <p><Trans i18nKey="Supprimer le type <strong>{{name}}</strong> est irréversible." values={{ name: deleting?.name ?? "" }} components={{ strong: <strong /> }} /></p>
+                        <p className="mt-2 text-sm text-gray-dark">{t("S'il est utilisé par des éléments ou des bulletins, la suppression sera refusée : désactivez-le plutôt.")}</p>
                     </>
                 }
                 confirmLabel="Supprimer"

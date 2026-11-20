@@ -1,5 +1,6 @@
 import type { ColumnDef, OnChangeFn, SortingState } from "@tanstack/react-table";
 import { TriangleAlert } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { ReactNode } from "react";
 import { Link } from "react-router";
 import { Badge, DataTable, StatusBadge } from "@/components/ui";
@@ -7,16 +8,15 @@ import { formatMoney } from "@/lib/format";
 import type { PayslipListItem } from "../types";
 
 function Reference({ payslip, to }: { payslip: PayslipListItem; to: string }) {
+    const { t } = useTranslation();
     return (
         <span className="flex flex-wrap items-center gap-2">
             <Link to={to} className="font-bold underline underline-offset-4 hover:bg-ink hover:text-paper">
                 {payslip.reference}
             </Link>
-            {payslip.revision > 1 && <Badge tone="outline">Révision {payslip.revision}</Badge>}
+            {payslip.revision > 1 && <Badge tone="outline">{t("Révision {{number}}", { number: payslip.revision })}</Badge>}
             {payslip.is_demo && (
-                <Badge tone="alert" icon={TriangleAlert}>
-                    Démo
-                </Badge>
+                <Badge tone="alert" icon={TriangleAlert}>{t("Démo")}</Badge>
             )}
         </span>
     );
