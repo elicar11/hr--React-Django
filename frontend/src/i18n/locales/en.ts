@@ -1,5 +1,6 @@
 // English dictionary: the key is the French source text, exactly as written in the code.
 import { enI2 } from "./en.i2";
+import { enEmployees } from "./en.employees";
 
 export const en: Record<string, string> = {
     // --- Navigation ---------------------------------------------------------------------------------------
@@ -66,4 +67,5 @@ export const en: Record<string, string> = {
     "Erreur interne du serveur ({{status}}).": "Internal server error ({{status}}).",
     "Requête refusée par le serveur ({{status}}).": "Request refused by the server ({{status}}).",
     ...enI2,
+    ...enEmployees,
 };

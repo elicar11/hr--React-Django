@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
+import { Trans } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Alert, Button, DateField, Modal, ModalForm } from "@/components/ui";
@@ -54,8 +55,7 @@ function TerminateBody({ employee, onClose, onSaved }: BodyProps) {
             }
         >
             <Alert tone="warning" title="Opération structurante">
-                La sortie de <strong>{employee.first_name} {employee.last_name}</strong> clôt son affectation et ses contrats en
-                cours, annule ses congés à venir et <strong>désactive son compte de connexion</strong>.
+                <Trans i18nKey="La sortie de <strong>{{name}}</strong> clôt son affectation et ses contrats en cours, annule ses congés à venir et <strong>désactive son compte de connexion</strong>." values={{ name: `${employee.first_name} ${employee.last_name}` }} components={{ strong: <strong /> }} />
             </Alert>
             {messages.length > 0 && (
                 <Alert tone="error">

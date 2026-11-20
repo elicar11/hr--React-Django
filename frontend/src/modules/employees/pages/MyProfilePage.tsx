@@ -1,5 +1,6 @@
 import { UserX } from "lucide-react";
 import { Link } from "react-router";
+import { Trans, useTranslation } from "react-i18next";
 import {
     Alert,
     Badge,
@@ -17,6 +18,7 @@ import { EmployeePhoto } from "../components/EmployeePhoto";
 import { useMyEmployee } from "../hooks";
 import { getAssignments } from "../services/employeeService";
 import { GENDER_LABELS, formatCin } from "../labels";
+import { tr } from "@/i18n/translate";
 
 // const SHORTCUTS = [
 //     { to: "/my/contracts", label: "Mes contrats" },
@@ -26,10 +28,11 @@ import { GENDER_LABELS, formatCin } from "../labels";
 // ];
 
 function Assignments({ employeeId }: { employeeId: number }) {
+    const { t } = useTranslation();
     const query = useApiQuery(["my-assignments", employeeId], (signal) => getAssignments(employeeId, signal));
     if (query.error) return <Alert tone="error">{query.error.message}</Alert>;
     if (!query.data) return <Skeleton className="h-20" />;
-    if (query.data.length === 0) return <p className="text-gray-dark">Aucune affectation enregistrée.</p>;
+    if (query.data.length === 0) return <p className="text-gray-dark">{t("Aucune affectation enregistrée.")}</p>;
     return (
         <ol className="divide-y-2 divide-ink border-2 border-ink">
             {query.data.map((assignment) => (
@@ -39,11 +42,11 @@ function Assignments({ employeeId }: { employeeId: number }) {
                             {assignment.department_name} · {assignment.position_title}
                         </p>
                         <p className="text-sm text-gray-dark">
-                            Depuis le {formatDate(assignment.start_date)}
-                            {assignment.end_date ? ` jusqu'au ${formatDate(assignment.end_date)}` : ""}
+                            {t("Depuis le {{date}}", { date: formatDate(assignment.start_date) })}
+                            {assignment.end_date ? t(" jusqu'au {{date}}", { date: formatDate(assignment.end_date) }) : ""}
                         </p>
                     </div>
-                    {assignment.end_date === null && <Badge tone="solid">En cours</Badge>}
+                    {assignment.end_date === null && <Badge tone="solid">{t("En cours")}</Badge>}
                 </li>
             ))}
         </ol>
@@ -52,6 +55,7 @@ function Assignments({ employeeId }: { employeeId: number }) {
 
 /** Read-only record of the logged-in employee. Changes go through the HR team. */
 export function MyProfilePage() {
+    const { t } = useTranslation();
     const query = useMyEmployee();
     const employee = query.data;
 
@@ -97,16 +101,14 @@ export function MyProfilePage() {
                     <p>
                         {employee.department_name} · {employee.position_title}
                     </p>
-                    <p className="text-sm text-gray-dark">Embauché le {formatDate(employee.hire_date)}</p>
+                    <p className="text-sm text-gray-dark">{t("Embauché le {{date}}", { date: formatDate(employee.hire_date) })}</p>
                 </div>
             </div>
 
             <Alert tone="info" className="mb-6">
                 Ces informations sont gérées par les ressources humaines : pour corriger une donnée, contactez-les. Votre mot de passe se
                 change dans{" "}
-                <Link to="/profile" className="font-bold underline underline-offset-4">
-                    Mon compte
-                </Link>
+                <Trans i18nKey="Ces informations sont gérées par les ressources humaines : pour corriger une donnée, contactez-les. Votre mot de passe se change dans <lien>Mon compte</lien>." components={{ lien: <Link to="/profile" className="font-bold underline underline-offset-4" /> }} />
                 .
             </Alert>
 
@@ -114,7 +116,7 @@ export function MyProfilePage() {
                 <Card title="Informations personnelles">
                     <DefinitionList
                         items={[
-                            { label: "Sexe", value: employee.gender ? GENDER_LABELS[employee.gender] : "" },
+                            { label: "Sexe", value: employee.gender ? tr(GENDER_LABELS[employee.gender]) : "" },
                             { label: "Date de naissance", value: formatDate(employee.date_of_birth) },
                             { label: "E-mail personnel", value: employee.personal_email },
                             { label: "Téléphone personnel", value: employee.personal_phone },

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { cx } from "@/lib/cx";
 import { fetchEmployeePhoto } from "../services/employeeService";
 
@@ -19,6 +20,7 @@ export function EmployeePhoto({
     version?: string;
     size?: keyof typeof SIZES;
 }) {
+    const { t } = useTranslation();
     const [url, setUrl] = useState<string | null>(null);
 
     useEffect(() => {
@@ -49,11 +51,11 @@ export function EmployeePhoto({
         .join("");
 
     return shown ? (
-        <img src={shown} alt={`Photo de ${name}`} className={cx("shrink-0 border-2 border-ink object-cover", SIZES[size])} />
+        <img src={shown} alt={t("Photo de {{name}}", { name })} className={cx("shrink-0 border-2 border-ink object-cover", SIZES[size])} />
     ) : (
         <span
             role="img"
-            aria-label={`Initiales de ${name}`}
+            aria-label={t("Initiales de {{name}}", { name })}
             className={cx("flex shrink-0 items-center justify-center border-2 border-ink bg-ink font-display font-bold text-paper", SIZES[size])}
         >
             {initials}

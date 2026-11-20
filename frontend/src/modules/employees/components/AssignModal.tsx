@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
+import { Trans } from "react-i18next";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { Alert, Button, DateField, Modal, ModalForm, Select } from "@/components/ui";
@@ -88,8 +89,7 @@ function AssignBody({ employee, onClose, onSaved }: BodyProps) {
                 </Alert>
             )}
             <p className="text-sm text-gray-dark">
-                Affectation actuelle : <strong>{employee.department_name}</strong>, {employee.position_title}. L'ancienne
-                affectation est conservée dans l'historique et se termine la veille de la date d'effet.
+                <Trans i18nKey="Affectation actuelle : <strong>{{department}}</strong>, {{position}}. L'ancienne affectation est conservée dans l'historique et se termine la veille de la date d'effet." values={{ department: employee.department_name, position: employee.position_title }} components={{ strong: <strong /> }} />
             </p>
             <Select
                 label="Département"

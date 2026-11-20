@@ -1,6 +1,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { Download, Eye, Pencil, Plus, Upload, Users } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router";
 import {
     Alert,
@@ -18,6 +19,7 @@ import {
     buttonStyles,
 } from "@/components/ui";
 import { saveFile } from "@/lib/download";
+import { tr } from "@/i18n/translate";
 import { formatDate } from "@/lib/format";
 import { useApiQuery } from "@/lib/hooks/useApiQuery";
 import { useListParams } from "@/lib/hooks/useListParams";
@@ -34,9 +36,10 @@ import type { EmployeeListItem } from "../types";
 const FILTERS = ["employment_status", "department", "position", "hire_date_from", "hire_date_to"] as const;
 
 function EmployeeActions({ employee }: { employee: EmployeeListItem }) {
+    const { t } = useTranslation();
     return (
         <RowActions
-            label={`Actions pour ${employee.first_name} ${employee.last_name}`}
+            label={t("Actions pour {{name}}", { name: `${employee.first_name} ${employee.last_name}` })}
             items={[
                 { label: "Voir la fiche", icon: Eye, to: `/employees/${employee.id}` },
                 { label: "Modifier", icon: Pencil, to: `/employees/${employee.id}/edit` },
@@ -70,13 +73,14 @@ const columns: ColumnDef<EmployeeListItem>[] = [
     },
     {
         id: "actions",
-        header: () => <span className="sr-only">Actions</span>,
+        header: () => <span className="sr-only">{tr("Actions")}</span>,
         enableSorting: false,
         cell: ({ row }) => <EmployeeActions employee={row.original} />,
     },
 ];
 
 export function EmployeesPage() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const list = useListParams(FILTERS);
     const [version, setVersion] = useState(0);
@@ -127,14 +131,14 @@ export function EmployeesPage() {
                         </Button>
                         <Link to="/employees/new" className={buttonStyles()}>
                             <Plus className="size-4" aria-hidden="true" />
-                            Nouvel employé
+                            {t("Nouvel employé")}
                         </Link>
                     </>
                 }
             />
 
             <FilterBar canReset={list.hasActiveFilters} onReset={list.reset}>
-                <SearchInput className="w-full max-w-xs" value={list.searchText} onChange={list.setSearchText} placeholder="Matricule, nom, e-mail…" />
+        <SearchInput className="w-full max-w-xs" value={list.searchText} onChange={list.setSearchText} placeholder="Matricule, nom…" />
                 <Select label="Statut" className="min-w-40" value={list.filters.employment_status} placeholder="Tous" onChange={(e) => list.setFilter("employment_status", e.target.value)}>
                     <option value="ACTIVE">En poste</option>
                     <option value="SUSPENDED">Suspendu</option>
@@ -192,7 +196,7 @@ export function EmployeesPage() {
                                 description="Créez le premier dossier, ou importez un fichier CSV."
                                 action={
                                     <Link to="/employees/new" className={buttonStyles()}>
-                                        Ajouter un employé
+                                        {t("Ajouter un employé")}
                                     </Link>
                                 }
                             />

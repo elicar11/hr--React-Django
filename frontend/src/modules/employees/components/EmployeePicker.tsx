@@ -1,5 +1,6 @@
 import { CircleAlert, Search } from "lucide-react";
 import { useId, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button, StatusBadge } from "@/components/ui";
 import { controlClass } from "@/components/ui/fieldStyles";
 import { cx } from "@/lib/cx";
@@ -34,6 +35,7 @@ export function EmployeePicker({
     /** Employees who left cannot receive new contracts, leave requests... */
     excludeTerminated?: boolean;
 }) {
+    const { t } = useTranslation();
     const id = useId();
     const [text, setText] = useState("");
     const term = useDebouncedValue(text.trim(), 300);
@@ -43,17 +45,17 @@ export function EmployeePicker({
     const items = results.data?.results ?? [];
 
     let status = "";
-    if (term.length < 2) status = hint ?? "Tapez au moins 2 lettres du nom, du prénom ou du matricule.";
-    else if (results.loading) status = "Recherche…";
-    else if (items.length === 0) status = "Aucun employé trouvé.";
+    if (term.length < 2) status = hint ?? t("Tapez au moins 2 lettres du nom, du prénom ou du matricule.");
+    else if (results.loading) status = t("Recherche…");
+    else if (items.length === 0) status = t("Aucun employé trouvé.");
     else if (results.data && results.data.count > items.length) {
-        status = `${results.data.count} résultats : affinez votre recherche.`;
+        status = t("{{count}} résultat : affinez votre recherche.", { count: results.data.count });
     }
 
     return (
         <div className="space-y-1.5">
             <span id={`${id}-label`} className="block text-sm font-bold uppercase tracking-wide">
-                {label}
+                {t(label)}
                 {required && <span aria-hidden="true"> *</span>}
             </span>
 

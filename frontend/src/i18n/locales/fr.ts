@@ -11,4 +11,6 @@ export const fr: Record<string, string> = {
     "{{count}} contrat à clôturer_other": "{{count}} contrats à clôturer",
     "{{count}} contrat arrive à échéance_one": "{{count}} contrat arrive à échéance",
     "{{count}} contrat arrive à échéance_other": "{{count}} contrats arrivent à échéance",
+    "{{count}} résultat : affinez votre recherche_one": "{{count}} résultat : affinez votre recherche",
+    "{{count}} résultat : affinez votre recherche_other": "{{count}} résultats : affinez votre recherche",
 };

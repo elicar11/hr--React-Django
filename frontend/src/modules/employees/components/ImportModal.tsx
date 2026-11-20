@@ -1,5 +1,6 @@
 import { Download } from "lucide-react";
 import { useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import { Alert, Button, FileUpload, Modal } from "@/components/ui";
 import { saveFile } from "@/lib/download";
 import { notify } from "@/lib/notify";
@@ -8,14 +9,15 @@ import { downloadImportTemplate, importEmployees } from "../services/employeeSer
 import type { ImportPreview, ImportRowError } from "../types";
 
 function RowErrors({ errors }: { errors: ImportRowError[] }) {
+    const { t } = useTranslation();
     return (
         <div className="max-h-64 overflow-y-auto border-2 border-ink">
             <table className="w-full border-collapse text-left text-sm">
-                <caption className="sr-only">Erreurs du fichier, ligne par ligne</caption>
+                <caption className="sr-only">{t("Erreurs du fichier, ligne par ligne")}</caption>
                 <thead className="sticky top-0 bg-ink text-paper">
                     <tr>
-                        <th scope="col" className="px-3 py-2">Ligne</th>
-                        <th scope="col" className="px-3 py-2">Problèmes</th>
+                        <th scope="col" className="px-3 py-2">{t("Ligne")}</th>
+                        <th scope="col" className="px-3 py-2">{t("Problèmes")}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -40,6 +42,7 @@ function RowErrors({ errors }: { errors: ImportRowError[] }) {
 }
 
 function ImportBody({ onClose, onImported }: { onClose: () => void; onImported: () => void }) {
+    const { t } = useTranslation();
     const [file, setFile] = useState<File | null>(null);
     const [preview, setPreview] = useState<ImportPreview | null>(null);
     const [busy, setBusy] = useState<"check" | "import" | null>(null);
@@ -92,8 +95,7 @@ function ImportBody({ onClose, onImported }: { onClose: () => void; onImported: 
         <>
             <div className="space-y-4 p-5">
                 <p className="text-sm">
-                    Fichier CSV (UTF-8, séparateur « ; » ou « , »), 1 000 lignes et 1 Mo maximum, dates au format AAAA-MM-JJ.
-                    L'import <strong>crée</strong> des employés : il ne modifie pas les fiches existantes. Il est tout ou rien.
+                    <Trans i18nKey="Fichier CSV (UTF-8, séparateur « ; » ou « , »), 1 000 lignes et 1 Mo maximum, dates au format AAAA-MM-JJ. L'import <strong>crée</strong> des employés : il ne modifie pas les fiches existantes. Il est tout ou rien." components={{ strong: <strong /> }} />
                 </p>
                 <Button
                     variant="secondary"
@@ -117,15 +119,15 @@ function ImportBody({ onClose, onImported }: { onClose: () => void; onImported: 
                 {error && <Alert tone="error">{error}</Alert>}
                 {preview?.valid && (
                     <Alert tone="success" title="Fichier valide">
-                        {preview.rows} ligne(s) prête(s) à être importée(s). Aucun employé n'a encore été créé.
-                        {preview.ignored_columns.length > 0 && ` Colonnes ignorées : ${preview.ignored_columns.join(", ")}.`}
+                        <Trans i18nKey="{{count}} ligne(s) prête(s) à être importée(s). Aucun employé n'a encore été créé." values={{ count: preview.rows }} />
+                        {preview.ignored_columns.length > 0 && t("Colonnes ignorées : {{columns}}.", { columns: preview.ignored_columns.join(", ") })}
                     </Alert>
                 )}
                 {preview && !preview.valid && (
                     <div className="space-y-2">
                         <Alert tone="error" title="Fichier refusé">
-                            {preview.invalid_rows} ligne(s) invalide(s). Corrigez le fichier puis vérifiez-le à nouveau.
-                            {preview.errors.length < preview.invalid_rows && ` Seules les ${preview.errors.length} premières sont listées.`}
+                            {t("{{count}} ligne(s) invalide(s). Corrigez le fichier puis vérifiez-le à nouveau.", { count: preview.invalid_rows })}
+                            {preview.errors.length < preview.invalid_rows && t("Seules les {{count}} premières sont listées.", { count: preview.errors.length })}
                         </Alert>
                         <RowErrors errors={preview.errors} />
                     </div>
@@ -140,7 +142,7 @@ function ImportBody({ onClose, onImported }: { onClose: () => void; onImported: 
                 </Button>
                 {preview?.valid && (
                     <Button onClick={() => void runImport()} loading={busy === "import"}>
-                        Importer {preview.rows} employé(s)
+                        {t("Importer {{count}} employé(s)", { count: preview.rows })}
                     </Button>
                 )}
             </div>

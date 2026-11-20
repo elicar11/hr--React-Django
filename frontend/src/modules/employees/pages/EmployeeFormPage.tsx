@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Link, useNavigate, useParams } from "react-router";
 import { z } from "zod";
+import { Trans, useTranslation } from "react-i18next";
 import {
     Alert,
     Button,
@@ -38,7 +39,7 @@ const optionalEmail = z
 const schema = z
     .object({
         matricule: z.string().trim().min(1, "Le matricule est obligatoire.").max(20, "20 caractères maximum."),
-        last_name: z.string().trim().min(1, "Le nom est obligatoire."),
+        last_name: z.string().trim().min(1, "Le nom de famille est obligatoire."),
         first_name: z.string().trim().min(1, "Le prénom est obligatoire."),
         gender: z.string().regex(/^[MF]$/, "Choisissez le sexe."),
         date_of_birth: z.string().min(1, "La date de naissance est obligatoire."),
@@ -92,6 +93,7 @@ const FIELDS = [
 ] as const;
 
 function EmployeeFormBody({ employee }: { employee: Employee | null }) {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { user: currentUser } = useSession();
     const isAdmin = currentUser.role === "ADMIN";
@@ -201,12 +203,12 @@ function EmployeeFormBody({ employee }: { employee: Employee | null }) {
                 <FormSection title="Identité">
                     <Input label="Matricule" required hint="Unique, en majuscules." className="uppercase" error={errors.matricule?.message} {...register("matricule")} />
                     <span className="hidden md:block" />
-                    <Input label="Nom" required error={errors.last_name?.message} {...register("last_name")} />
+                    <Input label="Nom de famille" required error={errors.last_name?.message} {...register("last_name")} />
                     <Input label="Prénom" required error={errors.first_name?.message} {...register("first_name")} />
                     <Select label="Sexe" required placeholder="Choisir…" error={errors.gender?.message} {...register("gender")}>
                         {(Object.keys(GENDER_LABELS) as Gender[]).map((value) => (
                             <option key={value} value={value}>
-                                {GENDER_LABELS[value]}
+                                {t(GENDER_LABELS[value])}
                             </option>
                         ))}
                     </Select>
@@ -271,8 +273,7 @@ function EmployeeFormBody({ employee }: { employee: Employee | null }) {
                     ) : (
                         <div className="md:col-span-2">
                             <Alert tone="info">
-                                Affectation actuelle : <strong>{employee.department_name}</strong>, {employee.position_title}. Pour la
-                                modifier, utilisez l'onglet « Emploi et affectation » de la fiche : l'historique est conservé.
+                                <Trans i18nKey="Affectation actuelle : <strong>{{department}}</strong>, {{position}}. Pour la modifier, utilisez l'onglet « Emploi et affectation » de la fiche : l'historique est conservé." values={{ department: employee.department_name, position: employee.position_title }} components={{ strong: <strong /> }} />
                             </Alert>
                         </div>
                     )}
@@ -295,7 +296,7 @@ function EmployeeFormBody({ employee }: { employee: Employee | null }) {
                         Enregistrer
                     </Button>
                     <Link to={creating ? "/employees" : `/employees/${employee.id}`} className={buttonStyles({ variant: "secondary" })}>
-                        Annuler
+                        {t("Annuler")}
                     </Link>
                 </div>
             </form>
@@ -305,6 +306,7 @@ function EmployeeFormBody({ employee }: { employee: Employee | null }) {
 
 /** Create (`/employees/new`) and edit (`/employees/:id/edit`) share the same form. */
 export function EmployeeFormPage() {
+    const { t } = useTranslation();
     const { id } = useParams();
     const employeeId = id ? Number(id) : null;
     const query = useApiQuery(["employee-form", employeeId], (signal) =>
@@ -323,7 +325,7 @@ export function EmployeeFormPage() {
                     description={query.error.message}
                     action={
                         <Link to="/employees" className={buttonStyles()}>
-                            Retour à la liste
+                            {t("Retour à la liste")}
                         </Link>
                     }
                 />

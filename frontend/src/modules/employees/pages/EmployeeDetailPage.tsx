@@ -12,6 +12,7 @@ import {
     UserX,
 } from "lucide-react";
 import { useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import { Link, useParams, useSearchParams } from "react-router";
 import {
     Alert,
@@ -58,6 +59,7 @@ const TABS = [
 ];
 
 function GeneralTab({ employee }: { employee: Employee }) {
+    const { t } = useTranslation();
     const address = [employee.address_line, [employee.postal_code, employee.city].filter(Boolean).join(" ")]
         .filter(Boolean)
         .join(", ");
@@ -66,8 +68,8 @@ function GeneralTab({ employee }: { employee: Employee }) {
             <DefinitionList
                 items={[
                     { label: "Matricule", value: employee.matricule },
-                    { label: "Nom", value: `${employee.last_name} ${employee.first_name}` },
-                    { label: "Sexe", value: employee.gender ? GENDER_LABELS[employee.gender] : "" },
+                    { label: "Nom complet", value: `${employee.last_name} ${employee.first_name}` },
+                    { label: "Sexe", value: employee.gender ? t(GENDER_LABELS[employee.gender]) : "" },
                     { label: "Date de naissance", value: formatDate(employee.date_of_birth) },
                     { label: "Date d'embauche", value: formatDate(employee.hire_date) },
                     { label: "E-mail personnel", value: employee.personal_email },
@@ -76,7 +78,7 @@ function GeneralTab({ employee }: { employee: Employee }) {
                     { label: "CIN délivré le", value: formatDate(employee.cin_issue_date) },
                     { label: "Lieu de délivrance", value: employee.cin_issue_place },
                     { label: "Adresse", value: address },
-                    { label: "Compte de connexion", value: employee.user ? "Compte lié" : "Aucun compte lié" },
+                    { label: "Compte de connexion", value: t(employee.user ? "Compte lié" : "Aucun compte lié") },
                     ...(employee.departure_date ? [{ label: "Date de départ", value: formatDate(employee.departure_date) }] : []),
                 ]}
             />
@@ -87,6 +89,7 @@ function GeneralTab({ employee }: { employee: Employee }) {
 type StatusAction = "suspend" | "reactivate" | "terminate";
 
 export function EmployeeDetailPage() {
+    const { t } = useTranslation();
     const { id } = useParams();
     const employeeId = Number(id);
     const [searchParams, setSearchParams] = useSearchParams();
@@ -109,7 +112,7 @@ export function EmployeeDetailPage() {
                     description={query.error.message}
                     action={
                         <Link to="/employees" className={buttonStyles()}>
-                            Retour à la liste
+                            {t("Retour à la liste")}
                         </Link>
                     }
                 />
@@ -139,7 +142,7 @@ export function EmployeeDetailPage() {
                     <>
                         <Link to={`/employees/${employee.id}/edit`} className={buttonStyles({ variant: "secondary" })}>
                             <Pencil className="size-4" aria-hidden="true" />
-                            Modifier
+                            {t("Modifier")}
                         </Link>
                         <Menu
                             label="Changer le statut"
@@ -173,8 +176,8 @@ export function EmployeeDetailPage() {
                         {employee.department_name} · {employee.position_title}
                     </p>
                     <p className="text-sm text-gray-dark">
-                        Embauché le {formatDate(employee.hire_date)}
-                        {employee.departure_date ? ` · parti le ${formatDate(employee.departure_date)}` : ""}
+                        {t("Embauché le {{date}}", { date: formatDate(employee.hire_date) })}
+                        {employee.departure_date ? ` · ${t("parti le {{date}}", { date: formatDate(employee.departure_date) })}` : ""}
                     </p>
                 </div>
             </div>
@@ -222,7 +225,7 @@ export function EmployeeDetailPage() {
                 title="Suspendre cet employé ?"
                 message={
                     <>
-                        <strong>{name}</strong> passera au statut « Suspendu ». Son compte de connexion n'est pas modifié.
+                        <Trans i18nKey="<strong>{{name}}</strong> passera au statut « Suspendu ». Son compte de connexion n'est pas modifié." values={{ name }} components={{ strong: <strong /> }} />
                     </>
                 }
                 confirmLabel="Suspendre"
@@ -240,15 +243,15 @@ export function EmployeeDetailPage() {
                     employee.employment_status === "TERMINATED" ? (
                         <>
                             <p>
-                                <strong>{name}</strong> repassera « En poste » et sa dernière affectation sera rouverte.
+                                <Trans i18nKey="<strong>{{name}}</strong> repassera « En poste » et sa dernière affectation sera rouverte." values={{ name }} components={{ strong: <strong /> }} />
                             </p>
                             <p className="mt-2 text-sm text-gray-dark">
-                                Son compte de connexion reste désactivé : il se réactive séparément, depuis la gestion des utilisateurs.
+                                {t("Son compte de connexion reste désactivé : il se réactive séparément, depuis la gestion des utilisateurs.")}
                             </p>
                         </>
                     ) : (
                         <>
-                            <strong>{name}</strong> repassera « En poste ».
+                            <Trans i18nKey="<strong>{{name}}</strong> repassera « En poste »." values={{ name }} components={{ strong: <strong /> }} />
                         </>
                     )
                 }

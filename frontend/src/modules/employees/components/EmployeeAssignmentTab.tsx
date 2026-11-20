@@ -3,6 +3,7 @@ import { Repeat } from "lucide-react";
 import { useState } from "react";
 import { Alert, Badge, Button, Card, DataTable } from "@/components/ui";
 import { formatDate } from "@/lib/format";
+import { tr } from "@/i18n/translate";
 import { useApiQuery } from "@/lib/hooks/useApiQuery";
 import { getAssignments } from "../services/employeeService";
 import type { Assignment, Employee } from "../types";
@@ -17,7 +18,7 @@ const columns: ColumnDef<Assignment>[] = [
         id: "current",
         header: "Situation",
         enableSorting: false,
-        cell: ({ row }) => (row.original.end_date ? <Badge tone="muted">Terminée</Badge> : <Badge tone="solid">Actuelle</Badge>),
+        cell: ({ row }) => (row.original.end_date ? <Badge tone="muted">{tr("Terminée")}</Badge> : <Badge tone="solid">{tr("Actuelle")}</Badge>),
     },
 ];
 
@@ -46,11 +47,11 @@ export function EmployeeAssignmentTab({ employee, onChanged }: { employee: Emplo
                 <p>
                     <strong>{employee.department_name}</strong> · {employee.position_title}
                 </p>
-                {terminated && <p className="mt-2 text-sm text-gray-dark">Un employé sorti ne peut plus être réaffecté.</p>}
+                {terminated && <p className="mt-2 text-sm text-gray-dark">{tr("Un employé sorti ne peut plus être réaffecté.")}</p>}
             </Card>
 
             <section className="space-y-3">
-                <h3 className="text-xl">Historique des affectations</h3>
+                <h3 className="text-xl">{tr("Historique des affectations")}</h3>
                 {query.error && <Alert tone="error">{query.error.message}</Alert>}
                 <DataTable
                     caption="Historique des affectations"
